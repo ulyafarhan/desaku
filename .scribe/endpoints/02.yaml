@@ -1,0 +1,195 @@
+name: Statistik
+description: |-
+
+  APIs untuk mendapatkan statistik demografi dan layanan gampong
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/statistik/demografi
+    metadata:
+      custom: []
+      groupName: Statistik
+      groupDescription: |-
+
+        APIs untuk mendapatkan statistik demografi dan layanan gampong
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Statistik Demografi'
+      description: |-
+        Mendapatkan statistik demografi penduduk (jenis kelamin, agama, pendidikan, pekerjaan, dll).
+        Data di-cache selama 1 jam untuk performa optimal.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "total_penduduk": 1250,
+              "total_keluarga": 320,
+              "jenis_kelamin": {
+                "L": 625,
+                "P": 625
+              },
+              "agama": {
+                "Islam": 1200,
+                "Kristen": 30,
+                "Katolik": 20
+              },
+              "pendidikan": {
+                "SD": 300,
+                "SMP": 250,
+                "SMA": 400,
+                "S1": 200,
+                "S2": 50
+              },
+              "pekerjaan": {
+                "Petani": 400,
+                "Wiraswasta": 300,
+                "PNS": 150,
+                "Pelajar": 250
+              },
+              "status_perkawinan": {
+                "Belum Kawin": 500,
+                "Kawin": 650,
+                "Cerai Hidup": 50,
+                "Cerai Mati": 50
+              }
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/statistik/layanan
+    metadata:
+      custom: []
+      groupName: Statistik
+      groupDescription: |-
+
+        APIs untuk mendapatkan statistik demografi dan layanan gampong
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Statistik Layanan'
+      description: |-
+        Mendapatkan statistik layanan pengajuan surat dan mutasi penduduk.
+        Data di-cache selama 1 jam untuk performa optimal.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "pengajuan_surat": {
+                "total": 150,
+                "pending": 10,
+                "diproses": 5,
+                "disetujui": 120,
+                "ditolak": 10,
+                "selesai": 115,
+                "per_kategori": {
+                  "Surat Keterangan Domisili": 80,
+                  "Surat Keterangan Tidak Mampu": 70
+                }
+              },
+              "mutasi_penduduk": {
+                "total": 25,
+                "pending": 3,
+                "disetujui": 20,
+                "ditolak": 2,
+                "per_jenis": {
+                  "Kelahiran": 10,
+                  "Kematian": 5,
+                  "Kedatangan": 7,
+                  "Kepindahan": 3
+                }
+              }
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/admin/statistik/clear-cache
+    metadata:
+      custom: []
+      groupName: Statistik
+      groupDescription: |-
+
+        APIs untuk mendapatkan statistik demografi dan layanan gampong
+      subgroup: ''
+      subgroupDescription: ''
+      title: '[Admin] Clear Cache Statistik'
+      description: 'Membersihkan cache statistik untuk refresh data (admin only).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Cache statistik berhasil dibersihkan"
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

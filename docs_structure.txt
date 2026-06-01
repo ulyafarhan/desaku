@@ -1,0 +1,28 @@
+Folder PATH listing
+Volume serial number is 06C9-B9F6
+C:\LARAGON\WWW\DESAKU\DOCS
+|   DOCUMENTATION_SUMMARY.md
+|   README.md
+|   
++---api
+|       01_API_DOCUMENTATION.md
+|       01_AUTH.md
+|       API_CONTRACT.md
+|       API_DOCUMENTATION.md
+|       API_QUICK_REFERENCE.md
+|       README.md
+|       
++---backend
+|       BACKEND_SUMMARY.md
+|       INSTALLATION.md
+|       README.md
+|       README_BACKEND.md
+|       TESTING.md
+|       TEST_RESULTS.md
+|       
++---database
+|       README.md
+|       
+\---frontend
+        README.md
+        

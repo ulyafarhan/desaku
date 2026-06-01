@@ -1,0 +1,70 @@
+<?php
+
+namespace Tests\Unit\Models;
+
+use App\Models\PengaturanGampong;
+use Tests\TestCase;
+
+class PengaturanGampongTest extends TestCase
+{
+    public function test_can_get_setting_value()
+    {
+        PengaturanGampong::create([
+            'kunci' => 'test_key',
+            'nilai' => 'test_value',
+            'tipe_data' => 'string',
+        ]);
+
+        $value = PengaturanGampong::get('test_key');
+
+        $this->assertEquals('test_value', $value);
+    }
+
+    public function test_returns_default_if_key_not_found()
+    {
+        $value = PengaturanGampong::get('non_existent_key', 'default_value');
+
+        $this->assertEquals('default_value', $value);
+    }
+
+    public function test_can_set_setting_value()
+    {
+        PengaturanGampong::set('new_key', 'new_value');
+
+        $this->assertDatabaseHas('pengaturan_gampong', [
+            'kunci' => 'new_key',
+            'nilai' => 'new_value',
+        ]);
+    }
+
+    public function test_handles_integer_type()
+    {
+        PengaturanGampong::set('int_key', 123, 'integer');
+
+        $value = PengaturanGampong::get('int_key');
+
+        $this->assertIsInt($value);
+        $this->assertEquals(123, $value);
+    }
+
+    public function test_handles_boolean_type()
+    {
+        PengaturanGampong::set('bool_key', true, 'boolean');
+
+        $value = PengaturanGampong::get('bool_key');
+
+        $this->assertIsBool($value);
+        $this->assertTrue($value);
+    }
+
+    public function test_handles_json_type()
+    {
+        $data = ['key1' => 'value1', 'key2' => 'value2'];
+        PengaturanGampong::set('json_key', $data, 'json');
+
+        $value = PengaturanGampong::get('json_key');
+
+        $this->assertIsArray($value);
+        $this->assertEquals($data, $value);
+    }
+}

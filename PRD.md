@@ -32,9 +32,15 @@ Ekosistem SIG-Udeung beroperasi di bawah satu domain utama (`udeung.desa.id`) ya
 
 | Komponen | Teknologi Terpilih | Tujuan Penggunaan |
 | --- | --- | --- |
+<<<<<<< HEAD
 | **Frontend Publik** | Next.js (React) | *Server-Side Rendering* (SSR) untuk optimasi SEO dan pemuatan data statistik *real-time*. |
 | **Frontend PWA & Admin** | React.js / Alpine.js + Tailwind CSS | Antarmuka dinamis dan responsif dengan dukungan *offline caching* via *Service Worker*. |
 | **Backend Core API** | Node.js (Express) | Pemrosesan logika bisnis, *routing* API, kompilasi PDF surat, dan manajemen *state*. |
+=======
+| **Frontend Publik** | Nuxt.Js | *Server-Side Rendering* (SSR) untuk optimasi SEO dan pemuatan data statistik *real-time*. |
+| **Frontend PWA & Admin** | Vue.js / Alpine.js + Tailwind CSS | Antarmuka dinamis dan responsif dengan dukungan ataupun menggunakan filament 5 *offline caching* via *Service Worker*. |
+| **Backend Core API** | Laravel 13 | Pemrosesan logika bisnis, *routing* API, kompilasi PDF surat, dan manajemen *state*. |
+>>>>>>> 8e6c871 (pembangunan backend dan kontrak api)
 | **Database Engine** | PostgreSQL 15+ | Relasional data kependudukan dan tipe data `JSONB` untuk skema formulir surat dinamis. |
 | **Queue & Cache** | Redis | Menangani antrean tugas asinkron (*rendering* PDF, notifikasi Telegram berantai). |
 | **Integrasi Eksternal** | Kemendagri API, Telegram API, Gemini API | Validasi wilayah, *broadcasting* pesan gratis, dan mesin pemrosesan bahasa alami (NLP). |

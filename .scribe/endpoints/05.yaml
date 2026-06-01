@@ -1,0 +1,583 @@
+name: 'Pengajuan Surat'
+description: |-
+
+  APIs untuk mengelola pengajuan surat warga
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/surat/kategori
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Daftar Kategori Surat'
+      description: 'Mendapatkan daftar kategori surat yang tersedia dan aktif.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "nama_surat": "Surat Keterangan Domisili",
+                "kode_surat": "SKD",
+                "deskripsi": "Surat keterangan tempat tinggal",
+                "template_path": "pdf.surat.domisili",
+                "persyaratan": ["KTP", "KK"],
+                "field_isian": ["keperluan", "alamat_lengkap"],
+                "is_active": true
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/surat/kategori/{id}'
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Detail Kategori Surat'
+      description: 'Mendapatkan detail kategori surat tertentu.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID kategori surat.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "nama_surat": "Surat Keterangan Domisili",
+              "kode_surat": "SKD",
+              "deskripsi": "Surat keterangan tempat tinggal",
+              "template_path": "pdf.surat.domisili",
+              "persyaratan": ["KTP", "KK"],
+              "field_isian": ["keperluan", "alamat_lengkap"],
+              "is_active": true
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/surat/pengajuan
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Buat Pengajuan Surat'
+      description: 'Submit pengajuan surat baru oleh warga.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      kategori_surat_id:
+        custom: []
+        name: kategori_surat_id
+        description: 'ID kategori surat.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      data_isian:
+        custom: []
+        name: data_isian
+        description: 'Data isian sesuai field_isian kategori.'
+        required: true
+        example:
+          keperluan: 'Melamar pekerjaan'
+          alamat_lengkap: 'Jl. Merdeka No. 123'
+        type: object
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      file_syarat:
+        custom: []
+        name: file_syarat
+        description: 'File persyaratan yang sudah diupload.'
+        required: true
+        example:
+          ktp: 'https://storage.com/ktp.jpg'
+          kk: 'https://storage.com/kk.jpg'
+        type: object
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      kategori_surat_id: 1
+      data_isian:
+        keperluan: 'Melamar pekerjaan'
+        alamat_lengkap: 'Jl. Merdeka No. 123'
+      file_syarat:
+        ktp: 'https://storage.com/ktp.jpg'
+        kk: 'https://storage.com/kk.jpg'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "message": "Pengajuan surat berhasil dibuat",
+            "data": {
+              "id": 1,
+              "nomor_registrasi": "REG/2026/06/00001",
+              "nik_pemohon": "1234567890123456",
+              "kategori_surat_id": 1,
+              "data_isian": {"keperluan": "Melamar pekerjaan"},
+              "file_syarat": {"ktp": "https://storage.com/ktp.jpg"},
+              "status": "Pending",
+              "created_at": "2026-06-01T10:00:00.000000Z",
+              "kategori": {
+                "id": 1,
+                "nama_surat": "Surat Keterangan Domisili"
+              }
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/surat/pengajuan
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Daftar Pengajuan Surat Saya'
+      description: 'Mendapatkan daftar pengajuan surat milik user yang sedang login.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "nomor_registrasi": "REG/2026/06/00001",
+                "nik_pemohon": "1234567890123456",
+                "status": "Pending",
+                "created_at": "2026-06-01T10:00:00.000000Z",
+                "kategori": {
+                  "nama_surat": "Surat Keterangan Domisili"
+                },
+                "tracking": [
+                  {
+                    "status_baru": "Pending",
+                    "keterangan_update": "Pengajuan surat dibuat",
+                    "created_at": "2026-06-01T10:00:00.000000Z"
+                  }
+                ]
+              }
+            ],
+            "links": {},
+            "meta": {}
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/surat/pengajuan/{id}'
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Detail Pengajuan Surat'
+      description: 'Mendapatkan detail pengajuan surat tertentu.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID pengajuan surat.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "nomor_registrasi": "REG/2026/06/00001",
+              "nik_pemohon": "1234567890123456",
+              "kategori_surat_id": 1,
+              "data_isian": {"keperluan": "Melamar pekerjaan"},
+              "file_syarat": {"ktp": "https://storage.com/ktp.jpg"},
+              "status": "Disetujui",
+              "file_surat": "https://storage.com/surat.pdf",
+              "qr_hash": "abc123def456",
+              "created_at": "2026-06-01T10:00:00.000000Z",
+              "kategori": {
+                "nama_surat": "Surat Keterangan Domisili"
+              },
+              "pemohon": {
+                "nik": "1234567890123456",
+                "nama_lengkap": "John Doe"
+              },
+              "tracking": []
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/admin/surat/pengajuan
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: '[Admin] Daftar Semua Pengajuan'
+      description: 'Mendapatkan daftar semua pengajuan surat (admin only).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      status:
+        custom: []
+        name: status
+        description: 'Filter berdasarkan status.'
+        required: false
+        example: Pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      status: Pending
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "nomor_registrasi": "REG/2026/06/00001",
+                "nik_pemohon": "1234567890123456",
+                "status": "Pending",
+                "created_at": "2026-06-01T10:00:00.000000Z",
+                "kategori": {
+                  "nama_surat": "Surat Keterangan Domisili"
+                },
+                "pemohon": {
+                  "nama_lengkap": "John Doe"
+                }
+              }
+            ],
+            "links": {},
+            "meta": {}
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/admin/surat/pengajuan/{id}/approve'
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: '[Admin] Setujui Pengajuan'
+      description: 'Menyetujui pengajuan surat dan memulai proses generate PDF (admin only).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID pengajuan surat.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Pengajuan berhasil disetujui",
+            "data": {
+              "id": 1,
+              "nomor_registrasi": "REG/2026/06/00001",
+              "status": "Disetujui",
+              "diverifikasi_oleh": 1
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/admin/surat/pengajuan/{id}/reject'
+    metadata:
+      custom: []
+      groupName: 'Pengajuan Surat'
+      groupDescription: |-
+
+        APIs untuk mengelola pengajuan surat warga
+      subgroup: ''
+      subgroupDescription: ''
+      title: '[Admin] Tolak Pengajuan'
+      description: 'Menolak pengajuan surat dengan catatan penolakan (admin only).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'ID pengajuan surat.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      catatan_penolakan:
+        custom: []
+        name: catatan_penolakan
+        description: 'Alasan penolakan.'
+        required: true
+        example: 'Dokumen persyaratan tidak lengkap'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      catatan_penolakan: 'Dokumen persyaratan tidak lengkap'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Pengajuan ditolak",
+            "data": {
+              "id": 1,
+              "nomor_registrasi": "REG/2026/06/00001",
+              "status": "Ditolak",
+              "catatan_penolakan": "Dokumen persyaratan tidak lengkap",
+              "diverifikasi_oleh": 1
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
