@@ -17,14 +17,15 @@
 
 ## 🔐 Authentication
 
-### Login Warga (NIK)
+### Login Warga (NIK + No KK)
 
 **Endpoint:** POST /auth/login/warga
 
 **Request Body:**
 `json
 {
-  \"nik\": \"1234567890123456\"
+  \"nik\": \"1234567890123456\",
+  \"no_kk\": \"1234567890123456\"
 }
 `
 
@@ -61,7 +62,7 @@
   \"message\": \"The nik field is required.\",
   \"errors\": {
     \"nik\": [
-      \"NIK tidak ditemukan atau tidak aktif.\"
+      \"NIK, No KK, atau status warga tidak valid.\"
     ]
   }
 }
@@ -155,4 +156,3 @@ Authorization: Bearer {token}
   \"message\": \"Telegram berhasil terhubung\"
 }
 `
-

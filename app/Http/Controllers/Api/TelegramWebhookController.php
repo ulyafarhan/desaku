@@ -3,34 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\GeminiAiService;
+use App\Jobs\ProcessTelegramMessageJob;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
  * @group Telegram Webhook
- * 
+ *
  * API untuk menerima webhook dari Telegram Bot (internal use only)
  */
 class TelegramWebhookController extends Controller
 {
     public function __construct(
-        protected TelegramService $telegram,
-        protected GeminiAiService $gemini
+        protected TelegramService $telegram
     ) {}
 
     /**
      * Handle Telegram Webhook
-     * 
+     *
      * Endpoint untuk menerima webhook dari Telegram Bot.
      * Menangani pesan masuk dan callback query dari user.
      * Terintegrasi dengan Gemini AI untuk chatbot otomatis.
-     * 
+     *
      * @bodyParam update_id integer ID update dari Telegram. Example: 123456789
      * @bodyParam message object Objek message dari Telegram. Example: {"message_id": 1, "chat": {"id": 123456}, "text": "/start"}
      * @bodyParam callback_query object Objek callback query dari button. Example: {"id": "123", "data": "action_data"}
-     * 
+     *
      * @response 200 {
      *   "ok": true
      * }
@@ -38,7 +37,7 @@ class TelegramWebhookController extends Controller
     public function handle(Request $request)
     {
         $update = $request->all();
-        
+
         Log::info('Telegram Webhook Received', $update);
 
         // Handle message
@@ -67,9 +66,10 @@ class TelegramWebhookController extends Controller
             $welcomeMessage .= "• Prosedur pembuatan surat\n";
             $welcomeMessage .= "• Persyaratan dokumen\n";
             $welcomeMessage .= "• Informasi umum gampong\n\n";
-            $welcomeMessage .= "Silakan kirim pertanyaan Anda!";
+            $welcomeMessage .= 'Silakan kirim pertanyaan Anda!';
 
             $this->telegram->sendMessage($chatId, $welcomeMessage);
+
             return;
         }
 
@@ -90,21 +90,13 @@ class TelegramWebhookController extends Controller
                     "Format: /bind [NIK]\nContoh: /bind 1234567890123456"
                 );
             }
+
             return;
         }
 
         // Handle regular message dengan AI
-        if (!empty($text)) {
-            $aiResponse = $this->gemini->generateResponse($text, $chatId);
-
-            if ($aiResponse) {
-                $this->telegram->sendMessage($chatId, $aiResponse);
-            } else {
-                $this->telegram->sendMessage(
-                    $chatId,
-                    "Maaf, saya sedang mengalami gangguan. Silakan coba lagi nanti atau hubungi kantor desa."
-                );
-            }
+        if (! empty($text)) {
+            ProcessTelegramMessageJob::dispatch((string) $chatId, $text);
         }
     }
 

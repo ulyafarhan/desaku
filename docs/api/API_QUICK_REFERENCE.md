@@ -21,7 +21,7 @@ http://localhost/api/v1
 ### 1. Login Warga
 ```javascript
 POST /auth/login/warga
-Body: { "nik": "1234567890123456" }
+Body: { "nik": "1234567890123456", "no_kk": "1234567890123456" }
 Response: { "token": "...", "user": {...} }
 ```
 

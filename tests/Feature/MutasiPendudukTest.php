@@ -3,15 +3,16 @@
 namespace Tests\Feature;
 
 use App\Models\Administrator;
-use App\Models\Penduduk;
 use App\Models\Keluarga;
 use App\Models\MutasiPenduduk;
+use App\Models\Penduduk;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class MutasiPendudukTest extends TestCase
 {
     protected $warga;
+
     protected $admin;
 
     protected function setUp(): void
@@ -49,7 +50,7 @@ class MutasiPendudukTest extends TestCase
 
     public function test_warga_can_submit_mutasi()
     {
-        $token = $this->warga->createToken('test')->plainTextToken;
+        $token = $this->warga->createToken('test', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->postJson('/api/v1/mutasi', [
@@ -83,7 +84,7 @@ class MutasiPendudukTest extends TestCase
             'dokumen_bukti' => '/path/to/file.jpg',
         ]);
 
-        $token = $this->warga->createToken('test')->plainTextToken;
+        $token = $this->warga->createToken('test', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->getJson('/api/v1/mutasi');

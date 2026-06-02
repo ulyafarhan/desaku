@@ -4,26 +4,27 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Administrator;
-use App\Models\Penduduk;
 use App\Models\AuditLog;
+use App\Models\Penduduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 /**
  * @group Authentication
- * 
+ *
  * APIs untuk autentikasi warga dan admin
  */
 class AuthController extends Controller
 {
     /**
-     * Login Warga (NIK)
-     * 
-     * Login menggunakan NIK untuk warga gampong.
-     * 
+     * Login Warga (NIK + No KK)
+     *
+     * Login menggunakan NIK dan nomor KK untuk warga gampong.
+     *
      * @bodyParam nik string required NIK warga (16 digit). Example: 1234567890123456
-     * 
+     * @bodyParam no_kk string required Nomor KK warga (16 digit). Example: 1234567890123456
+     *
      * @response 200 {
      *   "message": "Login berhasil",
      *   "user": {
@@ -41,11 +42,10 @@ class AuthController extends Controller
      *   },
      *   "token": "1|abcdefghijklmnopqrstuvwxyz"
      * }
-     * 
      * @response 422 {
      *   "message": "The given data was invalid.",
      *   "errors": {
-     *     "nik": ["NIK tidak ditemukan atau tidak aktif."]
+     *     "nik": ["NIK, No KK, atau status warga tidak valid."]
      *   }
      * }
      */
@@ -53,17 +53,20 @@ class AuthController extends Controller
     {
         $request->validate([
             'nik' => 'required|string|size:16',
+            'no_kk' => 'required|string|size:16',
         ]);
 
-        $penduduk = Penduduk::find($request->nik);
+        $penduduk = Penduduk::where('nik', $request->nik)
+            ->where('no_kk', $request->no_kk)
+            ->first();
 
-        if (!$penduduk || $penduduk->status_mutasi !== 'Tetap') {
+        if (! $penduduk || $penduduk->status_mutasi !== 'Tetap') {
             throw ValidationException::withMessages([
-                'nik' => ['NIK tidak ditemukan atau tidak aktif.'],
+                'nik' => ['NIK, No KK, atau status warga tidak valid.'],
             ]);
         }
 
-        $token = $penduduk->createToken('warga-token')->plainTextToken;
+        $token = $penduduk->createToken('warga-token', ['warga'])->plainTextToken;
 
         AuditLog::log('warga', $penduduk->nik, 'login', 'penduduk', $penduduk->nik);
 
@@ -76,12 +79,12 @@ class AuthController extends Controller
 
     /**
      * Login Admin
-     * 
+     *
      * Login menggunakan username dan password untuk admin (Keuchik, Sekdes, Operator).
-     * 
+     *
      * @bodyParam username string required Username admin. Example: operator
      * @bodyParam password string required Password admin. Example: password123
-     * 
+     *
      * @response 200 {
      *   "message": "Login berhasil",
      *   "user": {
@@ -92,7 +95,6 @@ class AuthController extends Controller
      *   },
      *   "token": "2|abcdefghijklmnopqrstuvwxyz"
      * }
-     * 
      * @response 422 {
      *   "message": "The given data was invalid.",
      *   "errors": {
@@ -109,7 +111,7 @@ class AuthController extends Controller
 
         $admin = Administrator::where('username', $request->username)->first();
 
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
+        if (! $admin || ! Hash::check($request->password, $admin->password)) {
             throw ValidationException::withMessages([
                 'username' => ['Username atau password salah.'],
             ]);
@@ -128,11 +130,11 @@ class AuthController extends Controller
 
     /**
      * Logout
-     * 
+     *
      * Logout dan hapus token akses saat ini.
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @response 200 {
      *   "message": "Logout berhasil"
      * }
@@ -148,11 +150,11 @@ class AuthController extends Controller
 
     /**
      * Get Profile
-     * 
+     *
      * Mendapatkan profil user yang sedang login (warga atau admin).
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @response 200 {
      *   "user": {
      *     "nik": "1234567890123456",
@@ -188,21 +190,19 @@ class AuthController extends Controller
 
     /**
      * Bind Telegram
-     * 
+     *
      * Menghubungkan akun warga dengan Telegram Chat ID untuk notifikasi.
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @bodyParam telegram_chat_id string required Telegram Chat ID dari bot. Example: 123456789
-     * 
+     *
      * @response 200 {
      *   "message": "Telegram berhasil terhubung"
      * }
-     * 
      * @response 403 {
      *   "message": "Hanya warga yang dapat bind Telegram"
      * }
-     * 
      * @response 422 {
      *   "message": "The given data was invalid.",
      *   "errors": {
@@ -218,7 +218,7 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        if (!$user instanceof Penduduk) {
+        if (! $user instanceof Penduduk) {
             return response()->json([
                 'message' => 'Hanya warga yang dapat bind Telegram',
             ], 403);

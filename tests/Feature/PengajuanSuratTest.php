@@ -2,25 +2,30 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\GenerateSuratPdfJob;
 use App\Models\Administrator;
-use App\Models\Penduduk;
-use App\Models\Keluarga;
 use App\Models\KategoriSurat;
+use App\Models\Keluarga;
+use App\Models\Penduduk;
 use App\Models\PengajuanSurat;
+use Database\Seeders\KategoriSuratSeeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class PengajuanSuratTest extends TestCase
 {
     protected $warga;
+
     protected $admin;
+
     protected $kategori;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(\Database\Seeders\KategoriSuratSeeder::class);
+        $this->seed(KategoriSuratSeeder::class);
 
         $keluarga = Keluarga::create([
             'no_kk' => '1234567890123456',
@@ -54,7 +59,7 @@ class PengajuanSuratTest extends TestCase
 
     public function test_warga_can_get_kategori_surat()
     {
-        $token = $this->warga->createToken('test')->plainTextToken;
+        $token = $this->warga->createToken('test', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->getJson('/api/v1/surat/kategori');
@@ -69,7 +74,7 @@ class PengajuanSuratTest extends TestCase
 
     public function test_warga_can_submit_pengajuan_surat()
     {
-        $token = $this->warga->createToken('test')->plainTextToken;
+        $token = $this->warga->createToken('test', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->postJson('/api/v1/surat/pengajuan', [
@@ -106,7 +111,7 @@ class PengajuanSuratTest extends TestCase
             'file_syarat' => ['ktp' => 'path/to/ktp.jpg'],
         ]);
 
-        $token = $this->warga->createToken('test')->plainTextToken;
+        $token = $this->warga->createToken('test', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->getJson('/api/v1/surat/pengajuan');
@@ -143,6 +148,8 @@ class PengajuanSuratTest extends TestCase
 
     public function test_admin_can_approve_pengajuan()
     {
+        Queue::fake();
+
         $pengajuan = PengajuanSurat::create([
             'nik_pemohon' => $this->warga->nik,
             'kategori_surat_id' => $this->kategori->id,
@@ -163,6 +170,8 @@ class PengajuanSuratTest extends TestCase
             'status' => 'Disetujui',
             'diverifikasi_oleh' => $this->admin->id,
         ]);
+
+        Queue::assertPushed(GenerateSuratPdfJob::class);
     }
 
     public function test_admin_can_reject_pengajuan()
@@ -200,7 +209,7 @@ class PengajuanSuratTest extends TestCase
             'file_syarat' => ['ktp' => 'path/to/ktp.jpg'],
         ]);
 
-        $token = $this->warga->createToken('test')->plainTextToken;
+        $token = $this->warga->createToken('test', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->postJson("/api/v1/admin/surat/pengajuan/{$pengajuan->id}/approve");

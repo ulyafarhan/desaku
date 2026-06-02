@@ -14,6 +14,7 @@ Content-Type: application/json
 
 {
   nik: string; // 16 digit, required
+  no_kk: string; // 16 digit, required
 }
 
 // Success Response (200)
@@ -40,7 +41,8 @@ Content-Type: application/json
 {
   message: string;
   errors: {
-    nik: string[];
+    nik?: string[];
+    no_kk?: string[];
   }
 }
 ```

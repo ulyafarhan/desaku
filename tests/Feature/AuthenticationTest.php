@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\Administrator;
-use App\Models\Penduduk;
 use App\Models\Keluarga;
+use App\Models\Penduduk;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    public function test_warga_can_login_with_nik()
+    public function test_warga_can_login_with_nik_and_no_kk()
     {
         $keluarga = Keluarga::create([
             'no_kk' => '1234567890123456',
@@ -36,6 +36,7 @@ class AuthenticationTest extends TestCase
 
         $response = $this->postJson('/api/v1/auth/login/warga', [
             'nik' => '1234567890123456',
+            'no_kk' => '1234567890123456',
         ]);
 
         $response->assertStatus(200)
@@ -50,6 +51,7 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->postJson('/api/v1/auth/login/warga', [
             'nik' => '9999999999999999',
+            'no_kk' => '1234567890123456',
         ]);
 
         $response->assertStatus(422)
@@ -82,6 +84,7 @@ class AuthenticationTest extends TestCase
 
         $response = $this->postJson('/api/v1/auth/login/warga', [
             'nik' => '1234567890123456',
+            'no_kk' => '1234567890123456',
         ]);
 
         $response->assertStatus(422)
@@ -149,7 +152,7 @@ class AuthenticationTest extends TestCase
             'status_keluarga' => 'Anak',
         ]);
 
-        $token = $penduduk->createToken('test-token')->plainTextToken;
+        $token = $penduduk->createToken('test-token', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->getJson('/api/v1/auth/profile');
@@ -186,7 +189,7 @@ class AuthenticationTest extends TestCase
             'status_keluarga' => 'Anak',
         ]);
 
-        $token = $penduduk->createToken('test-token')->plainTextToken;
+        $token = $penduduk->createToken('test-token', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->postJson('/api/v1/auth/logout');
@@ -218,7 +221,7 @@ class AuthenticationTest extends TestCase
             'status_keluarga' => 'Anak',
         ]);
 
-        $token = $penduduk->createToken('test-token')->plainTextToken;
+        $token = $penduduk->createToken('test-token', ['warga'])->plainTextToken;
 
         $response = $this->withToken($token)
             ->postJson('/api/v1/auth/bind-telegram', [

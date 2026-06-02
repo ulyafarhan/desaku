@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Models\Penduduk;
-use App\Models\TelegramBroadcastQueue;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
     protected string $botToken;
+
     protected string $apiUrl;
 
     public function __construct()
@@ -38,7 +38,8 @@ class TelegramService
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Telegram Send Message Error: ' . $e->getMessage());
+            Log::error('Telegram Send Message Error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -61,7 +62,8 @@ class TelegramService
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Telegram Send Document Error: ' . $e->getMessage());
+            Log::error('Telegram Send Document Error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -96,8 +98,8 @@ class TelegramService
     public function notifyPengajuanStatus(string $nik, string $status, string $nomorRegistrasi, ?string $catatan = null): void
     {
         $penduduk = Penduduk::find($nik);
-        
-        if (!$penduduk || !$penduduk->telegram_chat_id) {
+
+        if (! $penduduk || ! $penduduk->telegram_chat_id) {
             return;
         }
 
@@ -110,11 +112,11 @@ class TelegramService
         ];
 
         $message = "<b>Status Pengajuan Surat</b>\n\n";
-        $message .= "Nomor Registrasi: <code>{$nomorRegistrasi}</code>\n";
-        $message .= "Status: {$statusMessages[$status]}\n";
-        
+        $message .= 'Nomor Registrasi: <code>'.$this->escapeHtml($nomorRegistrasi)."</code>\n";
+        $message .= 'Status: '.$this->escapeHtml($statusMessages[$status] ?? $status)."\n";
+
         if ($catatan) {
-            $message .= "\nCatatan:\n{$catatan}";
+            $message .= "\nCatatan:\n".$this->escapeHtml($catatan);
         }
 
         $this->sendMessage($penduduk->telegram_chat_id, $message);
@@ -126,18 +128,23 @@ class TelegramService
     public function notifyMutasiStatus(string $nik, string $jenisMutasi, string $status): void
     {
         $penduduk = Penduduk::find($nik);
-        
-        if (!$penduduk || !$penduduk->telegram_chat_id) {
+
+        if (! $penduduk || ! $penduduk->telegram_chat_id) {
             return;
         }
 
         $statusIcon = $status === 'Disetujui' ? '✅' : '❌';
-        
+
         $message = "<b>Status Mutasi Kependudukan</b>\n\n";
-        $message .= "Jenis: {$jenisMutasi}\n";
-        $message .= "Status: {$statusIcon} {$status}\n";
+        $message .= 'Jenis: '.$this->escapeHtml($jenisMutasi)."\n";
+        $message .= 'Status: '.$this->escapeHtml("{$statusIcon} {$status}")."\n";
 
         $this->sendMessage($penduduk->telegram_chat_id, $message);
+    }
+
+    protected function escapeHtml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**
@@ -152,7 +159,8 @@ class TelegramService
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Telegram Set Webhook Error: ' . $e->getMessage());
+            Log::error('Telegram Set Webhook Error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -164,12 +172,12 @@ class TelegramService
     {
         try {
             $response = Http::get("{$this->apiUrl}/getMe");
-            
+
             if ($response->successful()) {
                 return $response->json('result');
             }
         } catch (\Exception $e) {
-            Log::error('Telegram Get Me Error: ' . $e->getMessage());
+            Log::error('Telegram Get Me Error: '.$e->getMessage());
         }
 
         return null;

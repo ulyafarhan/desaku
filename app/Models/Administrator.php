@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Administrator extends Authenticatable
+class Administrator extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, Notifiable;
 
@@ -47,5 +49,15 @@ class Administrator extends Authenticatable
     public function telegramBroadcasts()
     {
         return $this->hasMany(TelegramBroadcastQueue::class, 'created_by');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return in_array($this->role, ['keuchik', 'sekdes', 'operator'], true);
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->username;
     }
 }
