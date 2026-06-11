@@ -22,6 +22,14 @@ class KategoriSuratResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_surat';
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Kategori Surat';
+
+    protected static ?int $navigationSort = 6;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -54,7 +62,8 @@ class KategoriSuratResource extends Resource
                 IconColumn::make('is_active')->boolean()->label('Aktif'),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()]);
+            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->actionsColumnLabel('Aksi');
     }
 
     public static function getPages(): array

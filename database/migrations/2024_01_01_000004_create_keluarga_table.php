@@ -12,7 +12,7 @@ return new class extends Migration
             $table->string('no_kk', 16)->primary();
             $table->text('alamat');
             $table->string('dusun', 50);
-            $table->string('rt_rw', 10);
+            $table->string('rt_rw', 30);
         });
     }
 

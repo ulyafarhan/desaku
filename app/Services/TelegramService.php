@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
-    protected string $botToken;
+    protected ?string $botToken = null;
 
-    protected string $apiUrl;
+    protected ?string $apiUrl = null;
 
     public function __construct()
     {
         $this->botToken = config('services.telegram.bot_token');
-        $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
+        if ($this->botToken) {
+            $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
+        }
     }
 
     /**
@@ -24,6 +26,11 @@ class TelegramService
     public function sendMessage(string $chatId, string $message, ?array $keyboard = null): bool
     {
         try {
+            if (! $this->botToken || ! $this->apiUrl) {
+                Log::warning('Telegram Bot Token or API URL is not configured.');
+                return false;
+            }
+
             $payload = [
                 'chat_id' => $chatId,
                 'text' => $message,
@@ -50,6 +57,11 @@ class TelegramService
     public function sendDocument(string $chatId, string $filePath, string $caption = ''): bool
     {
         try {
+            if (! $this->botToken || ! $this->apiUrl) {
+                Log::warning('Telegram Bot Token or API URL is not configured.');
+                return false;
+            }
+
             $response = Http::attach(
                 'document',
                 file_get_contents($filePath),

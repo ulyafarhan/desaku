@@ -26,41 +26,47 @@ class GenerateSuratPdfJob implements ShouldQueue
         TelegramService $telegram
     ): void {
         try {
-            // Update status ke Diproses
-            $this->pengajuan->update(['status' => 'Diproses']);
+            // Generate QR Hash if empty
+            if (empty($this->pengajuan->qr_hash)) {
+                $qrHash = hash('sha256', implode('|', [
+                    $this->pengajuan->nomor_registrasi,
+                    $this->pengajuan->nik_pemohon,
+                    $this->pengajuan->kategori->kode_surat ?? 'SRT',
+                    $this->pengajuan->created_at?->timestamp ?? time(),
+                ]));
+                $this->pengajuan->update(['qr_hash' => $qrHash]);
+            }
+
+            // Set the print URL instead of storage PDF path
+            // We use relative path so frontend getFileUrl handles it perfectly, or full route
+            $printUrl = "/warga/pengajuan/{$this->pengajuan->id}/print";
+
+            // Update status ke Selesai
+            $this->pengajuan->update([
+                'status' => 'Selesai',
+                'file_pdf_url' => $printUrl
+            ]);
             
             TrackingPengajuanSurat::create([
                 'pengajuan_surat_id' => $this->pengajuan->id,
                 'status_sebelumnya' => 'Disetujui',
-                'status_baru' => 'Diproses',
-                'keterangan_update' => 'Sedang generate PDF',
-            ]);
-
-            // Generate PDF
-            $pdfUrl = $pdfService->generateSuratPdf($this->pengajuan);
-
-            // Update status ke Selesai
-            $this->pengajuan->update(['status' => 'Selesai']);
-            
-            TrackingPengajuanSurat::create([
-                'pengajuan_surat_id' => $this->pengajuan->id,
-                'status_sebelumnya' => 'Diproses',
                 'status_baru' => 'Selesai',
-                'keterangan_update' => 'PDF berhasil dibuat',
+                'keterangan_update' => 'Surat selesai diproses dan siap dicetak',
             ]);
 
-            // Kirim PDF via Telegram
+            // Kirim link via Telegram
             $pemohon = $this->pengajuan->pemohon;
             
-            if ($pemohon->telegram_chat_id) {
-                $caption = "✅ Surat Anda telah selesai!\n\n";
-                $caption .= "Nomor: {$this->pengajuan->nomor_registrasi}\n";
-                $caption .= "Jenis: {$this->pengajuan->kategori->nama_surat}";
+            if ($pemohon && $pemohon->telegram_chat_id) {
+                $message = "✅ <b>Surat Anda telah selesai!</b>\n\n";
+                $message .= "Nomor: <code>{$this->pengajuan->nomor_registrasi}</code>\n";
+                $message .= "Jenis: {$this->pengajuan->kategori->nama_surat}\n\n";
+                $message .= "Anda dapat melihat dan mengunduh/mencetak surat di:\n";
+                $message .= config('app.url') . "/warga/dashboard?tab=pengajuan";
 
-                $telegram->sendDocument(
+                $telegram->sendMessage(
                     $pemohon->telegram_chat_id,
-                    storage_path('app/public/' . str_replace('/storage/', '', $pdfUrl)),
-                    $caption
+                    $message
                 );
             }
 
@@ -71,14 +77,14 @@ class GenerateSuratPdfJob implements ShouldQueue
                 $this->pengajuan->nomor_registrasi
             );
 
-            Log::info("PDF generated successfully for pengajuan #{$this->pengajuan->id}");
+            Log::info("Letter processed successfully for pengajuan #{$this->pengajuan->id}");
 
         } catch (\Exception $e) {
-            Log::error("Failed to generate PDF for pengajuan #{$this->pengajuan->id}: " . $e->getMessage());
+            Log::error("Failed to process letter for pengajuan #{$this->pengajuan->id}: " . $e->getMessage());
             
             $this->pengajuan->update([
                 'status' => 'Ditolak',
-                'catatan_penolakan' => 'Gagal generate PDF: ' . $e->getMessage(),
+                'catatan_penolakan' => 'Gagal memproses surat: ' . $e->getMessage(),
             ]);
 
             throw $e;

@@ -57,6 +57,7 @@ class WebFrontendTest extends TestCase
         $this->actingAs($penduduk, 'penduduk')
             ->post('/warga/surat/pengajuan', [
                 'kategori_surat_id' => $kategori->id,
+                'nik_pemohon' => $penduduk->nik,
                 'data_isian' => ['keperluan' => 'Administrasi'],
                 'file_syarat' => ['ktp' => 'https://example.test/ktp.jpg'],
             ])
@@ -105,5 +106,34 @@ class WebFrontendTest extends TestCase
             'status_keluarga' => 'Anak',
             'status_mutasi' => 'Tetap',
         ]);
+    }
+
+    public function test_warga_can_upload_files_to_profile(): void
+    {
+        $penduduk = $this->makePenduduk();
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $this->actingAs($penduduk, 'penduduk')
+            ->post('/warga/profil', [
+                'pendidikan' => 'SLTA/Sederajat',
+                'pekerjaan' => 'Wiraswasta',
+                'status_perkawinan' => 'Kawin',
+                'foto_profil' => \Illuminate\Http\UploadedFile::fake()->image('profile.jpg'),
+                'foto_ktp' => \Illuminate\Http\UploadedFile::fake()->create('ktp.pdf', 500, 'application/pdf'),
+                'foto_kk' => \Illuminate\Http\UploadedFile::fake()->image('kk.png'),
+            ])
+            ->assertRedirect();
+
+        $penduduk->refresh();
+        $this->assertEquals('SLTA/Sederajat', $penduduk->pendidikan);
+        $this->assertEquals('Wiraswasta', $penduduk->pekerjaan);
+        
+        $this->assertNotNull($penduduk->getRawOriginal('foto_profil'));
+        $this->assertNotNull($penduduk->getRawOriginal('foto_ktp'));
+        $this->assertNotNull($penduduk->getRawOriginal('foto_kk'));
+        
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($penduduk->getRawOriginal('foto_profil'));
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($penduduk->getRawOriginal('foto_ktp'));
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($penduduk->getRawOriginal('foto_kk'));
     }
 }

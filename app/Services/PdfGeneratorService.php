@@ -17,6 +17,9 @@ class PdfGeneratorService
         // Generate QR Code Image
         $qrCodePath = $this->generateQrCode($qrHash);
 
+        // Ensure Logo is present
+        $this->ensureLogoDownloaded();
+
         // Prepare data untuk template
         $data = [
             'pengajuan' => $pengajuan,
@@ -64,16 +67,42 @@ class PdfGeneratorService
         // Generate QR Code menggunakan library (contoh: SimpleSoftwareIO/simple-qrcode)
         $verificationUrl = config('app.url') . '/verifikasi/' . $hash;
         
-        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
             ->size(200)
             ->generate($verificationUrl);
 
-        $filename = 'qr_' . $hash . '.png';
+        $filename = 'qr_' . $hash . '.svg';
         $path = 'qrcodes/' . $filename;
         
         Storage::disk('public')->put($path, $qrCode);
 
         return Storage::disk('public')->path($path);
+    }
+
+    protected function ensureLogoDownloaded(): void
+    {
+        $logoDir = public_path('images');
+        $logoPath = $logoDir . '/logo-gampong.png';
+        if (!file_exists($logoPath)) {
+            if (!is_dir($logoDir)) {
+                @mkdir($logoDir, 0777, true);
+            }
+            $opts = [
+                'http' => [
+                    'method' => 'GET',
+                    'header' => "User-Agent: DesakuApp/1.0 (http://desaku.test; admin@desaku.test) PHP/8.3\r\n"
+                ],
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ]
+            ];
+            $context = stream_context_create($opts);
+            $logoContent = @file_get_contents('https://upload.wikimedia.org/wikipedia/commons/4/42/Lambang_Kabupaten_Pidie_Jaya.png', false, $context);
+            if ($logoContent !== false) {
+                @file_put_contents($logoPath, $logoContent);
+            }
+        }
     }
 
     protected function generateNomorSurat(PengajuanSurat $pengajuan): string

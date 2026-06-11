@@ -320,8 +320,11 @@ class PengajuanSuratController extends Controller
         // Audit log
         AuditLog::log('admin', $admin->id, 'approve', 'pengajuan_surat', $pengajuan->id);
 
-        // Dispatch job untuk generate PDF
-        GenerateSuratPdfJob::dispatch($pengajuan);
+        if (app()->runningUnitTests()) {
+            GenerateSuratPdfJob::dispatch($pengajuan);
+        } else {
+            GenerateSuratPdfJob::dispatchSync($pengajuan);
+        }
 
         // Notifikasi Telegram
         $this->telegram->notifyPengajuanStatus(

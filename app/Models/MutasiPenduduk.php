@@ -3,11 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class MutasiPenduduk extends Model
 {
+    use HasUlids;
+
     protected $table = 'mutasi_penduduk';
     
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $with = ['penduduk'];
+
     public $timestamps = false;
 
     protected $fillable = [

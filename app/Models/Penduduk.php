@@ -12,6 +12,8 @@ class Penduduk extends Authenticatable
 
     protected $table = 'penduduk';
     
+    protected $with = ['keluarga'];
+    
     protected $primaryKey = 'nik';
     
     public $incrementing = false;
@@ -32,6 +34,9 @@ class Penduduk extends Authenticatable
         'status_keluarga',
         'status_mutasi',
         'telegram_chat_id',
+        'foto_profil',
+        'foto_ktp',
+        'foto_kk',
     ];
 
     protected $hidden = [
@@ -45,6 +50,40 @@ class Penduduk extends Authenticatable
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    // Accessors for documents
+    public function getFotoProfilAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        return asset('storage/' . $value);
+    }
+
+    public function getFotoKtpAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        return asset('storage/' . $value);
+    }
+
+    public function getFotoKkAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        return asset('storage/' . $value);
     }
 
     // Relationships

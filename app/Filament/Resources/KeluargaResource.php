@@ -21,6 +21,14 @@ class KeluargaResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'no_kk';
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Data Kependudukan';
+
+    protected static ?string $navigationLabel = 'Data Keluarga';
+
+    protected static ?int $navigationSort = 4;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -43,7 +51,13 @@ class KeluargaResource extends Resource
                 TextColumn::make('anggota_count')->counts('anggota')->label('Anggota'),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()]);
+            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->actionsColumnLabel('Aksi');
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['kepalaKeluarga']);
     }
 
     public static function getPages(): array

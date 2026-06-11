@@ -22,6 +22,14 @@ class PendudukResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_lengkap';
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Data Kependudukan';
+
+    protected static ?string $navigationLabel = 'Data Penduduk';
+
+    protected static ?int $navigationSort = 3;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -55,7 +63,13 @@ class PendudukResource extends Resource
                 SelectFilter::make('status_mutasi')->options(['Tetap' => 'Tetap', 'Pindah' => 'Pindah', 'Meninggal' => 'Meninggal']),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()]);
+            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->actionsColumnLabel('Aksi');
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['keluarga']);
     }
 
     public static function getPages(): array

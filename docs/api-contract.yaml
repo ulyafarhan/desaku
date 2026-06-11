@@ -1,0 +1,29 @@
+openapi: 3.0.0
+info:
+  title: Desaku Citizen Letter API
+  version: 1.0.0
+paths:
+  /warga/pengajuan/{id}/print:
+    get:
+      summary: Render printable version of approved letter
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: HTML page ready to print via window.print()
+  /verifikasi/{hash}:
+    get:
+      summary: Public verification of letter keabsahan via QR Code Hash
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inertia view displaying keabsahan status and letter metadata

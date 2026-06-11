@@ -44,19 +44,31 @@ class PublicPortalController extends Controller
 
     public function information(): Response
     {
+        $query = InformasiPublik::query()
+            ->published()
+            ->with('author:id,username')
+            ->latest('created_at');
+
+        $query->when(request('kategori'), function ($q, $kategori) {
+            return $q->where('kategori', $kategori);
+        });
+
+        $query->when(request('search'), function ($q, $search) {
+            return $q->where(function ($sub) use ($search) {
+                $sub->where('judul', 'like', '%' . $search . '%')
+                    ->orWhere('konten', 'like', '%' . $search . '%');
+            });
+        });
+
         return Inertia::render('Public/Information/Index', [
-            'informasi' => InformasiPublik::query()
-                ->published()
-                ->with('author:id,username')
-                ->latest('created_at')
-                ->paginate(9)
-                ->withQueryString(),
+            'informasi' => $query->paginate(9)->withQueryString(),
             'kategori' => InformasiPublik::query()
                 ->published()
                 ->select('kategori')
                 ->distinct()
                 ->orderBy('kategori')
                 ->pluck('kategori'),
+            'filters' => request()->only(['kategori', 'search']),
         ]);
     }
 
@@ -68,6 +80,13 @@ class PublicPortalController extends Controller
                 ->with('author:id,username')
                 ->where('slug', $slug)
                 ->firstOrFail(),
+        ]);
+    }
+
+    public function verifyIndex(): Response
+    {
+        return Inertia::render('Public/Verify', [
+            'result' => null
         ]);
     }
 
@@ -94,6 +113,14 @@ class PublicPortalController extends Controller
                     'valid' => false,
                     'message' => $pengajuan ? 'Dokumen belum selesai diproses.' : 'Dokumen tidak ditemukan atau tidak valid.',
                 ],
+        ]);
+    }
+
+    public function statistik(StatistikService $statistik): Response
+    {
+        return Inertia::render('Public/Statistik', [
+            'demografi' => $statistik->getDemografi(),
+            'layanan' => $statistik->getLayanan(),
         ]);
     }
 }

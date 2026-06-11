@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\KategoriSurat;
+use App\Models\Penduduk;
 use App\Models\PengajuanSurat;
 use App\Models\TrackingPengajuanSurat;
 use Illuminate\Http\RedirectResponse;
@@ -13,12 +14,67 @@ use Inertia\Response;
 
 class CitizenSubmissionController extends Controller
 {
-    public function create(KategoriSurat $kategori): Response
+    public function create(Request $request, KategoriSurat $kategori): Response
     {
         abort_unless($kategori->is_active, 404);
 
+        $warga = $request->user('penduduk');
+        $keluarga = $warga->keluarga;
+        $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
+
+        // Family members for "submit on behalf" dropdown
+        $anggotaKeluarga = collect();
+        if ($isKepalaKeluarga && $keluarga) {
+            $anggotaKeluarga = Penduduk::where('no_kk', $keluarga->no_kk)
+                ->aktif()
+                ->get()
+                ->map(fn ($p) => [
+                    'nik' => $p->nik,
+                    'nama_lengkap' => $p->nama_lengkap,
+                    'jenis_kelamin' => $p->jenis_kelamin,
+                    'tempat_lahir' => $p->tempat_lahir,
+                    'tanggal_lahir' => $p->tanggal_lahir?->format('Y-m-d'),
+                    'agama' => $p->agama,
+                    'pendidikan' => $p->pendidikan,
+                    'pekerjaan' => $p->pekerjaan,
+                    'status_perkawinan' => $p->status_perkawinan,
+                    'status_keluarga' => $p->status_keluarga,
+                    'alamat' => $keluarga->alamat,
+                    'dusun' => $keluarga->dusun,
+                    'rt_rw' => $keluarga->rt_rw,
+                    'no_kk' => $keluarga->no_kk,
+                    'foto_profil' => $p->foto_profil,
+                    'foto_ktp' => $p->foto_ktp,
+                    'foto_kk' => $p->foto_kk,
+                ]);
+        }
+
+        // Current warga data for auto-fill
+        $wargaData = [
+            'nik' => $warga->nik,
+            'nama_lengkap' => $warga->nama_lengkap,
+            'jenis_kelamin' => $warga->jenis_kelamin,
+            'tempat_lahir' => $warga->tempat_lahir,
+            'tanggal_lahir' => $warga->tanggal_lahir?->format('Y-m-d'),
+            'agama' => $warga->agama,
+            'pendidikan' => $warga->pendidikan,
+            'pekerjaan' => $warga->pekerjaan,
+            'status_perkawinan' => $warga->status_perkawinan,
+            'status_keluarga' => $warga->status_keluarga,
+            'alamat' => $keluarga?->alamat,
+            'dusun' => $keluarga?->dusun,
+            'rt_rw' => $keluarga?->rt_rw,
+            'no_kk' => $keluarga?->no_kk,
+            'foto_profil' => $warga->foto_profil,
+            'foto_ktp' => $warga->foto_ktp,
+            'foto_kk' => $warga->foto_kk,
+        ];
+
         return Inertia::render('Citizen/Submission/Create', [
             'kategori' => $kategori,
+            'wargaData' => $wargaData,
+            'anggotaKeluarga' => $anggotaKeluarga,
+            'isKepalaKeluarga' => $isKepalaKeluarga,
         ]);
     }
 
@@ -26,6 +82,7 @@ class CitizenSubmissionController extends Controller
     {
         $validated = $request->validate([
             'kategori_surat_id' => ['required', 'exists:kategori_surat,id'],
+            'nik_pemohon' => ['required', 'string', 'size:16', 'exists:penduduk,nik'],
             'data_isian' => ['required', 'array'],
             'file_syarat' => ['required', 'array'],
         ]);
@@ -33,33 +90,78 @@ class CitizenSubmissionController extends Controller
         $warga = $request->user('penduduk');
         $kategori = KategoriSurat::query()->active()->findOrFail($validated['kategori_surat_id']);
 
+        // Validate that the nik_pemohon belongs to the same family
+        $nikPemohon = $validated['nik_pemohon'];
+        if ($nikPemohon !== $warga->nik) {
+            $keluarga = $warga->keluarga;
+            abort_unless(
+                $keluarga
+                && $keluarga->kepala_keluarga_nik === $warga->nik
+                && Penduduk::where('nik', $nikPemohon)->where('no_kk', $keluarga->no_kk)->exists(),
+                403,
+                'Anda hanya dapat mengajukan surat untuk anggota keluarga Anda sendiri.'
+            );
+        }
+
+        // Validate schema fields
         foreach ($kategori->schema_isian ?? [] as $field) {
             if (($field['required'] ?? false) && blank(data_get($validated, 'data_isian.' . $field['field']))) {
                 return back()->withErrors(['data_isian.' . $field['field'] => 'Kolom ini wajib diisi.'])->withInput();
             }
         }
 
-        foreach ($kategori->syarat_dokumen ?? [] as $dokumen) {
-            $key = str($dokumen)->lower()->slug('_')->toString();
+        // Validate and process document fields
+        $uploadedPaths = [];
+        $pengajuan = null;
 
-            if (blank(data_get($validated, 'file_syarat.' . $key))) {
-                return back()->withErrors(['file_syarat.' . $key => 'Dokumen ini wajib diisi.'])->withInput();
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $nikPemohon, $kategori, $validated, &$uploadedPaths, &$pengajuan) {
+            $pemohon = Penduduk::where('nik', $nikPemohon)->lockForUpdate()->firstOrFail();
+
+            foreach ($kategori->syarat_dokumen ?? [] as $dokumen) {
+                $key = str($dokumen)->lower()->slug('_')->toString();
+
+                // Check if there is an uploaded file
+                if ($request->hasFile("file_syarat.$key")) {
+                    $file = $request->file("file_syarat.$key");
+                    $path = $file->store('submissions/documents', 'public');
+                    $uploadedPaths[$key] = $path;
+
+                    // Auto-save to profile if it's KTP or KK
+                    if ($key === 'ktp' || $key === 'foto_ktp') {
+                        $pemohon->update(['foto_ktp' => $path]);
+                    } elseif ($key === 'kk' || $key === 'kartu_keluarga' || $key === 'foto_kk') {
+                        $pemohon->update(['foto_kk' => $path]);
+                    }
+                } else {
+                    // Check if there is an existing path string
+                    $value = data_get($validated, "file_syarat.$key");
+                    if (is_string($value) && !blank($value)) {
+                        // Strip storage prefix if it's a full URL
+                        $storageUrl = asset('storage/');
+                        if (str_starts_with($value, $storageUrl)) {
+                            $value = substr($value, strlen($storageUrl));
+                        }
+                        $uploadedPaths[$key] = $value;
+                    } else {
+                        throw new \Exception("Dokumen $dokumen wajib diunggah.");
+                    }
+                }
             }
-        }
 
-        $pengajuan = PengajuanSurat::create([
-            'nik_pemohon' => $warga->nik,
-            'kategori_surat_id' => $kategori->id,
-            'data_isian' => $validated['data_isian'],
-            'file_syarat' => $validated['file_syarat'],
-            'status' => 'Pending',
-        ]);
+            $pengajuan = PengajuanSurat::create([
+                'nik_pemohon' => $nikPemohon,
+                'kategori_surat_id' => $kategori->id,
+                'data_isian' => $validated['data_isian'],
+                'file_syarat' => $uploadedPaths,
+                'status' => 'Pending',
+            ]);
 
-        TrackingPengajuanSurat::create([
-            'pengajuan_surat_id' => $pengajuan->id,
-            'status_baru' => 'Pending',
-            'keterangan_update' => 'Pengajuan surat dibuat',
-        ]);
+            TrackingPengajuanSurat::create([
+                'pengajuan_surat_id' => $pengajuan->id,
+                'status_baru' => 'Pending',
+                'keterangan_update' => 'Pengajuan surat dibuat',
+            ]);
+        });
 
         return redirect()
             ->route('warga.pengajuan.show', $pengajuan)
@@ -68,10 +170,58 @@ class CitizenSubmissionController extends Controller
 
     public function show(Request $request, PengajuanSurat $pengajuan): Response
     {
-        abort_unless($pengajuan->nik_pemohon === $request->user('penduduk')->nik, 403);
+        $warga = $request->user('penduduk');
+        $keluarga = $warga->keluarga;
+        $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
+
+        // Allow viewing if the submission is from self or from a family member (if kepala keluarga)
+        $canView = $pengajuan->nik_pemohon === $warga->nik;
+        if (!$canView && $isKepalaKeluarga && $keluarga) {
+            $canView = Penduduk::where('nik', $pengajuan->nik_pemohon)
+                ->where('no_kk', $keluarga->no_kk)
+                ->exists();
+        }
+        abort_unless($canView, 403);
 
         return Inertia::render('Citizen/Submission/Show', [
             'pengajuan' => $pengajuan->load(['kategori', 'pemohon.keluarga', 'tracking.updater']),
+        ]);
+    }
+
+    public function print(Request $request, PengajuanSurat $pengajuan): Response
+    {
+        $warga = $request->user('penduduk');
+        $keluarga = $warga->keluarga;
+        $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
+
+        // Allow viewing if the submission is from self or from a family member (if kepala keluarga)
+        $canView = $pengajuan->nik_pemohon === $warga->nik;
+        if (!$canView && $isKepalaKeluarga && $keluarga) {
+            $canView = Penduduk::where('nik', $pengajuan->nik_pemohon)
+                ->where('no_kk', $keluarga->no_kk)
+                ->exists();
+        }
+        abort_unless($canView, 403);
+        abort_unless($pengajuan->status === 'Selesai', 404, 'Surat belum selesai diproses.');
+
+        $pengajuan->load(['kategori', 'pemohon.keluarga']);
+
+        $verificationUrl = config('app.url') . '/verifikasi/' . ($pengajuan->qr_hash ?? 'invalid');
+        $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->generate($verificationUrl)->toHtml();
+
+        return Inertia::render('Citizen/Submission/Print', [
+            'pengajuan' => $pengajuan,
+            'qrCodeSvg' => $qrCodeSvg,
+            'tanggalSurat' => $pengajuan->updated_at?->locale('id')->isoFormat('D MMMM YYYY') ?? now()->locale('id')->isoFormat('D MMMM YYYY'),
+            'settings' => [
+                'nama_gampong' => \App\Models\PengaturanGampong::get('nama_gampong', 'Udeung'),
+                'kecamatan' => \App\Models\PengaturanGampong::get('kecamatan', 'Bandar Baru'),
+                'kabupaten' => \App\Models\PengaturanGampong::get('kabupaten', 'Pidie Jaya'),
+                'provinsi' => \App\Models\PengaturanGampong::get('provinsi', 'Aceh'),
+                'kode_pos' => \App\Models\PengaturanGampong::get('kode_pos', '24186'),
+                'nama_keuchik' => \App\Models\PengaturanGampong::get('nama_keuchik', 'Nama Keuchik'),
+                'nip_keuchik' => \App\Models\PengaturanGampong::get('nip_keuchik', ''),
+            ]
         ]);
     }
 }

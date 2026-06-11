@@ -3,10 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class PengajuanSurat extends Model
 {
+    use HasUlids;
+
     protected $table = 'pengajuan_surat';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $with = ['kategori', 'pemohon'];
 
     protected $fillable = [
         'nomor_registrasi',
@@ -20,6 +29,24 @@ class PengajuanSurat extends Model
         'file_pdf_url',
         'diverifikasi_oleh',
     ];
+
+    protected $appends = ['nomor_surat'];
+
+    public function getNomorSuratAttribute(): string
+    {
+        $counter = self::where('kategori_surat_id', $this->kategori_surat_id)
+            ->where('id', '<=', $this->id)
+            ->whereYear('created_at', $this->created_at?->year ?? date('Y'))
+            ->count();
+
+        return sprintf(
+            '%s/%03d/GAMPONG-UDEUNG/%s/%s',
+            $this->kategori?->kode_surat ?? 'SRT',
+            $counter,
+            strtoupper($this->created_at?->locale('id')->monthName ?? now()->locale('id')->monthName),
+            $this->created_at?->format('Y') ?? date('Y')
+        );
+    }
 
     protected function casts(): array
     {

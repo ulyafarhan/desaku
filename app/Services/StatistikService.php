@@ -77,31 +77,37 @@ class StatistikService
 
     protected function getPerKelompokUsia(): array
     {
-        $penduduk = Penduduk::aktif()->get();
-
-        $kelompok = [
-            '0-5' => 0,
-            '6-12' => 0,
-            '13-17' => 0,
-            '18-25' => 0,
-            '26-40' => 0,
-            '41-60' => 0,
-            '60+' => 0,
-        ];
-
-        foreach ($penduduk as $p) {
-            $umur = $p->umur;
-            
-            if ($umur <= 5) $kelompok['0-5']++;
-            elseif ($umur <= 12) $kelompok['6-12']++;
-            elseif ($umur <= 17) $kelompok['13-17']++;
-            elseif ($umur <= 25) $kelompok['18-25']++;
-            elseif ($umur <= 40) $kelompok['26-40']++;
-            elseif ($umur <= 60) $kelompok['41-60']++;
-            else $kelompok['60+']++;
+        $driver = DB::connection()->getDriverName();
+        
+        if ($driver === 'sqlite') {
+            $ageSql = "(strftime('%Y', 'now') - strftime('%Y', tanggal_lahir))";
+        } elseif ($driver === 'mysql') {
+            $ageSql = "(YEAR(CURDATE()) - YEAR(tanggal_lahir) - (DATE_FORMAT(CURDATE(), '%m%d') < DATE_FORMAT(tanggal_lahir, '%m%d')))";
+        } else {
+            $ageSql = "EXTRACT(YEAR FROM AGE(tanggal_lahir))";
         }
 
-        return $kelompok;
+        $results = Penduduk::aktif()
+            ->select(DB::raw("
+                COUNT(CASE WHEN $ageSql <= 5 THEN 1 END) as age_0_5,
+                COUNT(CASE WHEN $ageSql > 5 AND $ageSql <= 12 THEN 1 END) as age_6_12,
+                COUNT(CASE WHEN $ageSql > 12 AND $ageSql <= 17 THEN 1 END) as age_13_17,
+                COUNT(CASE WHEN $ageSql > 17 AND $ageSql <= 25 THEN 1 END) as age_18_25,
+                COUNT(CASE WHEN $ageSql > 25 AND $ageSql <= 40 THEN 1 END) as age_26_40,
+                COUNT(CASE WHEN $ageSql > 40 AND $ageSql <= 60 THEN 1 END) as age_41_60,
+                COUNT(CASE WHEN $ageSql > 60 THEN 1 END) as age_60_plus
+            "))
+            ->first();
+
+        return [
+            '0-5' => (int) ($results->age_0_5 ?? 0),
+            '6-12' => (int) ($results->age_6_12 ?? 0),
+            '13-17' => (int) ($results->age_13_17 ?? 0),
+            '18-25' => (int) ($results->age_18_25 ?? 0),
+            '26-40' => (int) ($results->age_26_40 ?? 0),
+            '41-60' => (int) ($results->age_41_60 ?? 0),
+            '60+' => (int) ($results->age_60_plus ?? 0),
+        ];
     }
 
     /**

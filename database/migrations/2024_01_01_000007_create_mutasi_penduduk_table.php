@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mutasi_penduduk', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('nik', 16);
             $table->enum('jenis_mutasi', ['Kelahiran', 'Kematian', 'Kedatangan', 'Kepindahan']);
             $table->date('tanggal_mutasi');

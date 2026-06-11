@@ -21,6 +21,14 @@ class PengaturanGampongResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'kunci';
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Pengaturan Desa';
+
+    protected static ?int $navigationSort = 8;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -41,7 +49,8 @@ class PengaturanGampongResource extends Resource
                 TextColumn::make('updated_at')->dateTime('d M Y H:i'),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()]);
+            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->actionsColumnLabel('Aksi');
     }
 
     public static function getPages(): array

@@ -29,6 +29,18 @@ class InformasiPublik extends Model
         ];
     }
 
+    // Accessor for cover image
+    public function getCoverImageAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        return asset('storage/' . $value);
+    }
+
     // Relationships
     public function author()
     {

@@ -14,6 +14,14 @@ class AuditLogResource extends Resource
 {
     protected static ?string $model = AuditLog::class;
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Audit Log';
+
+    protected static ?int $navigationSort = 9;
+
     public static function canCreate(): bool
     {
         return false;

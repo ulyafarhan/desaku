@@ -23,4 +23,9 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    resolve: {
+        alias: {
+            axios: 'axios/dist/browser/axios.cjs',
+        },
+    },
 });

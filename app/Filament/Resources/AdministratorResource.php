@@ -22,6 +22,14 @@ class AdministratorResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'username';
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Administrator';
+
+    protected static ?int $navigationSort = 7;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -48,7 +56,8 @@ class AdministratorResource extends Resource
                 SelectFilter::make('role')->options(['keuchik' => 'Keuchik', 'sekdes' => 'Sekdes', 'operator' => 'Operator']),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()]);
+            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->actionsColumnLabel('Aksi');
     }
 
     public static function getPages(): array

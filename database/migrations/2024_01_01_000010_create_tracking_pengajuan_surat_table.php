@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tracking_pengajuan_surat', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('pengajuan_surat_id');
+            $table->ulid('id')->primary();
+            $table->ulid('pengajuan_surat_id');
             $table->string('status_sebelumnya', 20)->nullable();
             $table->string('status_baru', 20);
             $table->text('keterangan_update')->nullable();
