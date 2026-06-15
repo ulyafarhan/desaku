@@ -24,7 +24,6 @@ class Keluarga extends Model
         'kepala_keluarga_nik',
     ];
 
-    // Relationships
     public function anggota()
     {
         return $this->hasMany(Penduduk::class, 'no_kk', 'no_kk');
@@ -33,5 +32,10 @@ class Keluarga extends Model
     public function kepalaKeluarga()
     {
         return $this->belongsTo(Penduduk::class, 'kepala_keluarga_nik', 'nik');
+    }
+
+    public function scopeByDusun($query, string $dusun)
+    {
+        return $query->where('dusun', $dusun);
     }
 }

@@ -355,7 +355,7 @@ class DummyDataSeeder extends Seeder
             $userType = $i % 2 === 0 ? 'admin' : 'warga';
             $actorAdmin = Administrator::inRandomOrder()->first();
             $actorWarga = Penduduk::inRandomOrder()->first();
-            $userId = $userType === 'admin' ? $actorAdmin->id : (int)$actorWarga->nik;
+            $userId = $userType === 'admin' ? $actorAdmin->id : $actorWarga->nik;
             $tindakan = ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'EXPORT'][rand(0, 5)];
             $tables = ['penduduk', 'keluarga', 'pengajuan_surat', 'mutasi_penduduk', 'informasi_publik'];
             $targetTable = $tables[rand(0, 4)];

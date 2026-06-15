@@ -23,10 +23,8 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
     public function handle(TelegramService $telegram): void
     {
         try {
-            // Update status ke Processing
             $this->broadcast->update(['status' => 'Processing']);
 
-            // Get target chat IDs berdasarkan kategori
             $chatIds = $this->getTargetChatIds($this->broadcast->kategori_target);
 
             if (empty($chatIds)) {
@@ -37,10 +35,8 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
                 return;
             }
 
-            // Broadcast message
             $results = $telegram->broadcast($chatIds, $this->broadcast->pesan);
 
-            // Update status
             $this->broadcast->update([
                 'status' => 'Completed',
                 'waktu_selesai' => now(),
@@ -64,10 +60,8 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
     {
         $query = Penduduk::whereNotNull('telegram_chat_id');
 
-        // Filter berdasarkan kategori
         switch ($kategori) {
             case 'semua':
-                // Semua warga yang punya telegram
                 break;
             
             case 'aktif':
@@ -83,7 +77,6 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
                 break;
             
             default:
-                // Bisa juga filter by dusun, dll
                 if (str_starts_with($kategori, 'dusun:')) {
                     $dusun = str_replace('dusun:', '', $kategori);
                     $query->whereHas('keluarga', function ($q) use ($dusun) {

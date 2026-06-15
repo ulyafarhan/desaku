@@ -2,6 +2,7 @@
 import { inject, ref, computed } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Toast from '../Components/Toast.vue';
+import { alert } from '../Utils/alert';
 import { 
     Home, 
     FileText, 
@@ -18,7 +19,14 @@ const page = usePage();
 const warga = computed(() => page.props.auth?.warga || null);
 const showUserMenu = ref(false);
 
-const logout = () => router.post('/logout');
+const logout = () => {
+    alert.confirm('Keluar Portal?', 'Apakah Anda yakin ingin keluar dari sesi portal warga?', 'Keluar', 'Batal')
+        .then((result) => {
+            if (result.isConfirmed) {
+                router.post('/logout');
+            }
+        });
+};
 
 const currentPath = computed(() => {
     try { return new URL(page.url, window.location.origin).pathname; } catch { return page.url; }
@@ -48,34 +56,29 @@ const navItems = [
 
 const getInitials = (name) => {
     if (!name) return '?';
-    return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 };
 </script>
 
 <template>
-    <div class="google-editorial min-h-screen w-full overflow-x-hidden pb-16 md:pb-0">
-        <!-- Progress Bar -->
-        <div v-if="progress?.value" class="fixed left-0 top-0 z-50 h-[3px] w-full overflow-hidden bg-blue-100">
-            <div class="h-full w-1/3 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 animate-progress" />
+    <div class="google-editorial min-h-screen pb-20 md:pb-6">
+        <div v-if="progress" class="fixed top-0 left-0 right-0 z-50 h-1 bg-blue-100 overflow-hidden">
+            <div class="h-full bg-blue-600 w-1/3 rounded-full animate-progress"></div>
         </div>
-        <Toast />
 
-        <!-- Desktop Header -->
-        <header class="sticky top-0 z-40 hidden border-b border-slate-200/60 bg-white/90 backdrop-blur-md md:block">
-            <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5 lg:px-8">
-                <!-- Left: Brand + Nav -->
+        <header class="sticky top-0 z-40 border-b border-slate-200/50 bg-white/90 backdrop-blur-md hidden md:block">
+            <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-8">
-                    <Link href="/warga/dashboard" class="group flex items-center gap-2.5">
-                        <div class="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-[0_4px_12px_rgba(26,115,232,0.15)] group-hover:from-blue-700 group-hover:to-blue-800 transition duration-350">
+                    <Link href="/warga/dashboard" class="flex items-center gap-2.5">
+                        <div class="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-[0_4px_12px_rgba(26,115,232,0.18)]">
                             <Landmark class="size-4.5 text-white" />
                         </div>
-                        <div class="leading-none">
+                        <div>
                             <span class="text-base font-bold text-neutral tracking-tight">Portal Warga</span>
                             <p class="text-[8px] font-bold text-primary uppercase tracking-wider mt-0.5">Desaku Digital</p>
                         </div>
                     </Link>
                     
-                    <!-- Desktop Nav Menu -->
                     <div class="flex items-center gap-1">
                         <Link
                             v-for="item in navItems" 
@@ -89,14 +92,12 @@ const getInitials = (name) => {
                     </div>
                 </div>
 
-                <!-- Right: User Dropdown -->
                 <div class="flex items-center gap-4">
-                    <Link href="/" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 hover:border-slate-300 bg-white px-4.5 py-2 text-xs font-semibold text-secondary hover:text-neutral transition duration-150">
+                    <Link href="/" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 hover:border-slate-350 bg-white px-4.5 py-2 text-xs font-semibold text-secondary hover:text-neutral transition duration-150">
                         <ExternalLink class="size-3.5 text-secondary" />
                         Portal Publik
                     </Link>
 
-                    <!-- Profile Dropdown Button -->
                     <div class="relative">
                         <button
                             @click="showUserMenu = !showUserMenu"
@@ -112,7 +113,6 @@ const getInitials = (name) => {
                             <ChevronDown class="size-4 text-secondary/70 transition-transform duration-200" :class="{ 'rotate-180': showUserMenu }" />
                         </button>
 
-                        <!-- Menu Dropdown -->
                         <Transition
                             enter-active-class="transition duration-100 ease-out"
                             enter-from-class="scale-95 opacity-0"
@@ -149,7 +149,6 @@ const getInitials = (name) => {
             </nav>
         </header>
 
-        <!-- Mobile Header -->
         <header class="sticky top-0 z-40 border-b border-slate-200/50 bg-white/90 backdrop-blur-md md:hidden px-5 py-3 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-2.5">
                 <div class="flex size-8.5 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-[0_4px_10px_rgba(26,115,232,0.15)]">
@@ -168,7 +167,6 @@ const getInitials = (name) => {
             </div>
         </header>
 
-        <!-- Mobile Bottom Tab Navigation -->
         <div class="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/70 bg-white/90 pb-safe-bottom shadow-[0_-4px_12px_rgba(60,64,67,0.03)] backdrop-blur-md md:hidden">
             <div class="mx-auto flex h-16 max-w-lg items-center justify-around px-2">
                 <Link
@@ -186,12 +184,10 @@ const getInitials = (name) => {
             </div>
         </div>
 
-        <!-- Main Workspace Area -->
         <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <slot />
         </main>
 
-        <!-- Click-outside dropdown handler -->
         <div v-if="showUserMenu" class="fixed inset-0 z-30" @click="showUserMenu = false" />
     </div>
 </template>

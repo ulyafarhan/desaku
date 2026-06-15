@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chatbot_logs', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('telegram_chat_id', 50);
             $table->text('pesan_masuk');
             $table->text('balasan_ai');

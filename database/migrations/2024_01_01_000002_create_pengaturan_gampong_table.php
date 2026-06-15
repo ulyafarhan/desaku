@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengaturan_gampong', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('kunci', 50)->unique();
             $table->text('nilai');
             $table->string('tipe_data', 20)->default('string');

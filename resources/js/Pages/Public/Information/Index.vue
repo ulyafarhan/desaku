@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Head } from '@inertiajs/vue3';
 import PublicLayout from '../../../Layouts/PublicLayout.vue';
 import AppCard from '../../../Components/AppCard.vue';
 import AppButton from '../../../Components/AppButton.vue';
@@ -45,7 +45,14 @@ const clearSearch = () => {
 </script>
 
 <template>
-    <!-- Google Editorial Header -->
+    <Head>
+        <title>Pusat Informasi & Kabar Gampong - Gampong Udeung, Pidie Jaya, Aceh</title>
+        <meta name="description" content="Temukan berita terbaru, pengumuman resmi, dan dokumentasi agenda pembangunan Gampong Udeung, Pidie Jaya." />
+        <meta name="keywords" content="Berita Udeung, Pengumuman Gampong, Agenda Desa, Kabar Pidie Jaya, Berita Desa Digital" />
+        <meta property="og:title" content="Pusat Informasi & Kabar Gampong - Gampong Udeung, Pidie Jaya, Aceh" />
+        <meta property="og:description" content="Temukan berita terbaru, pengumuman resmi, dan dokumentasi agenda pembangunan Gampong Udeung, Pidie Jaya." />
+    </Head>
+
     <header class="bg-white border-b border-gray-200 py-16">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="max-w-3xl space-y-4">
@@ -61,7 +68,6 @@ const clearSearch = () => {
                     Dapatkan berita terupdate, agenda kegiatan gampong, serta pengumuman transparansi pembangunan secara langsung dan terbuka.
                 </p>
 
-                <!-- Search Input Field (Google-style) -->
                 <div class="max-w-md pt-4">
                     <form @submit.prevent="triggerFilter" class="flex items-center bg-[#F8F9FA] rounded-lg p-1.5 border border-gray-300 focus-within:border-[#1A73E8] focus-within:bg-white transition duration-200">
                         <div class="pl-2.5 text-[#5F6368] shrink-0">
@@ -71,7 +77,8 @@ const clearSearch = () => {
                             type="text" 
                             v-model="searchQuery" 
                             placeholder="Cari berita..." 
-                            class="bg-transparent border-0 focus:ring-0 text-[#202124] text-sm grow px-2 py-2 outline-none focus:outline-none"
+                            class="bg-transparent text-[#202124] text-sm grow px-2 py-2"
+                            style="outline: none !important; box-shadow: none !important; border: none !important;"
                         />
                         <button 
                             v-if="searchQuery" 
@@ -93,10 +100,8 @@ const clearSearch = () => {
         </div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
     <section class="mx-auto max-w-7xl px-6 py-12 lg:px-8 bg-[#F8F9FA] min-h-[500px]">
         
-        <!-- Category Filter Chips Row -->
         <div class="space-y-3">
             <span class="text-xs font-bold text-[#5F6368] uppercase tracking-wider block">Kategori Informasi:</span>
             <div class="flex flex-wrap gap-2">
@@ -119,7 +124,6 @@ const clearSearch = () => {
             </div>
         </div>
 
-        <!-- News Cards Grid -->
         <div v-if="informasi.data?.length" class="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <article 
                 v-for="item in informasi.data" 
@@ -127,7 +131,6 @@ const clearSearch = () => {
                 class="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition duration-200 flex flex-col justify-between"
             >
                 <div>
-                    <!-- Image Section with Fallback -->
                     <div class="relative h-48 w-full overflow-hidden bg-gradient-to-br from-teal-500/20 via-emerald-500/10 to-teal-600/20 flex items-center justify-center">
                         <img 
                             v-if="item.cover_image" 
@@ -140,7 +143,6 @@ const clearSearch = () => {
                             <span class="text-xs font-semibold tracking-wide uppercase opacity-70">Desaku Kabar</span>
                         </div>
                         
-                        <!-- Badge on image -->
                         <div class="absolute bottom-3 left-3">
                             <span class="text-[10px] font-bold tracking-wider text-teal-850 uppercase bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">
                                 {{ item.kategori }}
@@ -149,7 +151,6 @@ const clearSearch = () => {
                     </div>
 
                     <div class="p-6 space-y-3">
-                        <!-- Metadata -->
                         <div class="flex items-center gap-3 text-[10px] text-[#5F6368] font-bold">
                             <span class="flex items-center gap-1">
                                 <Clock class="size-3" />
@@ -162,19 +163,16 @@ const clearSearch = () => {
                             </span>
                         </div>
 
-                        <!-- Article Title -->
                         <h2 class="text-base font-bold text-[#202124] leading-snug group-hover:text-[#1A73E8] transition duration-200 line-clamp-2">
                             <a :href="`/informasi/${item.slug}`">{{ item.judul }}</a>
                         </h2>
 
-                        <!-- Content Snippet (with HTML Tags Cleaned) -->
                         <p class="text-xs text-slate-700 line-clamp-3 leading-relaxed font-medium">
                             {{ stripHtml(item.konten) }}
                         </p>
                     </div>
                 </div>
 
-                <!-- Footer CTA button -->
                 <div class="px-6 pb-6 pt-2">
                     <AppButton 
                         :href="`/informasi/${item.slug}`" 
@@ -187,7 +185,6 @@ const clearSearch = () => {
             </article>
         </div>
 
-        <!-- Empty State -->
         <EmptyState 
             v-else 
             class="mt-10 bg-white" 
@@ -200,7 +197,6 @@ const clearSearch = () => {
             </AppButton>
         </EmptyState>
 
-        <!-- Pagination -->
         <div class="mt-12">
             <Pagination v-if="informasi.meta" :links="informasi.links" :meta="informasi.meta" />
         </div>

@@ -44,16 +44,26 @@ return [
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         'webhook_url' => env('TELEGRAM_WEBHOOK_URL'),
+        'group_chat_id' => env('TELEGRAM_GROUP_CHAT_ID'),
     ],
 
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
-        'model' => env('GEMINI_MODEL', 'gemini-pro'),
+        'model' => env('GEMINI_MODEL', 'gemini-flash-lite-latest'),
     ],
 
     'kemendagri' => [
         'api_url' => env('KEMENDAGRI_API_URL'),
         'api_key' => env('KEMENDAGRI_API_KEY'),
+    ],
+
+    'ai' => [
+        'active_provider' => env('AI_PROVIDER', 'gemini'),
+        'openai' => [
+            'api_key' => env('OPENAI_API_KEY'),
+            'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+            'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+        ],
     ],
 
 ];

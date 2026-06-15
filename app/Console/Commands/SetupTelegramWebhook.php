@@ -26,7 +26,6 @@ class SetupTelegramWebhook extends Command
         if ($telegram->setWebhook($webhookUrl)) {
             $this->info('✅ Webhook berhasil disetup!');
             
-            // Get bot info
             $botInfo = $telegram->getMe();
             if ($botInfo) {
                 $this->info("Bot Name: {$botInfo['first_name']}");

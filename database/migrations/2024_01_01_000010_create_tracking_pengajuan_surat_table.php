@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('status_sebelumnya', 20)->nullable();
             $table->string('status_baru', 20);
             $table->text('keterangan_update')->nullable();
-            $table->unsignedBigInteger('diupdate_oleh')->nullable();
+            $table->ulid('diupdate_oleh')->nullable();
             $table->timestamp('created_at')->useCurrent();
             
             $table->foreign('pengajuan_surat_id')

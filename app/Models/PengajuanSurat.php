@@ -15,8 +15,6 @@ class PengajuanSurat extends Model
 
     protected $keyType = 'string';
 
-    protected $with = ['kategori', 'pemohon'];
-
     protected $fillable = [
         'nomor_registrasi',
         'nik_pemohon',
@@ -29,8 +27,6 @@ class PengajuanSurat extends Model
         'file_pdf_url',
         'diverifikasi_oleh',
     ];
-
-    protected $appends = ['nomor_surat'];
 
     public function getNomorSuratAttribute(): string
     {
@@ -58,7 +54,6 @@ class PengajuanSurat extends Model
         ];
     }
 
-    // Relationships
     public function pemohon()
     {
         return $this->belongsTo(Penduduk::class, 'nik_pemohon', 'nik');
@@ -79,7 +74,6 @@ class PengajuanSurat extends Model
         return $this->hasMany(TrackingPengajuanSurat::class, 'pengajuan_surat_id');
     }
 
-    // Scope
     public function scopePending($query)
     {
         return $query->where('status', 'Pending');
@@ -90,7 +84,6 @@ class PengajuanSurat extends Model
         return $query->where('status', 'Diproses');
     }
 
-    // Boot method untuk auto-generate nomor registrasi
     protected static function boot()
     {
         parent::boot();

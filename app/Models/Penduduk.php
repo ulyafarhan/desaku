@@ -11,11 +11,9 @@ class Penduduk extends Authenticatable
     use HasApiTokens;
 
     protected $table = 'penduduk';
-    
-    protected $with = ['keluarga'];
-    
+
     protected $primaryKey = 'nik';
-    
+
     public $incrementing = false;
     
     protected $keyType = 'string';
@@ -52,7 +50,6 @@ class Penduduk extends Authenticatable
         ];
     }
 
-    // Accessors for documents
     public function getFotoProfilAttribute($value)
     {
         if (empty($value)) {
@@ -61,7 +58,7 @@ class Penduduk extends Authenticatable
         if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
             return $value;
         }
-        return asset('storage/' . $value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getFotoKtpAttribute($value)
@@ -72,7 +69,7 @@ class Penduduk extends Authenticatable
         if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
             return $value;
         }
-        return asset('storage/' . $value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getFotoKkAttribute($value)
@@ -83,10 +80,9 @@ class Penduduk extends Authenticatable
         if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
             return $value;
         }
-        return asset('storage/' . $value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
-    // Relationships
     public function keluarga()
     {
         return $this->belongsTo(Keluarga::class, 'no_kk', 'no_kk');
@@ -102,15 +98,30 @@ class Penduduk extends Authenticatable
         return $this->hasMany(PengajuanSurat::class, 'nik_pemohon', 'nik');
     }
 
-    // Accessor
     public function getUmurAttribute()
     {
         return $this->tanggal_lahir->age;
     }
 
-    // Scope
     public function scopeAktif($query)
     {
         return $query->where('status_mutasi', 'Tetap');
+    }
+
+    public function scopeLakiLaki($query)
+    {
+        return $query->where('jenis_kelamin', 'L');
+    }
+
+    public function scopePerempuan($query)
+    {
+        return $query->where('jenis_kelamin', 'P');
+    }
+
+    public function scopeByDusun($query, string $dusun)
+    {
+        return $query->whereHas('keluarga', function ($q) use ($dusun) {
+            $q->where('dusun', $dusun);
+        });
     }
 }

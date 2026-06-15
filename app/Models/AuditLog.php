@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class AuditLog extends Model
 {
+    use HasUlids;
+
     protected $table = 'audit_logs';
     
     public $timestamps = false;
@@ -31,10 +34,9 @@ class AuditLog extends Model
         ];
     }
 
-    // Helper method untuk log audit
     public static function log(
         string $userType,
-        ?int $userId,
+        ?string $userId,
         string $tindakan,
         string $namaTabel,
         ?string $recordId = null,

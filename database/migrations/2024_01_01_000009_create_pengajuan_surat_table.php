@@ -12,14 +12,14 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('nomor_registrasi', 30)->unique();
             $table->string('nik_pemohon', 16);
-            $table->unsignedBigInteger('kategori_surat_id');
+            $table->ulid('kategori_surat_id');
             $table->json('data_isian');
             $table->json('file_syarat');
             $table->enum('status', ['Pending', 'Diproses', 'Disetujui', 'Ditolak', 'Selesai'])->default('Pending');
             $table->text('catatan_penolakan')->nullable();
             $table->string('qr_hash', 64)->nullable()->unique();
             $table->string('file_pdf_url')->nullable();
-            $table->unsignedBigInteger('diverifikasi_oleh')->nullable();
+            $table->ulid('diverifikasi_oleh')->nullable();
             $table->timestamps();
             
             $table->foreign('nik_pemohon')

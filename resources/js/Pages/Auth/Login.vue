@@ -22,17 +22,15 @@ const form = useForm({
 });
 
 const submit = () => {
-    // Only allow submitting if both inputs are filled
     if (form.nik.length !== 16 || form.no_kk.length !== 16) {
         return;
     }
     form.post('/login');
 };
 
-// Helper to filter non-numeric inputs
 const handleNumberInput = (e, field) => {
-    const val = e.target.value.replace(/\D/g, ''); // strip non-digits
-    form[field] = val.slice(0, 16); // limit to 16 digits
+    const val = e.target.value.replace(/\D/g, '');
+    form[field] = val.slice(0, 16);
 };
 </script>
 
@@ -40,14 +38,11 @@ const handleNumberInput = (e, field) => {
     <section class="min-h-[80vh] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8 bg-slate-50/50">
         <div class="w-full max-w-5xl bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden grid md:grid-cols-[1fr_1.1fr]">
             
-            <!-- LEFT PANEL: BRANDING & TRUST BADGES -->
             <div class="relative bg-gradient-to-br from-teal-800 via-teal-900 to-slate-900 text-white p-8 sm:p-12 flex flex-col justify-between overflow-hidden order-2 md:order-1">
-                <!-- Decorative background patterns -->
                 <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-teal-600 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
                 <div class="absolute -left-20 -top-20 w-60 h-60 bg-emerald-500 rounded-full blur-3xl opacity-15 pointer-events-none"></div>
                 
                 <div class="space-y-8 relative z-10">
-                    <!-- Logo and back link -->
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <div class="flex size-9 items-center justify-center rounded-lg bg-teal-500 text-slate-950 shadow-md">
@@ -60,7 +55,6 @@ const handleNumberInput = (e, field) => {
                         </a>
                     </div>
 
-                    <!-- Welcome Copy -->
                     <div class="space-y-3">
                         <span class="text-[10px] font-bold tracking-widest text-teal-300 uppercase bg-teal-950/60 border border-teal-800/40 px-2.5 py-1 rounded-md">Portal Warga</span>
                         <h2 class="text-3xl font-extrabold tracking-tight leading-tight">Pelayanan Mandiri Gampong Udeung</h2>
@@ -69,7 +63,6 @@ const handleNumberInput = (e, field) => {
                         </p>
                     </div>
 
-                    <!-- Feature Checklist -->
                     <div class="space-y-4 pt-2">
                         <div class="flex gap-3 items-start text-sm">
                             <CheckCircle2 class="size-5 text-teal-400 shrink-0 mt-0.5" />
@@ -86,7 +79,6 @@ const handleNumberInput = (e, field) => {
                     </div>
                 </div>
 
-                <!-- Privacy Shield Badge -->
                 <div class="mt-12 p-4 rounded-2xl bg-white/5 border border-white/10 flex gap-3.5 items-start relative z-10">
                     <ShieldCheck class="size-6 text-teal-400 shrink-0 mt-0.5" />
                     <div>
@@ -98,7 +90,6 @@ const handleNumberInput = (e, field) => {
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: LOGIN FORM -->
             <div class="p-8 sm:p-12 flex flex-col justify-between bg-white order-1 md:order-2">
                 <div class="space-y-6">
                     <div class="space-y-1">
@@ -106,7 +97,6 @@ const handleNumberInput = (e, field) => {
                         <p class="text-xs text-slate-400">Gunakan nomor identitas kependudukan terdaftar Anda.</p>
                     </div>
 
-                    <!-- Global Errors Alert box -->
                     <div 
                         v-if="form.errors.nik || form.errors.no_kk" 
                         class="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700 text-xs animate-fade-in"
@@ -120,10 +110,8 @@ const handleNumberInput = (e, field) => {
                         </div>
                     </div>
 
-                    <!-- Input Fields Form -->
                     <form @submit.prevent="submit" class="space-y-5">
                         
-                        <!-- NIK Input -->
                         <div class="space-y-1.5">
                             <label for="nik" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                                 Nomor Induk Kependudukan (NIK) <span class="text-red-600">*</span>
@@ -138,8 +126,8 @@ const handleNumberInput = (e, field) => {
                                     :value="form.nik"
                                     @input="handleNumberInput($event, 'nik')"
                                     placeholder="Masukkan 16 digit NIK Anda" 
-                                    class="block w-full pl-10 pr-4 py-3 border rounded-lg text-sm text-slate-800 bg-white placeholder:text-slate-450 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 focus:outline-none transition duration-150 outline-none"
-                                    :class="form.nik.length > 0 && form.nik.length !== 16 ? 'border-amber-300 focus:border-amber-500 focus:ring-amber-500/10' : 'border-slate-200'"
+                                    class="block w-full pl-10 pr-4 py-3 border rounded-lg text-sm text-slate-800 bg-white placeholder:text-slate-450 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 !focus-visible:outline-none !focus-visible:ring-4 !focus-visible:ring-teal-500/10 !focus-visible:border-teal-500 !focus-visible:ring-offset-0 transition duration-150 outline-none"
+                                    :class="form.nik.length > 0 && form.nik.length !== 16 ? 'border-amber-300 focus:border-amber-500 focus:ring-amber-500/10 !focus-visible:ring-amber-500/10 !focus-visible:border-amber-500' : 'border-slate-200'"
                                     required
                                     autofocus
                                 />
@@ -160,7 +148,6 @@ const handleNumberInput = (e, field) => {
                             </div>
                         </div>
 
-                        <!-- Nomor KK Input -->
                         <div class="space-y-1.5">
                             <label for="no_kk" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                                 Nomor Kartu Keluarga (KK) <span class="text-red-600">*</span>
@@ -175,8 +162,8 @@ const handleNumberInput = (e, field) => {
                                     :value="form.no_kk"
                                     @input="handleNumberInput($event, 'no_kk')"
                                     placeholder="Masukkan 16 digit Nomor KK Anda" 
-                                    class="block w-full pl-10 pr-4 py-3 border rounded-lg text-sm text-slate-800 bg-white placeholder:text-slate-450 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 focus:outline-none transition duration-150 outline-none"
-                                    :class="form.no_kk.length > 0 && form.no_kk.length !== 16 ? 'border-amber-300 focus:border-amber-500 focus:ring-amber-500/10' : 'border-slate-200'"
+                                    class="block w-full pl-10 pr-4 py-3 border rounded-lg text-sm text-slate-800 bg-white placeholder:text-slate-450 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 !focus-visible:outline-none !focus-visible:ring-4 !focus-visible:ring-teal-500/10 !focus-visible:border-teal-500 !focus-visible:ring-offset-0 transition duration-150 outline-none"
+                                    :class="form.no_kk.length > 0 && form.no_kk.length !== 16 ? 'border-amber-300 focus:border-amber-500 focus:ring-amber-500/10 !focus-visible:ring-amber-500/10 !focus-visible:border-amber-500' : 'border-slate-200'"
                                     required
                                 />
                             </div>
@@ -196,7 +183,6 @@ const handleNumberInput = (e, field) => {
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
                         <AppButton 
                             type="submit" 
                             :loading="form.processing" 
@@ -208,7 +194,6 @@ const handleNumberInput = (e, field) => {
                     </form>
                 </div>
 
-                <!-- Footer Help Help Link -->
                 <div class="mt-8 pt-6 border-t border-slate-100 flex items-start gap-2.5 text-[11px] text-slate-450">
                     <HelpCircle class="size-4 shrink-0 text-slate-400 mt-0.5" />
                     <p class="leading-relaxed">

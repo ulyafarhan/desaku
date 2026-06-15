@@ -3,18 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Events\MutasiStatusUpdated;
-use App\Filament\Resources\MutasiPendudukResource\Pages\ManageMutasiPenduduk;
+use App\Filament\Resources\MutasiPendudukResource\Pages;
 use App\Models\MutasiPenduduk;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -22,6 +22,13 @@ use Filament\Tables\Table;
 class MutasiPendudukResource extends Resource
 {
     protected static ?string $model = MutasiPenduduk::class;
+
+    protected static ?string $recordTitleAttribute = 'nik';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['nik', 'penduduk.nama_lengkap', 'jenis_mutasi'];
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
 
@@ -33,8 +40,7 @@ class MutasiPendudukResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = MutasiPenduduk::query()->where('status_verifikasi', 'Pending')->count();
-
+        $count = MutasiPenduduk::query()->pending()->count();
         return $count > 0 ? (string) $count : null;
     }
 
@@ -46,12 +52,49 @@ class MutasiPendudukResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Select::make('nik')->relationship('penduduk', 'nama_lengkap')->searchable()->required(),
-            Select::make('jenis_mutasi')->options(['Kelahiran' => 'Kelahiran', 'Kematian' => 'Kematian', 'Kedatangan' => 'Kedatangan', 'Kepindahan' => 'Kepindahan'])->required(),
-            DatePicker::make('tanggal_mutasi')->required(),
-            Textarea::make('keterangan')->required()->columnSpanFull(),
-            TextInput::make('dokumen_bukti')->required()->columnSpanFull(),
-            Select::make('status_verifikasi')->options(['Pending' => 'Pending', 'Disetujui' => 'Disetujui', 'Ditolak' => 'Ditolak'])->required(),
+            Section::make('Data Mutasi')
+                ->description('Informasi mutasi penduduk.')
+                ->icon('heroicon-o-arrow-path')
+                ->schema([
+                    Select::make('nik')
+                        ->relationship('penduduk', 'nama_lengkap')
+                        ->label('Penduduk')
+                        ->searchable()
+                        ->required(),
+                    Select::make('jenis_mutasi')
+                        ->label('Jenis Mutasi')
+                        ->options([
+                            'Kelahiran' => 'Kelahiran',
+                            'Kematian' => 'Kematian',
+                            'Kedatangan' => 'Kedatangan',
+                            'Kepindahan' => 'Kepindahan',
+                        ])
+                        ->required(),
+                    DatePicker::make('tanggal_mutasi')
+                        ->label('Tanggal Mutasi')
+                        ->required()
+                        ->displayFormat('d M Y'),
+                    Select::make('status_verifikasi')
+                        ->label('Status Verifikasi')
+                        ->options([
+                            'Pending' => 'Pending',
+                            'Disetujui' => 'Disetujui',
+                            'Ditolak' => 'Ditolak',
+                        ])
+                        ->required(),
+                ])->columns(1)->columnSpanFull(),
+
+            Section::make('Keterangan')
+                ->schema([
+                    Textarea::make('keterangan')
+                        ->required()
+                        ->rows(3)
+                        ->columnSpanFull(),
+                    TextInput::make('dokumen_bukti')
+                        ->label('Dokumen Bukti')
+                        ->required()
+                        ->columnSpanFull(),
+                ])->columnSpanFull(),
         ]);
     }
 
@@ -60,25 +103,40 @@ class MutasiPendudukResource extends Resource
         return $table
             ->poll('15s')
             ->columns([
-                TextColumn::make('penduduk.nama_lengkap')->label('Penduduk')->searchable(),
-                TextColumn::make('jenis_mutasi')->badge()->color(fn (string $state): string => match ($state) {
-                    'Kelahiran' => 'success',
-                    'Kematian' => 'danger',
-                    'Kedatangan' => 'info',
-                    'Kepindahan' => 'warning',
-                    default => 'gray',
-                }),
-                TextColumn::make('tanggal_mutasi')->date('d M Y')->sortable(),
-                TextColumn::make('status_verifikasi')->badge()->color(fn (string $state): string => match ($state) {
-                    'Pending' => 'warning',
-                    'Disetujui' => 'success',
-                    'Ditolak' => 'danger',
-                    default => 'gray',
-                }),
+                TextColumn::make('penduduk.nama_lengkap')
+                    ->label('Penduduk')
+                    ->weight('bold'),
+                TextColumn::make('jenis_mutasi')
+                    ->label('Jenis')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Kelahiran' => 'success',
+                        'Kematian' => 'danger',
+                        'Kedatangan' => 'info',
+                        'Kepindahan' => 'warning',
+                        default => 'gray',
+                    }),
+                TextColumn::make('tanggal_mutasi')
+                    ->label('Tanggal')
+                    ->date('d M Y')
+                    ->sortable(),
+                TextColumn::make('status_verifikasi')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Pending' => 'warning',
+                        'Disetujui' => 'success',
+                        'Ditolak' => 'danger',
+                        default => 'gray',
+                    }),
             ])
             ->filters([
-                SelectFilter::make('status_verifikasi')->options(['Pending' => 'Pending', 'Disetujui' => 'Disetujui', 'Ditolak' => 'Ditolak']),
-                SelectFilter::make('jenis_mutasi')->options(['Kelahiran' => 'Kelahiran', 'Kematian' => 'Kematian', 'Kedatangan' => 'Kedatangan', 'Kepindahan' => 'Kepindahan']),
+                SelectFilter::make('status_verifikasi')
+                    ->label('Status')
+                    ->options(['Pending' => 'Pending', 'Disetujui' => 'Disetujui', 'Ditolak' => 'Ditolak']),
+                SelectFilter::make('jenis_mutasi')
+                    ->label('Jenis')
+                    ->options(['Kelahiran' => 'Kelahiran', 'Kematian' => 'Kematian', 'Kedatangan' => 'Kedatangan', 'Kepindahan' => 'Kepindahan']),
             ])
             ->headerActions([CreateAction::make()])
             ->recordActions([
@@ -110,10 +168,15 @@ class MutasiPendudukResource extends Resource
                         ]);
                         MutasiStatusUpdated::dispatch($record, $oldStatus, 'Ditolak');
                     }),
-                EditAction::make(),
+                \Filament\Actions\EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->actionsColumnLabel('Aksi');
+            ->actionsColumnLabel('Aksi')
+            ->defaultSort('tanggal_mutasi', 'desc')
+            ->striped()
+            ->emptyStateHeading('Belum Ada Mutasi')
+            ->emptyStateDescription('Data mutasi penduduk akan muncul di sini.')
+            ->emptyStateIcon('heroicon-o-arrow-path');
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
@@ -123,6 +186,10 @@ class MutasiPendudukResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => ManageMutasiPenduduk::route('/')];
+        return [
+            'index' => Pages\ListMutasiPenduduk::route('/'),
+            'create' => Pages\CreateMutasiPenduduk::route('/create'),
+            'edit' => Pages\EditMutasiPenduduk::route('/{record}/edit'),
+        ];
     }
 }

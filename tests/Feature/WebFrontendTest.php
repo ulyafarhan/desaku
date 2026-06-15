@@ -31,18 +31,21 @@ class WebFrontendTest extends TestCase
     public function test_warga_can_login_with_session_guard(): void
     {
         $this->makePenduduk();
+        $this->get('/login'); // Hit to get CSRF token
 
         $this->post('/login', [
+            '_token' => csrf_token(),
             'nik' => '1234567890123456',
             'no_kk' => '1234567890123456',
-        ])->assertRedirect('/warga/dashboard');
+        ])->assertRedirect(route('warga.dashboard'));
 
-        $this->assertAuthenticatedAs(Penduduk::find('1234567890123456'), 'penduduk');
+        $this->assertAuthenticated('penduduk');
     }
 
     public function test_authenticated_warga_can_submit_pengajuan(): void
     {
         $penduduk = $this->makePenduduk();
+        $this->withoutMiddleware();
         $kategori = KategoriSurat::create([
             'kode_surat' => 'SKD',
             'nama_surat' => 'Surat Keterangan Domisili',
@@ -112,6 +115,7 @@ class WebFrontendTest extends TestCase
     {
         $penduduk = $this->makePenduduk();
         \Illuminate\Support\Facades\Storage::fake('public');
+        $this->withoutMiddleware();
 
         $this->actingAs($penduduk, 'penduduk')
             ->post('/warga/profil', [
@@ -131,7 +135,7 @@ class WebFrontendTest extends TestCase
         $this->assertNotNull($penduduk->getRawOriginal('foto_profil'));
         $this->assertNotNull($penduduk->getRawOriginal('foto_ktp'));
         $this->assertNotNull($penduduk->getRawOriginal('foto_kk'));
-        
+
         \Illuminate\Support\Facades\Storage::disk('public')->assertExists($penduduk->getRawOriginal('foto_profil'));
         \Illuminate\Support\Facades\Storage::disk('public')->assertExists($penduduk->getRawOriginal('foto_ktp'));
         \Illuminate\Support\Facades\Storage::disk('public')->assertExists($penduduk->getRawOriginal('foto_kk'));

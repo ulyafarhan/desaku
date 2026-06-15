@@ -57,6 +57,7 @@ class StatistikTest extends TestCase
 
     public function test_can_get_statistik_demografi()
     {
+        \Illuminate\Support\Facades\Cache::forget('statistik_demografi');
         $response = $this->getJson('/api/v1/statistik/demografi');
 
         $response->assertStatus(200)
@@ -123,20 +124,22 @@ class StatistikTest extends TestCase
 
         // Add new penduduk
         $keluarga = Keluarga::first();
-        Penduduk::create([
-            'nik' => '3333333333333333',
-            'no_kk' => $keluarga->no_kk,
-            'nama_lengkap' => 'New Person',
-            'tempat_lahir' => 'Jakarta',
-            'tanggal_lahir' => '2000-01-01',
-            'jenis_kelamin' => 'L',
-            'agama' => 'Islam',
-            'pendidikan' => 'SMA',
-            'pekerjaan' => 'Pelajar',
-            'status_perkawinan' => 'Belum Kawin',
-            'status_keluarga' => 'Anak',
-            'status_mutasi' => 'Tetap',
-        ]);
+        Penduduk::withoutEvents(function () use ($keluarga) {
+            Penduduk::create([
+                'nik' => '3333333333333333',
+                'no_kk' => $keluarga->no_kk,
+                'nama_lengkap' => 'New Person',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '2000-01-01',
+                'jenis_kelamin' => 'L',
+                'agama' => 'Islam',
+                'pendidikan' => 'SMA',
+                'pekerjaan' => 'Pelajar',
+                'status_perkawinan' => 'Belum Kawin',
+                'status_keluarga' => 'Anak',
+                'status_mutasi' => 'Tetap',
+            ]);
+        });
 
         // Second call should return cached data
         $response2 = $this->getJson('/api/v1/statistik/demografi');

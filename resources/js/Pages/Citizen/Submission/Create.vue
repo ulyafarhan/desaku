@@ -7,6 +7,7 @@ import AppCard from '../../../Components/AppCard.vue';
 import FormInput from '../../../Components/FormInput.vue';
 import FormSelect from '../../../Components/FormSelect.vue';
 import StepIndicator from '../../../Components/StepIndicator.vue';
+import { compressImageToWebP } from '../../../Utils/imageCompressor';
 
 defineOptions({ layout: CitizenLayout });
 
@@ -26,7 +27,6 @@ const current = ref(0);
 const fields = computed(() => props.kategori.schema_isian || []);
 const documents = computed(() => props.kategori.syarat_dokumen || []);
 
-// Selected pemohon (defaults to self)
 const selectedNik = ref(props.wargaData.nik);
 const selectedPemohon = computed(() => {
     if (showFamilySelector.value) {
@@ -35,7 +35,6 @@ const selectedPemohon = computed(() => {
     return props.wargaData;
 });
 
-// Initialize form data
 const initialData = {};
 fields.value.forEach((field) => {
     initialData[field.field] = '';
@@ -54,7 +53,6 @@ const form = useForm({
     file_syarat: reactive(initialFiles),
 });
 
-// Populate documents from profile if they exist
 const populateDocsFromProfile = (pemohon) => {
     documents.value.forEach((document) => {
         const key = document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
@@ -63,7 +61,6 @@ const populateDocsFromProfile = (pemohon) => {
         } else if ((key === 'kk' || key === 'kartu_keluarga' || key === 'foto_kk') && pemohon.foto_kk) {
             form.file_syarat[key] = pemohon.foto_kk;
         } else {
-            // Keep existing files or clear if none
             if (!(form.file_syarat[key] instanceof File)) {
                 form.file_syarat[key] = '';
             }
@@ -71,15 +68,12 @@ const populateDocsFromProfile = (pemohon) => {
     });
 };
 
-// Auto-fill common fields from biodata when pemohon changes
 watch(selectedNik, (newNik) => {
     form.nik_pemohon = newNik;
     const pemohon = props.anggotaKeluarga.find(a => a.nik === newNik) || props.wargaData;
     
-    // Auto-populate documents from profile
     populateDocsFromProfile(pemohon);
 
-    // Auto-fill any matching field keys
     const autoFillMap = {
         nama_lengkap: pemohon.nama_lengkap,
         nama: pemohon.nama_lengkap,
@@ -102,7 +96,6 @@ watch(selectedNik, (newNik) => {
     });
 });
 
-// Initial auto-fill & document check
 const doAutoFill = () => {
     const pemohon = selectedPemohon.value;
     populateDocsFromProfile(pemohon);
@@ -141,10 +134,11 @@ const previous = () => { current.value = Math.max(current.value - 1, 0); };
 
 const submit = () => form.post('/warga/surat/pengajuan');
 
-const handleFileSelect = (e, key) => {
+const handleFileSelect = async (e, key) => {
     const file = e.target.files[0];
     if (file) {
-        form.file_syarat[key] = file;
+        const processedFile = await compressImageToWebP(file);
+        form.file_syarat[key] = processedFile;
     }
 };
 
@@ -159,7 +153,6 @@ const getInitials = (name) => {
 
 <template>
     <div class="google-editorial max-w-3xl mx-auto py-8 px-4">
-        <!-- Header / Back link -->
         <div class="mb-8">
             <AppButton href="/warga/dashboard" variant="ghost" class="back-link inline-flex items-center gap-2">
                 <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -177,16 +170,13 @@ const getInitials = (name) => {
             </div>
         </div>
 
-        <!-- Progress Steps -->
         <div class="mb-8">
             <StepIndicator :steps="steps" :current="current" />
         </div>
 
-        <!-- Form Card Container -->
         <div class="editorial-card">
             <form @submit.prevent="submit" enctype="multipart/form-data" class="space-y-6">
 
-                <!-- Step 0: Pemohon selector (only for Kepala Keluarga) -->
                 <div v-if="showFamilySelector && current === 0" class="space-y-6">
                     <div>
                         <h2 class="headline-sm">Pilih Pemohon</h2>
@@ -221,14 +211,12 @@ const getInitials = (name) => {
                         </button>
                     </div>
 
-                    <!-- Informational Callout -->
                     <div class="alert-box info-alert">
                         <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                         <p class="body-sm text-secondary">Biodata profil <strong>{{ selectedPemohon.nama_lengkap }}</strong> akan terisi secara otomatis di langkah berikutnya untuk kemudahan pengisian.</p>
                     </div>
                 </div>
 
-                <!-- Step: Data Isian -->
                 <div v-if="current === dataStep" class="space-y-6">
                     <div>
                         <h2 class="headline-sm">Data Isian Formulir</h2>
@@ -239,7 +227,6 @@ const getInitials = (name) => {
                     
                     <div class="grid gap-5">
                         <template v-for="field in fields" :key="field.field">
-                            <!-- Custom Select input -->
                             <div v-if="field.type === 'select'" class="input-wrapper">
                                 <FormSelect
                                     :id="field.field"
@@ -251,7 +238,6 @@ const getInitials = (name) => {
                                 />
                             </div>
                             
-                            <!-- Custom Textarea -->
                             <div v-else-if="field.type === 'textarea'" class="input-wrapper">
                                 <label :for="field.field" class="input-label-wrapper">
                                     <span class="label-sm text-secondary mb-1.5 block">{{ field.label }} <span v-if="field.required" class="text-error">*</span></span>
@@ -266,7 +252,6 @@ const getInitials = (name) => {
                                 <span v-if="form.errors[`data_isian.${field.field}`]" class="input-error-msg">{{ form.errors[`data_isian.${field.field}`] }}</span>
                             </div>
                             
-                            <!-- General FormInput component -->
                             <div v-else class="input-wrapper">
                                 <FormInput
                                     :id="field.field"
@@ -281,7 +266,6 @@ const getInitials = (name) => {
                     </div>
                 </div>
 
-                <!-- Step: Dokumen -->
                 <div v-if="current === docStep" class="space-y-6">
                     <div>
                         <h2 class="headline-sm">Berkas Persyaratan</h2>
@@ -292,7 +276,6 @@ const getInitials = (name) => {
                         <div v-for="document in documents" :key="document" class="document-upload-zone">
                             <span class="label-md text-neutral mb-2 block font-medium">{{ document }} <span class="text-error">*</span></span>
                             
-                            <!-- Profile auto-fill state -->
                             <div v-if="typeof form.file_syarat[document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')] === 'string' && form.file_syarat[document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')]" class="attachment-status-card success-attached">
                                 <div class="flex items-center gap-3 flex-1 min-w-0">
                                     <div class="avatar-circle-sm bg-primary-soft text-primary shrink-0">
@@ -309,7 +292,6 @@ const getInitials = (name) => {
                                 </div>
                             </div>
 
-                            <!-- Newly uploaded File state -->
                             <div v-else-if="isFile(form.file_syarat[document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')])" class="attachment-status-card new-attached">
                                 <div class="flex items-center gap-3 flex-1 min-w-0">
                                     <div class="avatar-circle-sm bg-accent-soft text-primary shrink-0">
@@ -323,7 +305,6 @@ const getInitials = (name) => {
                                 <button type="button" @click="form.file_syarat[document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')] = ''" class="remove-file-btn">Hapus</button>
                             </div>
 
-                            <!-- Empty/Upload area state -->
                             <div v-else class="upload-dropzone">
                                 <svg class="size-8 text-secondary mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                 <span class="label-sm text-neutral font-medium">Seret atau Pilih Berkas {{ document }}</span>
@@ -341,21 +322,18 @@ const getInitials = (name) => {
                     </div>
                 </div>
 
-                <!-- Step: Review -->
                 <div v-if="current === reviewStep" class="space-y-6">
                     <div>
                         <h2 class="headline-sm">Tinjau Permohonan</h2>
                         <p class="body-md text-secondary mt-1">Periksa kembali data Anda sebelum mengirimkan pengajuan surat.</p>
                     </div>
 
-                    <!-- Pemohon detail review -->
                     <div class="review-pemohon-card">
                         <span class="overline-label">Pemohon</span>
                         <h4 class="headline-sm mt-1 text-primary">{{ selectedPemohon.nama_lengkap }}</h4>
                         <p class="body-sm text-secondary mt-0.5">NIK: {{ selectedPemohon.nik }} · {{ selectedPemohon.status_keluarga }}</p>
                     </div>
 
-                    <!-- Input Data review -->
                     <div class="space-y-3">
                         <h4 class="label-md text-neutral font-medium uppercase tracking-wider">Isian Formulir</h4>
                         <div class="grid gap-3 md:grid-cols-2">
@@ -366,7 +344,6 @@ const getInitials = (name) => {
                         </div>
                     </div>
 
-                    <!-- Attached Documents review -->
                     <div v-if="documents.length" class="space-y-3 pt-2">
                         <h4 class="label-md text-neutral font-medium uppercase tracking-wider">Berkas Persyaratan</h4>
                         <div class="space-y-2.5">
@@ -390,7 +367,6 @@ const getInitials = (name) => {
                     </div>
                 </div>
 
-                <!-- Navigation Panel -->
                 <div class="navigation-panel pt-6 mt-8">
                     <button v-if="current > 0" type="button" class="btn-secondary" @click="previous">
                         Kembali
@@ -421,7 +397,6 @@ const getInitials = (name) => {
     min-height: 100vh;
 }
 
-/* Typography styles based on spec */
 .headline-lg {
     font-size: 32px;
     font-weight: 400;
@@ -497,13 +472,11 @@ const getInitials = (name) => {
     color: #5F6368;
 }
 
-/* Colors */
 .text-primary { color: #1A73E8; }
 .text-secondary { color: #5F6368; }
 .text-neutral { color: #202124; }
 .text-error { color: #D93025; }
 
-/* Custom components */
 .back-link {
     font-size: 14px;
     font-weight: 500;
@@ -580,7 +553,6 @@ const getInitials = (name) => {
     background-color: #F4F8FF;
 }
 
-/* Selector Button for Pemohon */
 .selector-button {
     display: flex;
     align-items: center;
@@ -626,7 +598,6 @@ const getInitials = (name) => {
     border-radius: 9999px;
 }
 
-/* Alert Boxes */
 .alert-box {
     display: flex;
     gap: 14px;
@@ -641,7 +612,6 @@ const getInitials = (name) => {
     color: #1A73E8;
 }
 
-/* Form Styles */
 .input-wrapper {
     margin-bottom: 4px;
 }
@@ -677,7 +647,6 @@ const getInitials = (name) => {
     margin-top: 6px;
 }
 
-/* Upload styles */
 .document-upload-zone {
     padding: 4px 0;
 }
@@ -741,7 +710,6 @@ const getInitials = (name) => {
     border-color: #1A73E8;
 }
 
-/* Review Styles */
 .review-pemohon-card {
     background-color: #F4F8FF;
     border: 1px solid #D2E3FC;
@@ -784,7 +752,6 @@ const getInitials = (name) => {
     color: #C5221F;
 }
 
-/* Navigation Panel */
 .navigation-panel {
     display: flex;
     justify-content: space-between;
@@ -792,4 +759,3 @@ const getInitials = (name) => {
     border-top: 1px solid #E5E7EB;
 }
 </style>
-

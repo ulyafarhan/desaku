@@ -32,7 +32,6 @@ class TrackingPengajuanSurat extends Model
         ];
     }
 
-    // Relationships
     public function pengajuan()
     {
         return $this->belongsTo(PengajuanSurat::class, 'pengajuan_surat_id');

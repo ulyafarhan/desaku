@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('keterangan');
             $table->string('dokumen_bukti');
             $table->enum('status_verifikasi', ['Pending', 'Disetujui', 'Ditolak'])->default('Pending');
-            $table->unsignedBigInteger('diverifikasi_oleh')->nullable();
+            $table->ulid('diverifikasi_oleh')->nullable();
             $table->timestamp('created_at')->useCurrent();
             
             $table->foreign('nik')

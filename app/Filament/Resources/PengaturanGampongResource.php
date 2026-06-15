@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PengaturanGampongResource\Pages\ManagePengaturanGampong;
+use App\Filament\Resources\PengaturanGampongResource\Pages;
 use App\Models\PengaturanGampong;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -12,6 +12,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -20,6 +21,11 @@ class PengaturanGampongResource extends Resource
     protected static ?string $model = PengaturanGampong::class;
 
     protected static ?string $recordTitleAttribute = 'kunci';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['kunci', 'nilai', 'deskripsi'];
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
@@ -32,10 +38,39 @@ class PengaturanGampongResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('kunci')->required()->maxLength(50),
-            Select::make('tipe_data')->options(['string' => 'String', 'integer' => 'Integer', 'boolean' => 'Boolean', 'json' => 'JSON'])->required(),
-            Textarea::make('nilai')->required()->columnSpanFull(),
-            TextInput::make('deskripsi')->maxLength(255)->columnSpanFull(),
+            Section::make('Konfigurasi Desa')
+                ->description('Atur parameter dan nilai konfigurasi sistem desa.')
+                ->icon('heroicon-o-adjustments-horizontal')
+                ->schema([
+                    TextInput::make('kunci')
+                        ->label('Kunci Pengaturan')
+                        ->required()
+                        ->maxLength(50)
+                        ->prefixIcon('heroicon-o-key')
+                        ->placeholder('Contoh: nama_desa'),
+                    Select::make('tipe_data')
+                        ->label('Tipe Data')
+                        ->options([
+                            'string' => 'String',
+                            'integer' => 'Integer',
+                            'boolean' => 'Boolean',
+                            'json' => 'JSON',
+                        ])
+                        ->required()
+                        ->prefixIcon('heroicon-o-variable'),
+                    Textarea::make('nilai')
+                        ->label('Nilai')
+                        ->required()
+                        ->columnSpanFull()
+                        ->rows(4)
+                        ->placeholder('Masukkan nilai pengaturan...'),
+                    TextInput::make('deskripsi')
+                        ->label('Deskripsi')
+                        ->maxLength(255)
+                        ->columnSpanFull()
+                        ->prefixIcon('heroicon-o-information-circle')
+                        ->placeholder('Penjelasan singkat tentang pengaturan ini'),
+                ])->columns(1)->columnSpanFull(),
         ]);
     }
 
@@ -43,18 +78,56 @@ class PengaturanGampongResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('kunci')->searchable()->sortable(),
-                TextColumn::make('tipe_data')->badge(),
-                TextColumn::make('nilai')->limit(60)->searchable(),
-                TextColumn::make('updated_at')->dateTime('d M Y H:i'),
+                TextColumn::make('kunci')
+                    ->label('Kunci')
+                    ->sortable()
+                    ->weight('bold')
+                    ->copyable()
+                    ->copyMessage('Kunci disalin!'),
+                TextColumn::make('tipe_data')
+                    ->label('Tipe')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'string' => 'info',
+                        'integer' => 'warning',
+                        'boolean' => 'success',
+                        'json' => 'primary',
+                        default => 'gray',
+                    }),
+                TextColumn::make('nilai')
+                    ->label('Nilai')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->nilai),
+                TextColumn::make('deskripsi')
+                    ->label('Deskripsi')
+                    ->limit(40)
+                    ->color('gray')
+                    ->toggleable(),
+                TextColumn::make('updated_at')
+                    ->label('Terakhir Diubah')
+                    ->since()
+                    ->sortable()
+                    ->tooltip(fn ($record) => $record->updated_at?->format('d M Y H:i:s')),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()])
-            ->actionsColumnLabel('Aksi');
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->actionsColumnLabel('Aksi')
+            ->striped()
+            ->emptyStateHeading('Belum Ada Pengaturan')
+            ->emptyStateDescription('Tambahkan konfigurasi desa baru.')
+            ->emptyStateIcon('heroicon-o-cog-6-tooth');
     }
 
     public static function getPages(): array
     {
-        return ['index' => ManagePengaturanGampong::route('/')];
+        return [
+            'index' => Pages\ListPengaturanGampong::route('/'),
+            'create' => Pages\CreatePengaturanGampong::route('/create'),
+            'edit' => Pages\EditPengaturanGampong::route('/{record}/edit'),
+        ];
     }
 }
+

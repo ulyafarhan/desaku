@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AdministratorResource\Pages\ManageAdministrator;
+use App\Filament\Resources\AdministratorResource\Pages;
 use App\Models\Administrator;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -21,6 +22,11 @@ class AdministratorResource extends Resource
     protected static ?string $model = Administrator::class;
 
     protected static ?string $recordTitleAttribute = 'username';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['username', 'role'];
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
 
@@ -33,14 +39,35 @@ class AdministratorResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('username')->required()->maxLength(50),
-            TextInput::make('password')
-                ->password()
-                ->revealable()
-                ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
-                ->dehydrated(fn ($state) => filled($state))
-                ->required(fn (string $operation): bool => $operation === 'create'),
-            Select::make('role')->options(['keuchik' => 'Keuchik', 'sekdes' => 'Sekdes', 'operator' => 'Operator'])->required(),
+            Section::make('Akun Administrator')
+                ->description('Kelola akun dan hak akses administrator sistem.')
+                ->icon('heroicon-o-shield-check')
+                ->schema([
+                    TextInput::make('username')
+                        ->label('Username')
+                        ->required()
+                        ->maxLength(50)
+                        ->prefixIcon('heroicon-o-user')
+                        ->placeholder('Username untuk login'),
+                    TextInput::make('password')
+                        ->label('Password')
+                        ->password()
+                        ->revealable()
+                        ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->required(fn (string $operation): bool => $operation === 'create')
+                        ->prefixIcon('heroicon-o-lock-closed')
+                        ->placeholder('Minimal 8 karakter'),
+                    Select::make('role')
+                        ->label('Peran')
+                        ->options([
+                            'keuchik' => 'Keuchik',
+                            'sekdes' => 'Sekretaris Desa',
+                            'operator' => 'Operator',
+                        ])
+                        ->required()
+                        ->prefixIcon('heroicon-o-key'),
+                ])->columns(1)->columnSpanFull(),
         ]);
     }
 
@@ -48,20 +75,57 @@ class AdministratorResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('username')->searchable()->sortable(),
-                TextColumn::make('role')->badge(),
-                TextColumn::make('created_at')->dateTime('d M Y H:i')->sortable(),
+                TextColumn::make('username')
+                    ->label('Username')
+                    ->sortable()
+                    ->weight('bold'),
+                TextColumn::make('role')
+                    ->label('Peran')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'keuchik' => 'warning',
+                        'sekdes' => 'info',
+                        'operator' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'keuchik' => 'Keuchik',
+                        'sekdes' => 'Sekretaris Desa',
+                        'operator' => 'Operator',
+                        default => ucfirst($state),
+                    }),
+                TextColumn::make('created_at')
+                    ->label('Terdaftar')
+                    ->dateTime('d M Y, H:i')
+                    ->sortable()
+                    ->since()
+                    ->tooltip(fn ($record) => $record->created_at?->format('l, d F Y H:i:s')),
             ])
             ->filters([
-                SelectFilter::make('role')->options(['keuchik' => 'Keuchik', 'sekdes' => 'Sekdes', 'operator' => 'Operator']),
+                SelectFilter::make('role')
+                    ->label('Peran')
+                    ->options(['keuchik' => 'Keuchik', 'sekdes' => 'Sekretaris Desa', 'operator' => 'Operator'])
+                    ->indicator('Peran'),
             ])
             ->headerActions([CreateAction::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make()])
-            ->actionsColumnLabel('Aksi');
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->actionsColumnLabel('Aksi')
+            ->striped()
+            ->emptyStateHeading('Belum Ada Administrator')
+            ->emptyStateDescription('Tambahkan akun administrator baru.')
+            ->emptyStateIcon('heroicon-o-shield-check');
     }
 
     public static function getPages(): array
     {
-        return ['index' => ManageAdministrator::route('/')];
+        return [
+            'index' => Pages\ListAdministrator::route('/'),
+            'create' => Pages\CreateAdministrator::route('/create'),
+            'edit' => Pages\EditAdministrator::route('/{record}/edit'),
+        ];
     }
 }
+

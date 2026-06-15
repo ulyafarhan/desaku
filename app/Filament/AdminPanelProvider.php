@@ -34,29 +34,33 @@ class AdminPanelProvider extends PanelProvider
             ->favicon('/favicon.ico')
             ->colors([
                 'primary' => Color::Teal,
-                'danger' => Color::Red,
+                'gray' => Color::Slate,
+                'danger' => Color::Rose,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
                 'info' => Color::Sky,
             ])
             ->font('Inter')
+            ->darkMode(true)
             ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('17rem')
             ->globalSearch()
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->breadcrumbs()
             ->databaseNotifications()
             ->databaseNotificationsPolling('15s')
             ->spa()
             ->unsavedChangesAlerts()
-            ->maxContentWidth('full')
             ->renderHook(
                 'panels::head.end',
                 fn () => view('filament.custom-styles'),
             )
             ->navigationGroups([
                 NavigationGroup::make('Layanan')
-                    ->icon('heroicon-o-document-text')
+                    ->icon('heroicon-o-inbox-stack')
                     ->collapsible(),
                 NavigationGroup::make('Data Kependudukan')
-                    ->icon('heroicon-o-users')
+                    ->icon('heroicon-o-user-group')
                     ->collapsible(),
                 NavigationGroup::make('Konten')
                     ->icon('heroicon-o-newspaper')

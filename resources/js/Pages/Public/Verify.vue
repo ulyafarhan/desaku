@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Head } from '@inertiajs/vue3';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 import AppCard from '../../Components/AppCard.vue';
 import AppButton from '../../Components/AppButton.vue';
@@ -34,7 +34,14 @@ const handleVerify = () => {
 </script>
 
 <template>
-    <!-- Gampong Editorial Header -->
+    <Head>
+        <title>Verifikasi Dokumen - Gampong Udeung, Pidie Jaya, Aceh</title>
+        <meta name="description" content="Halaman verifikasi keaslian surat fisik Gampong Udeung menggunakan QR Code Tanda Tangan Elektronik (TTE) berbasis hash SHA-256." />
+        <meta name="keywords" content="Verifikasi Surat, Cek Keaslian Surat, TTE QR Code, Tanda Tangan Elektronik Desa, Gampong Udeung" />
+        <meta property="og:title" content="Verifikasi Dokumen - Gampong Udeung, Pidie Jaya, Aceh" />
+        <meta property="og:description" content="Halaman verifikasi keaslian surat fisik Gampong Udeung menggunakan QR Code Tanda Tangan Elektronik (TTE) berbasis hash SHA-256." />
+    </Head>
+
     <header class="bg-white border-b border-gray-200 py-16">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="max-w-3xl space-y-4">
@@ -53,10 +60,8 @@ const handleVerify = () => {
         </div>
     </header>
 
-    <!-- SEARCH & RESULTS SECTION -->
     <section class="mx-auto max-w-3xl px-6 py-12 bg-[#F8F9FA] min-h-[500px]">
         
-        <!-- Search Card (Minimalist, Flat, Clean layout) -->
         <div class="bg-white border border-gray-200 p-6 sm:p-8 rounded-2xl mb-8">
             <div class="space-y-4">
                 <div class="space-y-1">
@@ -78,7 +83,7 @@ const handleVerify = () => {
                             type="text" 
                             v-model="hashInput"
                             placeholder="Contoh: 8a9b7c6d5e..." 
-                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm text-[#202124] bg-white placeholder:text-gray-400 focus:border-[#1A73E8] focus:outline-none transition outline-none"
+                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm text-[#202124] bg-white placeholder:text-gray-400 focus:border-[#1A73E8] !focus-visible:ring-2 !focus-visible:ring-[#1A73E8]/20 !focus-visible:ring-offset-0 transition"
                             required
                         />
                     </div>
@@ -90,10 +95,8 @@ const handleVerify = () => {
             </div>
         </div>
 
-        <!-- VERIFICATION RESULTS -->
         <div v-if="result" class="animate-fade-in">
             
-            <!-- CASE 1: VALID DOCUMENT -->
             <div v-if="result.valid" class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
                 <div class="bg-emerald-50 border-b border-gray-200 p-6 flex items-center gap-4">
                     <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
@@ -105,7 +108,6 @@ const handleVerify = () => {
                     </div>
                 </div>
 
-                <!-- Verified Details Table -->
                 <div class="p-6 sm:p-8 space-y-6 bg-white">
                     <dl class="grid gap-x-6 gap-y-4 sm:grid-cols-2 text-sm border-b border-gray-150 pb-6">
                         <div class="space-y-1">
@@ -153,7 +155,6 @@ const handleVerify = () => {
                 </div>
             </div>
 
-            <!-- CASE 2: INVALID DOCUMENT -->
             <div v-else class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
                 <div class="bg-red-50 border-b border-gray-200 p-6 flex items-center gap-4">
                     <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-red-100 text-[#D93025]">

@@ -5,6 +5,7 @@ import CitizenLayout from '../../Layouts/CitizenLayout.vue';
 import AppButton from '../../Components/AppButton.vue';
 import FormInput from '../../Components/FormInput.vue';
 import FormSelect from '../../Components/FormSelect.vue';
+import { compressImageToWebP } from '../../Utils/imageCompressor';
 
 defineOptions({ layout: CitizenLayout });
 
@@ -29,27 +30,30 @@ const photoPreview = ref(null);
 const ktpFileName = ref('');
 const kkFileName = ref('');
 
-const onPhotoChange = (e) => {
+const onPhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-        form.foto_profil = file;
-        photoPreview.value = URL.createObjectURL(file);
+        const processedFile = await compressImageToWebP(file);
+        form.foto_profil = processedFile;
+        photoPreview.value = URL.createObjectURL(processedFile);
     }
 };
 
-const onKtpChange = (e) => {
+const onKtpChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-        form.foto_ktp = file;
-        ktpFileName.value = file.name;
+        const processedFile = await compressImageToWebP(file);
+        form.foto_ktp = processedFile;
+        ktpFileName.value = processedFile.name;
     }
 };
 
-const onKkChange = (e) => {
+const onKkChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-        form.foto_kk = file;
-        kkFileName.value = file.name;
+        const processedFile = await compressImageToWebP(file);
+        form.foto_kk = processedFile;
+        kkFileName.value = processedFile.name;
     }
 };
 
@@ -88,7 +92,6 @@ const getInitials = (name) => {
 
 <template>
     <div class="google-editorial max-w-4xl mx-auto py-8 px-4">
-        <!-- Header / Back Navigation -->
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
             <div>
                 <AppButton href="/warga/dashboard" variant="ghost" class="back-link inline-flex items-center gap-2">
@@ -108,7 +111,6 @@ const getInitials = (name) => {
             </div>
         </div>
 
-        <!-- Completeness bar -->
         <div class="editorial-card mb-6">
             <div class="flex items-center justify-between text-sm font-medium mb-2">
                 <span class="text-secondary">Kelengkapan Biodata</span>
@@ -124,7 +126,6 @@ const getInitials = (name) => {
             <p v-if="completeness < 100" class="mt-2.5 text-xs text-warning-dark font-medium">Lengkapi seluruh data pribadi & berkas identitas Anda agar dapat mengajukan surat.</p>
         </div>
 
-        <!-- Read-only section: Data Kependudukan -->
         <div class="editorial-card mb-6">
             <div class="pb-4 mb-4 border-b border-slate-100">
                 <h2 class="headline-sm">Data Kependudukan</h2>
@@ -166,7 +167,6 @@ const getInitials = (name) => {
             </div>
         </div>
 
-        <!-- Read-only section: Berkas Pendukung -->
         <div v-if="!isEditing" class="editorial-card mb-6">
             <div class="pb-4 mb-4 border-b border-slate-100">
                 <h2 class="headline-sm">Dokumen Identitas</h2>
@@ -213,7 +213,6 @@ const getInitials = (name) => {
             </div>
         </div>
 
-        <!-- Editable section / Form -->
         <div class="editorial-card mb-6">
             <div class="pb-4 mb-4 border-b border-slate-100">
                 <h2 class="headline-sm">Data Pribadi Mandiri</h2>
@@ -279,12 +278,10 @@ const getInitials = (name) => {
                     </div>
                 </div>
 
-                <!-- Document Upload Section inside editor -->
                 <div class="border-t border-slate-150 pt-6 mt-6">
                     <h3 class="label-lg text-neutral font-medium mb-4">Unggah Dokumen Pendukung & Foto Profil</h3>
                     
                     <div class="grid gap-6 sm:grid-cols-3">
-                        <!-- Foto Profil Upload -->
                         <div class="upload-dropzone">
                             <span class="overline-label mb-2 block text-center">Foto Profil</span>
                             <div class="relative size-20 rounded-full overflow-hidden bg-slate-200 border-2 border-white ring-4 ring-slate-100 flex items-center justify-center mb-3">
@@ -298,7 +295,6 @@ const getInitials = (name) => {
                             <span v-if="form.errors.foto_profil" class="input-error-msg mt-2 text-center">{{ form.errors.foto_profil }}</span>
                         </div>
 
-                        <!-- Foto KTP Upload -->
                         <div class="upload-dropzone justify-between text-center">
                             <div class="w-full">
                                 <span class="overline-label mb-1 block">Foto KTP</span>
@@ -321,7 +317,6 @@ const getInitials = (name) => {
                             <span v-if="form.errors.foto_ktp" class="input-error-msg mt-2 text-center">{{ form.errors.foto_ktp }}</span>
                         </div>
 
-                        <!-- Foto KK Upload -->
                         <div class="upload-dropzone justify-between text-center">
                             <div class="w-full">
                                 <span class="overline-label mb-1 block">Foto Kartu Keluarga</span>
@@ -346,7 +341,6 @@ const getInitials = (name) => {
                     </div>
                 </div>
 
-                <!-- Action Panel -->
                 <div class="flex items-center gap-3 border-t border-slate-100 pt-6 mt-6">
                     <button type="submit" class="btn-primary" :disabled="form.processing">
                         Simpan Perubahan
@@ -358,7 +352,6 @@ const getInitials = (name) => {
             </form>
         </div>
 
-        <!-- Alamat from Keluarga -->
         <div class="editorial-card">
             <div class="pb-4 mb-4 border-b border-slate-100">
                 <h2 class="headline-sm">Informasi Alamat Tempat Tinggal</h2>
@@ -392,7 +385,6 @@ const getInitials = (name) => {
     min-height: 100vh;
 }
 
-/* Typography styles based on spec */
 .headline-lg {
     font-size: 32px;
     font-weight: 400;
@@ -460,7 +452,6 @@ const getInitials = (name) => {
     color: #5F6368;
 }
 
-/* Colors styling mapping */
 .text-primary { color: #1A73E8; }
 .text-secondary { color: #5F6368; }
 .text-neutral { color: #202124; }
@@ -470,7 +461,6 @@ const getInitials = (name) => {
 .bg-primary { background-color: #1A73E8; }
 .bg-warning { background-color: #F9AB00; }
 
-/* Custom components */
 .back-link {
     font-size: 14px;
     font-weight: 500;
@@ -552,7 +542,6 @@ const getInitials = (name) => {
     color: #137333;
 }
 
-/* Upload styles */
 .upload-dropzone {
     display: flex;
     flex-direction: column;
@@ -582,7 +571,6 @@ const getInitials = (name) => {
     color: #1A73E8;
 }
 
-/* Form Styles */
 .input-wrapper {
     margin-bottom: 4px;
 }
@@ -594,7 +582,6 @@ const getInitials = (name) => {
     color: #D93025;
 }
 
-/* Buttons */
 .btn-primary {
     background-color: #1A73E8;
     color: #FFFFFF;

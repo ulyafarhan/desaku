@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class KategoriSurat extends Model
 {
+    use HasUlids;
+
     protected $table = 'kategori_surat';
     
     public $timestamps = false;
@@ -28,13 +31,11 @@ class KategoriSurat extends Model
         ];
     }
 
-    // Relationships
     public function pengajuan()
     {
         return $this->hasMany(PengajuanSurat::class, 'kategori_surat_id');
     }
 
-    // Scope
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

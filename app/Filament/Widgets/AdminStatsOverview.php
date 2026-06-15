@@ -12,7 +12,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminStatsOverview extends StatsOverviewWidget
 {
-    protected ?string $pollingInterval = '10s';
+    protected ?string $pollingInterval = '15s';
+
+    protected int|string|array $columnSpan = 'full';
 
     protected $listeners = [
         'echo:pengajuan,PengajuanStatusUpdated' => '$refresh',
@@ -25,39 +27,42 @@ class AdminStatsOverview extends StatsOverviewWidget
         $totalKeluarga = Keluarga::query()->count();
         $pengajuanPending = PengajuanSurat::query()->pending()->count();
         $pengajuanTotal = PengajuanSurat::query()->count();
+        $pengajuanSelesai = PengajuanSurat::query()->where('status', 'Selesai')->count();
         $mutasiPending = MutasiPenduduk::query()->where('status_verifikasi', 'Pending')->count();
+        $mutasiTotal = MutasiPenduduk::query()->count();
         $informasiTerbit = InformasiPublik::query()->published()->count();
+        $informasiTotal = InformasiPublik::query()->count();
 
         return [
-            Stat::make('Penduduk Aktif', $pendudukAktif)
-                ->description('Warga dengan status tetap')
-                ->descriptionIcon('heroicon-m-users')
+            Stat::make('Penduduk Aktif', number_format($pendudukAktif))
+                ->description('Warga terdaftar dengan status tetap')
+                ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')
-                ->chart([7, 3, 4, 5, 6, $pendudukAktif > 6 ? 3 : 1, 5]),
+                ->chart([7, 3, 4, 5, 6, 3, 5]),
 
-            Stat::make('Total Keluarga', $totalKeluarga)
-                ->description('Kartu keluarga terdaftar')
-                ->descriptionIcon('heroicon-m-home')
+            Stat::make('Kartu Keluarga', number_format($totalKeluarga))
+                ->description('Total keluarga terdaftar')
+                ->descriptionIcon('heroicon-m-home-modern')
                 ->color('info')
-                ->chart([3, 5, 2, 4, 6, 3, $totalKeluarga > 0 ? 4 : 1]),
+                ->chart([3, 5, 2, 4, 6, 3, 4]),
 
-            Stat::make('Pengajuan Pending', $pengajuanPending)
-                ->description($pengajuanTotal . ' total pengajuan')
+            Stat::make('Surat Pending', number_format($pengajuanPending))
+                ->description($pengajuanSelesai . ' selesai dari ' . $pengajuanTotal . ' total')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color($pengajuanPending > 0 ? 'warning' : 'success')
                 ->chart([2, 4, 6, 3, $pengajuanPending, 4, 2]),
 
-            Stat::make('Mutasi Pending', $mutasiPending)
-                ->description('Menunggu verifikasi')
-                ->descriptionIcon('heroicon-m-arrow-path')
+            Stat::make('Mutasi Pending', number_format($mutasiPending))
+                ->description($mutasiTotal . ' total mutasi tercatat')
+                ->descriptionIcon('heroicon-m-arrow-path-rounded-square')
                 ->color($mutasiPending > 0 ? 'warning' : 'success')
                 ->chart([1, 3, 2, $mutasiPending, 2, 3, 1]),
 
-            Stat::make('Informasi Terbit', $informasiTerbit)
-                ->description('Berita dan pengumuman aktif')
-                ->descriptionIcon('heroicon-m-newspaper')
+            Stat::make('Informasi Terbit', number_format($informasiTerbit))
+                ->description($informasiTotal . ' artikel, ' . $informasiTerbit . ' sudah dipublikasi')
+                ->descriptionIcon('heroicon-m-megaphone')
                 ->color('success')
-                ->chart([2, 3, 4, 3, $informasiTerbit > 0 ? 5 : 1, 4, 3]),
+                ->chart([2, 3, 4, 3, 5, 4, 3]),
         ];
     }
 }

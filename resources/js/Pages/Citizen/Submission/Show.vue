@@ -44,13 +44,11 @@ const getFileUrl = (path) => {
         return path.startsWith('/') ? path : '/' + path;
     }
     
-    // If it contains /storage/, extract the relative path starting from /storage/
     const storageIdx = path.indexOf('/storage/');
     if (storageIdx !== -1) {
         return path.substring(storageIdx);
     }
     
-    // Relative path needs storage prefix
     return path.startsWith('/') ? '/storage' + path : '/storage/' + path;
 };
 
@@ -84,7 +82,6 @@ const formatDate = (dateStr) => {
 
 <template>
     <div class="google-editorial max-w-4xl mx-auto py-8 px-4">
-        <!-- Back navigation -->
         <div class="mb-8">
             <AppButton href="/warga/dashboard" variant="ghost" class="back-link inline-flex items-center gap-2">
                 <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -92,7 +89,6 @@ const formatDate = (dateStr) => {
             </AppButton>
         </div>
 
-        <!-- Header Sheet / Headline Card -->
         <div class="editorial-card main-header-card mb-6">
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div class="min-w-0">
@@ -104,7 +100,6 @@ const formatDate = (dateStr) => {
                 </div>
             </div>
 
-            <!-- Catatan Penolakan -->
             <div v-if="pengajuan.catatan_penolakan" class="alert-box error-alert mt-6">
                 <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <div>
@@ -113,7 +108,6 @@ const formatDate = (dateStr) => {
                 </div>
             </div>
 
-            <!-- Prominent download section (when finished/Selesai) -->
             <div v-if="(pengajuan.status === 'Selesai' || pengajuan.status === 'Disetujui') && pengajuan.file_pdf_url" class="alert-box success-alert mt-6">
                 <div class="flex items-start gap-4 flex-1">
                     <div class="alert-icon-wrapper bg-primary-soft text-primary shrink-0">
@@ -129,7 +123,6 @@ const formatDate = (dateStr) => {
                 </a>
             </div>
 
-            <!-- Wait for generation (when Approved but no PDF URL yet) -->
             <div v-else-if="pengajuan.status === 'Disetujui' && !pengajuan.file_pdf_url" class="alert-box warning-alert mt-6">
                 <svg class="size-5 text-warning shrink-0 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2v4"/></svg>
                 <div>
@@ -139,9 +132,7 @@ const formatDate = (dateStr) => {
             </div>
         </div>
 
-        <!-- Two Column Grid for Main Details -->
         <div class="grid gap-6 md:grid-cols-3 mb-6">
-            <!-- Pemohon info -->
             <div class="editorial-card md:col-span-2 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <div class="avatar-circle">
@@ -155,7 +146,6 @@ const formatDate = (dateStr) => {
                 </div>
             </div>
 
-            <!-- Meta info -->
             <div class="editorial-card flex flex-col justify-center">
                 <span class="overline-label">Tanggal Pengajuan</span>
                 <p class="body-lg text-neutral font-medium mt-1">{{ formatDate(pengajuan.created_at) }}</p>
@@ -163,7 +153,6 @@ const formatDate = (dateStr) => {
         </div>
 
         <div class="grid gap-6 md:grid-cols-2 mb-6">
-            <!-- Data Isian Form -->
             <div class="editorial-card">
                 <h3 class="label-md text-neutral mb-4 uppercase tracking-wider">Data Isian Formulir</h3>
                 <div class="space-y-3">
@@ -174,7 +163,6 @@ const formatDate = (dateStr) => {
                 </div>
             </div>
 
-            <!-- Requirements files -->
             <div class="editorial-card">
                 <h3 class="label-md text-neutral mb-4 uppercase tracking-wider">Dokumen Persyaratan</h3>
                 <div class="space-y-3">
@@ -194,12 +182,10 @@ const formatDate = (dateStr) => {
             </div>
         </div>
 
-        <!-- Status Timeline tracking -->
         <div class="editorial-card">
             <h3 class="label-md text-neutral mb-6 uppercase tracking-wider">Riwayat Status Surat</h3>
             <div class="timeline-container pl-6">
                 <div v-for="track in pengajuan.tracking" :key="track.id" class="timeline-step">
-                    <!-- Dot indicator -->
                     <div class="timeline-dot"></div>
                     
                     <div class="flex items-center gap-3">
@@ -223,7 +209,7 @@ const formatDate = (dateStr) => {
     min-height: 100vh;
 }
 
-/* Typography styles based on spec */
+
 .headline-lg {
     font-size: 32px;
     font-weight: 400;
@@ -292,13 +278,13 @@ const formatDate = (dateStr) => {
     color: #5F6368;
 }
 
-/* Color Classes */
+
 .text-primary { color: #1A73E8; }
 .text-secondary { color: #5F6368; }
 .text-neutral { color: #202124; }
 .text-error { color: #D93025; }
 
-/* Custom components */
+
 .back-link {
     font-size: 14px;
     font-weight: 500;
@@ -323,7 +309,6 @@ const formatDate = (dateStr) => {
 }
 
 .main-header-card {
-    border-top: 4px solid #1A73E8;
 }
 
 .alert-box {
@@ -445,7 +430,6 @@ const formatDate = (dateStr) => {
     letter-spacing: 0.05em;
 }
 
-/* Timeline tracking styles */
 .timeline-container {
     position: relative;
     border-left: 2px solid #E5E7EB;

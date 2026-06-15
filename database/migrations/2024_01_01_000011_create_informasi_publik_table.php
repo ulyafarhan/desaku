@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('informasi_publik', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('judul');
             $table->string('slug')->unique();
             $table->text('konten');
             $table->string('kategori', 50);
             $table->string('cover_image')->nullable();
             $table->boolean('is_published')->default(false);
-            $table->unsignedBigInteger('author_id')->nullable();
+            $table->ulid('author_id')->nullable();
             $table->timestamp('created_at')->useCurrent();
             
             $table->foreign('author_id')

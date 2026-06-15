@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Support\Str;
+use App\Jobs\SendNewsTelegramNotificationJob;
 
 class InformasiPublik extends Model
 {
+    use HasUlids;
+
     protected $table = 'informasi_publik';
     
     public $timestamps = false;
@@ -17,6 +21,8 @@ class InformasiPublik extends Model
         'konten',
         'kategori',
         'cover_image',
+        'meta_description',
+        'kata_kunci',
         'is_published',
         'author_id',
     ];
@@ -29,7 +35,6 @@ class InformasiPublik extends Model
         ];
     }
 
-    // Accessor for cover image
     public function getCoverImageAttribute($value)
     {
         if (empty($value)) {
@@ -38,22 +43,19 @@ class InformasiPublik extends Model
         if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
             return $value;
         }
-        return asset('storage/' . $value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
-    // Relationships
     public function author()
     {
         return $this->belongsTo(Administrator::class, 'author_id');
     }
 
-    // Scope
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
     }
 
-    // Boot method untuk auto-generate slug
     protected static function boot()
     {
         parent::boot();
@@ -67,6 +69,18 @@ class InformasiPublik extends Model
         static::updating(function ($model) {
             if ($model->isDirty('judul') && empty($model->slug)) {
                 $model->slug = Str::slug($model->judul);
+            }
+        });
+
+        static::created(function ($model) {
+            if ($model->is_published) {
+                SendNewsTelegramNotificationJob::dispatch($model->id);
+            }
+        });
+
+        static::updated(function ($model) {
+            if ($model->is_published && !$model->getOriginal('is_published')) {
+                SendNewsTelegramNotificationJob::dispatch($model->id);
             }
         });
     }

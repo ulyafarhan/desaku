@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class PengaturanGampong extends Model
 {
+    use HasUlids;
+
     protected $table = 'pengaturan_gampong';
     
     public $timestamps = false;
@@ -24,7 +27,6 @@ class PengaturanGampong extends Model
         ];
     }
 
-    // Helper method untuk get setting
     public static function get(string $key, $default = null)
     {
         $setting = static::where('kunci', $key)->first();
@@ -41,7 +43,6 @@ class PengaturanGampong extends Model
         };
     }
 
-    // Helper method untuk set setting
     public static function set(string $key, $value, string $type = 'string'): void
     {
         $nilai = is_array($value) ? json_encode($value) : $value;

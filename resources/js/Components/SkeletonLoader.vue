@@ -6,14 +6,12 @@ defineProps({
 </script>
 
 <template>
-    <!-- Text variant -->
     <div v-if="variant === 'text'" class="animate-pulse space-y-3">
         <div class="h-4 rounded bg-slate-200" />
         <div class="h-4 w-5/6 rounded bg-slate-200" />
         <div class="h-20 rounded bg-slate-200" />
     </div>
 
-    <!-- Card variant -->
     <div v-else-if="variant === 'card'" class="grid gap-4" :class="count > 1 ? 'sm:grid-cols-2 lg:grid-cols-3' : ''">
         <div v-for="i in count" :key="i" class="animate-pulse rounded-lg border border-slate-200 bg-white p-5">
             <div class="h-3 w-1/3 rounded bg-slate-200" />
@@ -23,7 +21,6 @@ defineProps({
         </div>
     </div>
 
-    <!-- Stat card variant -->
     <div v-else-if="variant === 'stat'" class="grid gap-4 sm:grid-cols-3">
         <div v-for="i in count" :key="i" class="animate-pulse rounded-lg border border-slate-200 bg-white p-5">
             <div class="h-3 w-1/2 rounded bg-slate-200" />
@@ -31,7 +28,6 @@ defineProps({
         </div>
     </div>
 
-    <!-- Table row variant -->
     <div v-else-if="variant === 'table-row'" class="space-y-2">
         <div v-for="i in count" :key="i" class="flex animate-pulse items-center gap-4 rounded-lg border border-slate-200 bg-white px-4 py-3">
             <div class="h-4 w-1/4 rounded bg-slate-200" />

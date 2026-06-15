@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 import AppCard from '../../Components/AppCard.vue';
 import { 
@@ -21,20 +23,31 @@ import {
 
 defineOptions({ layout: PublicLayout });
 defineProps({ perangkat: Array });
+const mapActive = ref(false);
 
-// Dynamic avatar mapping
-const getAvatar = (jabatan) => {
+const getAvatar = (orang) => {
+    if (orang.foto) {
+        return orang.foto;
+    }
+    const jabatan = orang.jabatan;
     if (jabatan.includes('Keuchik')) {
         return "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop";
     } else if (jabatan.includes('Sekretaris')) {
         return "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop";
     }
-    return "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop"; // Operator
+    return "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop";
 };
 </script>
 
 <template>
-    <!-- Gampong Editorial Header -->
+    <Head>
+        <title>Profil Desa - Gampong Udeung, Pidie Jaya, Aceh</title>
+        <meta name="description" content="Profil resmi Gampong Udeung, Kecamatan Bandar Baru, Pidie Jaya, Aceh. Informasi visi, misi, letak geografis, dan jajaran aparatur desa." />
+        <meta name="keywords" content="Profil Gampong Udeung, Struktur Organisasi Desa Udeung, Letak Geografis Udeung, Visi Misi Desa, Pidie Jaya" />
+        <meta property="og:title" content="Profil Desa - Gampong Udeung, Pidie Jaya, Aceh" />
+        <meta property="og:description" content="Profil resmi Gampong Udeung, Kecamatan Bandar Baru, Pidie Jaya, Aceh. Informasi visi, misi, letak geografis, dan jajaran aparatur desa." />
+    </Head>
+
     <header class="bg-white border-b border-gray-200 py-16">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="max-w-3xl space-y-4">
@@ -54,10 +67,8 @@ const getAvatar = (jabatan) => {
         </div>
     </header>
 
-    <!-- VISI & MISI SECTION (MINIMALIST & SPACIOUS) -->
     <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8 bg-white">
         <div class="grid gap-12 lg:grid-cols-2">
-            <!-- Visi Card -->
             <div class="bg-[#F8F9FA] rounded-2xl border border-gray-200 p-8 sm:p-10 flex flex-col justify-between">
                 <div class="space-y-6">
                     <div class="flex size-11 items-center justify-center rounded-xl bg-[#E8F0FE] text-[#1A73E8]">
@@ -74,33 +85,32 @@ const getAvatar = (jabatan) => {
                 </div>
             </div>
 
-            <!-- Misi List -->
             <div class="space-y-6">
                 <div class="space-y-2">
-                    <div class="flex size-11 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+                    <div class="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                         <Target class="size-5" />
                     </div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block">Misi Gampong</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block">Misi Gampong</span>
                     <h2 class="text-2xl font-normal text-[#202124]">Agenda Pembangunan & Sosial</h2>
                 </div>
                 
                 <div class="space-y-4">
                     <div class="flex gap-4 items-start p-5 rounded-2xl border border-gray-200 bg-white">
-                        <span class="flex size-6 items-center justify-center rounded-full bg-teal-50 text-teal-700 font-bold text-xs shrink-0 mt-0.5">1</span>
+                        <span class="flex size-6 items-center justify-center rounded-full bg-blue-50 text-blue-700 font-bold text-xs shrink-0 mt-0.5">1</span>
                         <div class="text-xs text-[#5F6368] leading-relaxed font-medium">
                             <strong class="text-[#202124] text-sm block mb-1 font-bold">Tata Kelola & Digitalisasi Administrasi</strong>
                             Mengoptimalkan pelayanan administrasi kependudukan gampong secara cepat dan akuntabel melalui Portal Mandiri Warga.
                         </div>
                     </div>
                     <div class="flex gap-4 items-start p-5 rounded-2xl border border-gray-200 bg-white">
-                        <span class="flex size-6 items-center justify-center rounded-full bg-teal-50 text-teal-700 font-bold text-xs shrink-0 mt-0.5">2</span>
+                        <span class="flex size-6 items-center justify-center rounded-full bg-blue-50 text-blue-700 font-bold text-xs shrink-0 mt-0.5">2</span>
                         <div class="text-xs text-[#5F6368] leading-relaxed font-medium">
                             <strong class="text-[#202124] text-sm block mb-1 font-bold">Imunitas Bahaya Narkotika (KBN)</strong>
                             Membangun daya tangkal dan pengawasan sosial pemuda secara aktif guna mempertahankan status Kampung Bebas Narkoba.
                         </div>
                     </div>
                     <div class="flex gap-4 items-start p-5 rounded-2xl border border-gray-200 bg-white">
-                        <span class="flex size-6 items-center justify-center rounded-full bg-teal-50 text-teal-700 font-bold text-xs shrink-0 mt-0.5">3</span>
+                        <span class="flex size-6 items-center justify-center rounded-full bg-blue-50 text-blue-700 font-bold text-xs shrink-0 mt-0.5">3</span>
                         <div class="text-xs text-[#5F6368] leading-relaxed font-medium">
                             <strong class="text-[#202124] text-sm block mb-1 font-bold">Ekonomi Agraris & Kemitraan UMKM</strong>
                             Meningkatkan produktivitas komoditas padi sawah, jagung, kakao, serta kemasan produk rumah tangga (kue tradisional Aceh).
@@ -111,7 +121,6 @@ const getAvatar = (jabatan) => {
         </div>
     </section>
 
-    <!-- KAMPUNG BEBAS NARKOBA (KBN) HIGHLIGHT -->
     <section class="bg-[#F8F9FA] border-y border-gray-200 py-20">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid gap-12 lg:grid-cols-2 items-center">
@@ -155,7 +164,7 @@ const getAvatar = (jabatan) => {
                         <CheckCircle2 class="size-5 text-emerald-600 shrink-0 mt-0.5" />
                         <div>
                             <h4 class="font-bold text-[#202124] text-sm">Edukasi Preemtif & Imunitas Bahaya</h4>
-                            <p class="text-xs text-[#5F6368] mt-1 leading-relaxed">Sosialisasi bahaya narkoba menyasar pemuda untuk membentuk kesadaran internal.</p>
+                            <p class="text-xs text-[#5F6368] mt-1 leading-relaxed">Sosialisasi bahaya narkoba menyasar pemuda untuk membentuk kesadahu internal.</p>
                         </div>
                     </div>
                     <div class="p-5 rounded-2xl bg-white border border-gray-200 flex gap-4">
@@ -170,11 +179,9 @@ const getAvatar = (jabatan) => {
         </div>
     </section>
 
-    <!-- SEJARAH & INFRASTRUKTUR -->
     <section class="bg-white py-20">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid gap-12 lg:grid-cols-2 items-center">
-                <!-- Sejarah Narrative -->
                 <div class="space-y-6">
                     <div class="flex items-center gap-2">
                         <History class="size-5 text-[#1A73E8]" />
@@ -202,7 +209,6 @@ const getAvatar = (jabatan) => {
                     </div>
                 </div>
 
-                <!-- Jembatan / Landscape photo (minimalist frame) -->
                 <div class="relative overflow-hidden rounded-2xl border border-gray-200 shadow-sm">
                     <img 
                         src="https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=600&auto=format&fit=crop" 
@@ -214,7 +220,6 @@ const getAvatar = (jabatan) => {
         </div>
     </section>
 
-    <!-- STRUKTUR PEMERINTAHAN / APARATUR (MINIMALIST GRID) -->
     <section class="bg-[#F8F9FA] border-t border-gray-200 py-20">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="text-center space-y-3 mb-16">
@@ -232,7 +237,7 @@ const getAvatar = (jabatan) => {
                     class="flex flex-col items-center text-center p-8 border border-gray-200 bg-white rounded-2xl"
                 >
                     <img 
-                        :src="getAvatar(orang.jabatan)" 
+                        :src="getAvatar(orang)" 
                         :alt="orang.nama"
                         class="size-20 rounded-full object-cover border border-gray-200 mb-5 shrink-0"
                     />
@@ -244,7 +249,6 @@ const getAvatar = (jabatan) => {
         </div>
     </section>
 
-    <!-- GEOGRAFIS & PETA INTERAKTIF -->
     <section class="bg-white border-t border-gray-200 py-20">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="text-center space-y-3 mb-12">
@@ -255,10 +259,9 @@ const getAvatar = (jabatan) => {
                 </p>
             </div>
 
-            <!-- Boundaries Grid (Minimalist Flat Layout) -->
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10">
                 <div class="bg-white p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
-                    <div class="flex size-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 shrink-0">
+                    <div class="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700 shrink-0">
                         <TrendingUp class="size-5" />
                     </div>
                     <div>
@@ -267,7 +270,7 @@ const getAvatar = (jabatan) => {
                     </div>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
-                    <div class="flex size-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 shrink-0">
+                    <div class="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700 shrink-0">
                         <Navigation class="size-5" />
                     </div>
                     <div>
@@ -276,7 +279,7 @@ const getAvatar = (jabatan) => {
                     </div>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
-                    <div class="flex size-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 shrink-0">
+                    <div class="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700 shrink-0">
                         <Navigation class="size-5 transform rotate-180" />
                     </div>
                     <div>
@@ -285,7 +288,7 @@ const getAvatar = (jabatan) => {
                     </div>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
-                    <div class="flex size-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 shrink-0">
+                    <div class="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700 shrink-0">
                         <Layers class="size-5" />
                     </div>
                     <div>
@@ -295,18 +298,23 @@ const getAvatar = (jabatan) => {
                 </div>
             </div>
 
-            <!-- OpenStreetMap Embedded Iframe -->
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm overflow-hidden">
+            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm overflow-hidden group/map">
                 <h3 class="text-base font-bold text-[#202124] mb-4">Peta Administrasi Gampong (OpenStreetMap)</h3>
-                <div class="w-full h-80 rounded-xl overflow-hidden border border-gray-200 relative">
+                <div @mouseleave="mapActive = false" class="w-full h-80 rounded-xl overflow-hidden border border-gray-200 relative">
                     <iframe 
                         src="https://www.openstreetmap.org/export/embed.html?bbox=96.0900%2C5.2650%2C96.1150%2C5.2900&amp;layer=mapnik&amp;marker=5.2777%2C96.1023" 
-                        class="size-full border-0 absolute inset-0"
+                        class="size-full border-0 absolute inset-0 transition duration-300"
+                        :class="{ 'pointer-events-none': !mapActive }"
                         allowfullscreen="" 
                         loading="lazy"
                     ></iframe>
+                    <div v-if="!mapActive" @click="mapActive = true" class="absolute inset-0 bg-slate-900/5 cursor-pointer flex items-center justify-center transition duration-300 hover:bg-slate-900/10">
+                        <span class="bg-slate-900/80 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full shadow-md">
+                            Klik untuk Interaksi Peta
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-</template>e>
+</template>

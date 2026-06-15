@@ -35,9 +35,21 @@ class PublicPortalController extends Controller
     {
         return Inertia::render('Public/Profile', [
             'perangkat' => [
-                ['jabatan' => 'Keuchik', 'nama' => 'Pemerintah Gampong'],
-                ['jabatan' => 'Sekretaris Desa', 'nama' => 'Sekretariat Gampong'],
-                ['jabatan' => 'Operator Layanan', 'nama' => 'Pelayanan Administrasi'],
+                [
+                    'jabatan' => 'Keuchik',
+                    'nama' => \App\Models\PengaturanGampong::get('nama_keuchik', 'Nama Keuchik'),
+                    'foto' => \App\Models\PengaturanGampong::get('foto_keuchik'),
+                ],
+                [
+                    'jabatan' => 'Sekretaris Desa',
+                    'nama' => \App\Models\PengaturanGampong::get('nama_sekdes', 'Nama Sekretaris Desa'),
+                    'foto' => \App\Models\PengaturanGampong::get('foto_sekdes'),
+                ],
+                [
+                    'jabatan' => 'Operator Layanan',
+                    'nama' => \App\Models\PengaturanGampong::get('nama_operator', 'Nama Operator'),
+                    'foto' => \App\Models\PengaturanGampong::get('foto_operator'),
+                ],
             ],
         ]);
     }

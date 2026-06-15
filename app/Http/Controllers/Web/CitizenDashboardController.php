@@ -19,13 +19,11 @@ class CitizenDashboardController extends Controller
 
         $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
 
-        // Biodata completeness
         $requiredFields = ['nama_lengkap', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'agama', 'pendidikan', 'pekerjaan', 'status_perkawinan'];
         $filled = collect($requiredFields)->filter(fn ($field) => !blank($warga->{$field}))->count();
         $biodataComplete = $filled === count($requiredFields);
         $biodataCompleteness = round(($filled / count($requiredFields)) * 100);
 
-        // Family members
         $anggotaKeluarga = $keluarga
             ? Penduduk::where('no_kk', $keluarga->no_kk)
                 ->aktif()
@@ -40,7 +38,6 @@ class CitizenDashboardController extends Controller
                 ])
             : collect();
 
-        // Get all family NIKs for submission history (Kepala sees all family submissions)
         $familyNiks = $isKepalaKeluarga
             ? $anggotaKeluarga->pluck('nik')->toArray()
             : [$warga->nik];

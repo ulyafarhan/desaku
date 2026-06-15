@@ -1,13 +1,28 @@
 <script setup>
+import { Head } from '@inertiajs/vue3';
 import PublicLayout from '../../../Layouts/PublicLayout.vue';
 import AppButton from '../../../Components/AppButton.vue';
 import { ArrowLeft, Calendar, User, Clock } from '@lucide/vue';
 
 defineOptions({ layout: PublicLayout });
-defineProps({ informasi: Object });
+const props = defineProps({ informasi: Object });
+
+const stripHtml = (html) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+};
 </script>
 
 <template>
+    <Head>
+        <title>{{ informasi.judul }} - Gampong Udeung</title>
+        <meta name="description" :content="stripHtml(informasi.konten).substring(0, 150) + '...'" />
+        <meta name="keywords" :content="`Berita, Gampong Udeung, ${informasi.kategori}, Pidie Jaya`" />
+        <meta property="og:title" :content="informasi.judul" />
+        <meta property="og:description" :content="stripHtml(informasi.konten).substring(0, 150) + '...'" />
+        <meta property="og:type" content="article" />
+    </Head>
+
     <main class="bg-white min-h-screen py-12">
         <article class="mx-auto max-w-3xl px-6 sm:px-8">
             <AppButton href="/informasi" variant="ghost" class="mb-8 gap-2 px-0 text-[#1A73E8] hover:text-[#155fa8] transition-colors font-medium text-xs">
@@ -28,7 +43,6 @@ defineProps({ informasi: Object });
                     {{ informasi.judul }}
                 </h1>
 
-                <!-- High-contrast metadata -->
                 <div class="flex items-center gap-4 text-xs text-[#5F6368] font-bold border-y border-gray-100 py-3.5 mt-4">
                     <span class="inline-flex items-center gap-1.5">
                         <User class="size-4 text-[#5F6368]" />
@@ -42,7 +56,6 @@ defineProps({ informasi: Object });
                 </div>
             </div>
 
-            <!-- Content Area with premium typography and contrast -->
             <div class="mt-8 text-slate-800 text-sm sm:text-base leading-relaxed space-y-6 font-medium" v-html="informasi.konten" />
         </article>
     </main>

@@ -20,9 +20,6 @@ class TelegramService
         }
     }
 
-    /**
-     * Kirim pesan ke chat ID tertentu
-     */
     public function sendMessage(string $chatId, string $message, ?array $keyboard = null): bool
     {
         try {
@@ -30,6 +27,8 @@ class TelegramService
                 Log::warning('Telegram Bot Token or API URL is not configured.');
                 return false;
             }
+
+            $message = $this->convertMarkdownToHtml($message);
 
             $payload = [
                 'chat_id' => $chatId,
@@ -43,6 +42,10 @@ class TelegramService
 
             $response = Http::post("{$this->apiUrl}/sendMessage", $payload);
 
+            if (!$response->successful()) {
+                Log::error('Telegram Send Message Failed: ' . $response->body() . ' | Payload: ' . json_encode($payload));
+            }
+
             return $response->successful();
         } catch (\Exception $e) {
             Log::error('Telegram Send Message Error: '.$e->getMessage());
@@ -51,9 +54,35 @@ class TelegramService
         }
     }
 
-    /**
-     * Kirim dokumen/file ke chat ID
-     */
+    public function sendPhoto(string $chatId, string $photoUrl, string $caption): bool
+    {
+        try {
+            if (! $this->botToken || ! $this->apiUrl) {
+                Log::warning('Telegram Bot Token or API URL is not configured.');
+                return false;
+            }
+
+            $payload = [
+                'chat_id' => $chatId,
+                'photo' => $photoUrl,
+                'caption' => $caption,
+                'parse_mode' => 'HTML',
+            ];
+
+            $response = Http::post("{$this->apiUrl}/sendPhoto", $payload);
+
+            if (!$response->successful()) {
+                Log::error('Telegram Send Photo Failed: ' . $response->body() . ' | Photo: ' . $photoUrl);
+            }
+
+            return $response->successful();
+        } catch (\Exception $e) {
+            Log::error('Telegram Send Photo Error: '.$e->getMessage());
+
+            return false;
+        }
+    }
+
     public function sendDocument(string $chatId, string $filePath, string $caption = ''): bool
     {
         try {
@@ -80,9 +109,6 @@ class TelegramService
         }
     }
 
-    /**
-     * Broadcast pesan ke banyak user
-     */
     public function broadcast(array $chatIds, string $message): array
     {
         $results = [
@@ -97,16 +123,12 @@ class TelegramService
                 $results['failed']++;
             }
 
-            // Rate limiting: delay 50ms antar pesan
             usleep(50000);
         }
 
         return $results;
     }
 
-    /**
-     * Notifikasi status pengajuan surat
-     */
     public function notifyPengajuanStatus(string $nik, string $status, string $nomorRegistrasi, ?string $catatan = null): void
     {
         $penduduk = Penduduk::find($nik);
@@ -116,11 +138,11 @@ class TelegramService
         }
 
         $statusMessages = [
-            'Pending' => '⏳ Pengajuan surat Anda sedang menunggu verifikasi',
-            'Diproses' => '🔄 Pengajuan surat Anda sedang diproses',
-            'Disetujui' => '✅ Pengajuan surat Anda telah disetujui',
-            'Ditolak' => '❌ Pengajuan surat Anda ditolak',
-            'Selesai' => '✅ Surat Anda telah selesai dan siap diunduh',
+            'Pending' => 'Pengajuan surat Anda sedang menunggu verifikasi',
+            'Diproses' => 'Pengajuan surat Anda sedang diproses',
+            'Disetujui' => 'Pengajuan surat Anda telah disetujui',
+            'Ditolak' => 'Pengajuan surat Anda ditolak',
+            'Selesai' => 'Surat Anda telah selesai dan siap diunduh',
         ];
 
         $message = "<b>Status Pengajuan Surat</b>\n\n";
@@ -134,9 +156,6 @@ class TelegramService
         $this->sendMessage($penduduk->telegram_chat_id, $message);
     }
 
-    /**
-     * Notifikasi mutasi penduduk
-     */
     public function notifyMutasiStatus(string $nik, string $jenisMutasi, string $status): void
     {
         $penduduk = Penduduk::find($nik);
@@ -145,11 +164,11 @@ class TelegramService
             return;
         }
 
-        $statusIcon = $status === 'Disetujui' ? '✅' : '❌';
+        $statusPrefix = $status === 'Disetujui' ? '[Disetujui]' : '[Ditolak]';
 
         $message = "<b>Status Mutasi Kependudukan</b>\n\n";
         $message .= 'Jenis: '.$this->escapeHtml($jenisMutasi)."\n";
-        $message .= 'Status: '.$this->escapeHtml("{$statusIcon} {$status}")."\n";
+        $message .= 'Status: '.$this->escapeHtml("{$statusPrefix} {$status}")."\n";
 
         $this->sendMessage($penduduk->telegram_chat_id, $message);
     }
@@ -159,9 +178,6 @@ class TelegramService
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
-    /**
-     * Set webhook untuk bot
-     */
     public function setWebhook(string $url): bool
     {
         try {
@@ -177,9 +193,6 @@ class TelegramService
         }
     }
 
-    /**
-     * Get bot info
-     */
     public function getMe(): ?array
     {
         try {
@@ -193,5 +206,20 @@ class TelegramService
         }
 
         return null;
+    }
+
+    protected function convertMarkdownToHtml(string $text): string
+    {
+        $text = preg_replace('/^###\s+(.+)$/m', '<b>$1</b>', $text);
+        $text = preg_replace('/^##\s+(.+)$/m', '<b>$1</b>', $text);
+        $text = preg_replace('/^#\s+(.+)$/m', '<b>$1</b>', $text);
+
+        $text = preg_replace('/\*\*(.*?)\*\*/s', '<b>$1</b>', $text);
+
+        $text = preg_replace('/\*([^*]+)\*/', '<i>$1</i>', $text);
+        
+        $text = preg_replace('/^\s*[\*\-]\s+/m', '• ', $text);
+
+        return $text;
     }
 }

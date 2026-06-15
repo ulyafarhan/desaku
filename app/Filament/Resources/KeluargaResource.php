@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KeluargaResource\Pages\ManageKeluarga;
+use App\Filament\Resources\KeluargaResource\Pages;
 use App\Models\Keluarga;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -12,6 +12,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -21,7 +22,12 @@ class KeluargaResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'no_kk';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['no_kk', 'dusun', 'alamat'];
+    }
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home-modern';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Data Kependudukan';
 
@@ -32,11 +38,31 @@ class KeluargaResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('no_kk')->label('No KK')->required()->length(16),
-            Textarea::make('alamat')->required()->columnSpanFull(),
-            TextInput::make('dusun')->required(),
-            TextInput::make('rt_rw')->label('RT/RW')->required(),
-            Select::make('kepala_keluarga_nik')->relationship('kepalaKeluarga', 'nama_lengkap')->searchable()->preload(),
+            Section::make('Kartu Keluarga')
+                ->description('Data identitas kartu keluarga.')
+                ->icon('heroicon-o-home-modern')
+                ->schema([
+                    TextInput::make('no_kk')
+                        ->label('Nomor KK')
+                        ->required()
+                        ->length(16),
+                    Select::make('kepala_keluarga_nik')
+                        ->label('Kepala Keluarga')
+                        ->relationship('kepalaKeluarga', 'nama_lengkap')
+                        ->searchable()
+                        ->preload(),
+                ])->columns(1)->columnSpanFull(),
+
+            Section::make('Alamat')
+                ->schema([
+                    Textarea::make('alamat')
+                        ->label('Alamat Lengkap')
+                        ->required()
+                        ->columnSpanFull()
+                        ->rows(3),
+                    TextInput::make('dusun')->required(),
+                    TextInput::make('rt_rw')->label('RT/RW')->required(),
+                ])->columns(1)->columnSpanFull(),
         ]);
     }
 
@@ -44,15 +70,32 @@ class KeluargaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('no_kk')->label('No KK')->searchable(),
-                TextColumn::make('kepalaKeluarga.nama_lengkap')->label('Kepala Keluarga')->searchable(),
-                TextColumn::make('dusun')->searchable(),
-                TextColumn::make('rt_rw')->label('RT/RW'),
-                TextColumn::make('anggota_count')->counts('anggota')->label('Anggota'),
+                TextColumn::make('no_kk')
+                    ->label('No. KK')
+                    ->sortable()
+                    ->weight('bold')
+                    ->copyable()
+                    ->copyMessage('No. KK disalin!'),
+                TextColumn::make('kepalaKeluarga.nama_lengkap')
+                    ->label('Kepala Keluarga'),
+                TextColumn::make('dusun')
+                    ->label('Dusun'),
+                TextColumn::make('rt_rw')
+                    ->label('RT/RW'),
+                TextColumn::make('anggota_count')
+                    ->counts('anggota')
+                    ->label('Anggota')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable(),
             ])
             ->headerActions([CreateAction::make()])
             ->recordActions([EditAction::make(), DeleteAction::make()])
-            ->actionsColumnLabel('Aksi');
+            ->actionsColumnLabel('Aksi')
+            ->defaultSort('no_kk')
+            ->striped()
+            ->emptyStateHeading('Belum Ada Data Keluarga')
+            ->emptyStateIcon('heroicon-o-home-modern');
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
@@ -62,6 +105,10 @@ class KeluargaResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => ManageKeluarga::route('/')];
+        return [
+            'index' => Pages\ListKeluarga::route('/'),
+            'create' => Pages\CreateKeluarga::route('/create'),
+            'edit' => Pages\EditKeluarga::route('/{record}/edit'),
+        ];
     }
 }

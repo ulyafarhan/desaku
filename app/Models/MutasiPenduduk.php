@@ -10,12 +10,10 @@ class MutasiPenduduk extends Model
     use HasUlids;
 
     protected $table = 'mutasi_penduduk';
-    
+
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $with = ['penduduk'];
 
     public $timestamps = false;
 
@@ -37,7 +35,6 @@ class MutasiPenduduk extends Model
         ];
     }
 
-    // Relationships
     public function penduduk()
     {
         return $this->belongsTo(Penduduk::class, 'nik', 'nik');
@@ -48,7 +45,6 @@ class MutasiPenduduk extends Model
         return $this->belongsTo(Administrator::class, 'diverifikasi_oleh');
     }
 
-    // Scope
     public function scopePending($query)
     {
         return $query->where('status_verifikasi', 'Pending');

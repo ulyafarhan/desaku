@@ -94,9 +94,6 @@
                 <td style="width: 80px; text-align: left; vertical-align: middle; padding-bottom: 5px;">
                     @php
                         $logoPath = public_path('images/logo-pidiejaya.png');
-                        if (!file_exists($logoPath)) {
-                            $logoPath = public_path('images/logo-gampong.png');
-                        }
                     @endphp
                     @if(file_exists($logoPath))
                         <img src="{{ $logoPath }}" style="width: 70px; height: auto;" alt="Logo">

@@ -158,20 +158,22 @@ class StatistikServiceTest extends TestCase
         $demografi1 = $this->service->getDemografi();
 
         // Add new penduduk
-        Penduduk::create([
-            'nik' => '2222222222222222',
-            'no_kk' => $keluarga->no_kk,
-            'nama_lengkap' => 'Jane Doe',
-            'tempat_lahir' => 'Jakarta',
-            'tanggal_lahir' => '1995-01-01',
-            'jenis_kelamin' => 'P',
-            'agama' => 'Islam',
-            'pendidikan' => 'S1',
-            'pekerjaan' => 'Designer',
-            'status_perkawinan' => 'Belum Kawin',
-            'status_keluarga' => 'Anak',
-            'status_mutasi' => 'Tetap',
-        ]);
+        Penduduk::withoutEvents(function () use ($keluarga) {
+            Penduduk::create([
+                'nik' => '2222222222222222',
+                'no_kk' => $keluarga->no_kk,
+                'nama_lengkap' => 'Jane Doe',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1995-01-01',
+                'jenis_kelamin' => 'P',
+                'agama' => 'Islam',
+                'pendidikan' => 'S1',
+                'pekerjaan' => 'Designer',
+                'status_perkawinan' => 'Belum Kawin',
+                'status_keluarga' => 'Anak',
+                'status_mutasi' => 'Tetap',
+            ]);
+        });
 
         // Second call should return cached data
         $demografi2 = $this->service->getDemografi();

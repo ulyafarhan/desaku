@@ -23,7 +23,6 @@ class ReferensiWilayah extends Model
         'parent_kode',
     ];
 
-    // Relationships
     public function parent()
     {
         return $this->belongsTo(ReferensiWilayah::class, 'parent_kode', 'kode_wilayah');

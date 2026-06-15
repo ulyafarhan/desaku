@@ -87,7 +87,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
 
 <template>
     <div class="google-editorial max-w-5xl mx-auto py-8 px-4">
-        <!-- Header / Back Navigation -->
         <div class="mb-8">
             <AppButton href="/warga/dashboard" variant="ghost" class="back-link inline-flex items-center gap-2">
                 <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -98,7 +97,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
             <p class="body-md text-secondary mt-1">Kelola data kartu keluarga dan pantau informasi anggota keluarga Anda.</p>
         </div>
 
-        <!-- KK Info card -->
         <div class="editorial-card kk-card p-0 overflow-hidden mb-8">
             <div class="bg-neutral p-6 text-white">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -133,12 +131,10 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
             </div>
         </div>
 
-        <!-- Family members title -->
         <div class="mb-6 flex items-center justify-between">
             <h2 class="headline-sm">Anggota Keluarga ({{ anggota.length }})</h2>
         </div>
 
-        <!-- Family members list -->
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <button
                 v-for="member in anggota" :key="member.nik"
@@ -163,7 +159,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
                     </div>
                 </div>
                 
-                <!-- Quick detail grid -->
                 <div class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-slate-100 pt-3 text-[11px] text-secondary">
                     <div><span class="font-medium">Kelamin:</span> <span class="font-medium text-neutral ml-1">{{ getGenderLabel(member.jenis_kelamin) }}</span></div>
                     <div><span class="font-medium">Status:</span> <span class="font-medium text-neutral ml-1">{{ member.status_perkawinan || '-' }}</span></div>
@@ -172,7 +167,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
             </button>
         </div>
 
-        <!-- Detail Modal Overlay -->
         <Transition
             enter-active-class="transition duration-200 ease-out"
             enter-from-class="opacity-0"
@@ -191,7 +185,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
                     leave-to-class="scale-95 opacity-0"
                 >
                     <div v-if="selectedAnggota" class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200">
-                        <!-- Modal header -->
                         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
                             <div class="flex items-center gap-3">
                                 <div class="avatar-circle-sm font-bold shrink-0" :class="getGenderColor(selectedAnggota.jenis_kelamin)">
@@ -209,7 +202,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
                             </button>
                         </div>
 
-                        <!-- Modal body: read-only -->
                         <div v-if="!isEditing" class="max-h-[60vh] overflow-y-auto p-6 space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="data-item">
@@ -251,7 +243,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
                             </div>
                         </div>
 
-                        <!-- Modal body: edit form -->
                         <form v-else class="max-h-[60vh] overflow-y-auto p-6 space-y-5" @submit.prevent="saveEdit">
                             <div class="input-wrapper">
                                 <FormSelect
@@ -282,7 +273,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
                             </div>
                         </form>
 
-                        <!-- Modal footer -->
                         <div class="flex items-center justify-between border-t border-slate-100 px-6 py-4 bg-slate-50">
                             <div>
                                 <button v-if="!isEditing && isKepalaKeluarga" @click="startEdit(selectedAnggota)" class="btn-secondary py-1.5 px-4 h-auto text-xs flex items-center gap-1.5">
@@ -319,7 +309,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
     min-height: 100vh;
 }
 
-/* Typography styles based on spec */
 .headline-lg {
     font-size: 32px;
     font-weight: 400;
@@ -380,12 +369,10 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
     color: #5F6368;
 }
 
-/* Colors styling mapping */
 .text-primary { color: #1A73E8; }
 .text-secondary { color: #5F6368; }
 .text-neutral { color: #202124; }
 
-/* Custom components */
 .back-link {
     font-size: 14px;
     font-weight: 500;
@@ -410,7 +397,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
 }
 
 .kk-card {
-    border-top: 4px solid #1A73E8;
 }
 
 .member-button {
@@ -419,7 +405,7 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
     transition: all 0.2s;
 }
 .member-button:hover {
-    border-color: #D2E3FC;
+    border-color: #D1D5DB;
     box-shadow: 0 4px 12px 0 rgba(60,64,67,0.08);
 }
 
@@ -446,7 +432,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
     color: #1A73E8;
 }
 
-/* Buttons styling */
 .btn-primary {
     background-color: #1A73E8;
     color: #FFFFFF;
@@ -489,7 +474,6 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
     background-color: #F4F8FF;
 }
 
-/* Badges */
 .badge {
     font-size: 11px;
     font-weight: 600;
@@ -515,4 +499,3 @@ const getGenderColor = (g) => g === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-1
     margin-bottom: 4px;
 }
 </style>
-

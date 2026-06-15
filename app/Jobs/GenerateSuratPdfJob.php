@@ -26,7 +26,6 @@ class GenerateSuratPdfJob implements ShouldQueue
         TelegramService $telegram
     ): void {
         try {
-            // Generate QR Hash if empty
             if (empty($this->pengajuan->qr_hash)) {
                 $qrHash = hash('sha256', implode('|', [
                     $this->pengajuan->nomor_registrasi,
@@ -37,11 +36,8 @@ class GenerateSuratPdfJob implements ShouldQueue
                 $this->pengajuan->update(['qr_hash' => $qrHash]);
             }
 
-            // Set the print URL instead of storage PDF path
-            // We use relative path so frontend getFileUrl handles it perfectly, or full route
             $printUrl = "/warga/pengajuan/{$this->pengajuan->id}/print";
 
-            // Update status ke Selesai
             $this->pengajuan->update([
                 'status' => 'Selesai',
                 'file_pdf_url' => $printUrl
@@ -54,11 +50,10 @@ class GenerateSuratPdfJob implements ShouldQueue
                 'keterangan_update' => 'Surat selesai diproses dan siap dicetak',
             ]);
 
-            // Kirim link via Telegram
             $pemohon = $this->pengajuan->pemohon;
             
             if ($pemohon && $pemohon->telegram_chat_id) {
-                $message = "✅ <b>Surat Anda telah selesai!</b>\n\n";
+                $message = "<b>Surat Anda telah selesai!</b>\n\n";
                 $message .= "Nomor: <code>{$this->pengajuan->nomor_registrasi}</code>\n";
                 $message .= "Jenis: {$this->pengajuan->kategori->nama_surat}\n\n";
                 $message .= "Anda dapat melihat dan mengunduh/mencetak surat di:\n";
@@ -70,7 +65,6 @@ class GenerateSuratPdfJob implements ShouldQueue
                 );
             }
 
-            // Notifikasi status selesai
             $telegram->notifyPengajuanStatus(
                 $this->pengajuan->nik_pemohon,
                 'Selesai',

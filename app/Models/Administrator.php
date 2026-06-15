@@ -7,11 +7,12 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Laravel\Sanctum\HasApiTokens;
 
 class Administrator extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, HasUlids;
 
     protected $fillable = [
         'username',
@@ -30,7 +31,6 @@ class Administrator extends Authenticatable implements FilamentUser
         ];
     }
 
-    // Relationships
     public function pengajuanSurat()
     {
         return $this->hasMany(PengajuanSurat::class, 'diverifikasi_oleh');

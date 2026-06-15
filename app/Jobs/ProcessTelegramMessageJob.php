@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Services\GeminiAiService;
+use App\Services\Contracts\AiProviderInterface;
 use App\Services\TelegramService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,11 +21,19 @@ class ProcessTelegramMessageJob implements ShouldQueue
         public string $text
     ) {}
 
-    public function handle(GeminiAiService $gemini, TelegramService $telegram): void
-    {
-        $aiResponse = $gemini->generateResponse($this->text, $this->chatId);
+    public function handle(
+        AiProviderInterface $ai, 
+        TelegramService $telegram,
+        \App\Services\TelegramKnowledgeService $knowledge
+    ): void {
+        $context = $knowledge->retrieveContext($this->text);
+
+        $aiResponse = $ai->generateResponse($this->text, $this->chatId, $context);
 
         if ($aiResponse) {
+            $cacheKey = 'telegram_reply_' . md5(trim(strtolower($this->text)));
+            \Illuminate\Support\Facades\Cache::put($cacheKey, $aiResponse, now()->addHours(2));
+
             $telegram->sendMessage($this->chatId, $aiResponse);
 
             return;

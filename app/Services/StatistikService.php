@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Cache;
 
 class StatistikService
 {
-    /**
-     * Get statistik demografi real-time
-     */
     public function getDemografi(): array
     {
         return Cache::remember('statistik_demografi', 3600, function () {
@@ -110,27 +107,26 @@ class StatistikService
         ];
     }
 
-    /**
-     * Get statistik layanan
-     */
-    public function getLayanan(): array
+     public function getLayanan(): array
     {
-        return [
-            'pengajuan_surat' => [
-                'total' => PengajuanSurat::count(),
-                'pending' => PengajuanSurat::where('status', 'Pending')->count(),
-                'diproses' => PengajuanSurat::where('status', 'Diproses')->count(),
-                'selesai' => PengajuanSurat::where('status', 'Selesai')->count(),
-                'ditolak' => PengajuanSurat::where('status', 'Ditolak')->count(),
-            ],
-            'mutasi_penduduk' => [
-                'total' => MutasiPenduduk::count(),
-                'pending' => MutasiPenduduk::where('status_verifikasi', 'Pending')->count(),
-                'disetujui' => MutasiPenduduk::where('status_verifikasi', 'Disetujui')->count(),
-                'ditolak' => MutasiPenduduk::where('status_verifikasi', 'Ditolak')->count(),
-            ],
-            'per_jenis_surat' => $this->getPerJenisSurat(),
-        ];
+        return Cache::remember('statistik_layanan', 3600, function () {
+            return [
+                'pengajuan_surat' => [
+                    'total' => PengajuanSurat::count(),
+                    'pending' => PengajuanSurat::where('status', 'Pending')->count(),
+                    'diproses' => PengajuanSurat::where('status', 'Diproses')->count(),
+                    'selesai' => PengajuanSurat::where('status', 'Selesai')->count(),
+                    'ditolak' => PengajuanSurat::where('status', 'Ditolak')->count(),
+                ],
+                'mutasi_penduduk' => [
+                    'total' => MutasiPenduduk::count(),
+                    'pending' => MutasiPenduduk::where('status_verifikasi', 'Pending')->count(),
+                    'disetujui' => MutasiPenduduk::where('status_verifikasi', 'Disetujui')->count(),
+                    'ditolak' => MutasiPenduduk::where('status_verifikasi', 'Ditolak')->count(),
+                ],
+                'per_jenis_surat' => $this->getPerJenisSurat(),
+            ];
+        });
     }
 
     protected function getPerJenisSurat(): array
@@ -140,16 +136,14 @@ class StatistikService
             ->groupBy('kategori_surat_id')
             ->get()
             ->mapWithKeys(function ($item) {
-                return [$item->kategori->nama_surat => $item->jumlah];
+                return [optional($item->kategori)->nama_surat ?? 'Lainnya' => $item->jumlah];
             })
             ->toArray();
     }
 
-    /**
-     * Clear cache statistik
-     */
     public function clearCache(): void
     {
         Cache::forget('statistik_demografi');
+        Cache::forget('statistik_layanan');
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class TelegramBroadcastQueue extends Model
 {
+    use HasUlids;
+
     protected $table = 'telegram_broadcast_queue';
     
     public $timestamps = false;
@@ -27,13 +30,11 @@ class TelegramBroadcastQueue extends Model
         ];
     }
 
-    // Relationships
     public function creator()
     {
         return $this->belongsTo(Administrator::class, 'created_by');
     }
 
-    // Scope
     public function scopeQueued($query)
     {
         return $query->where('status', 'Queued');

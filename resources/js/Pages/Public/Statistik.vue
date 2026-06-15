@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 import { 
     Users, 
@@ -21,13 +22,11 @@ const props = defineProps({
 
 const activeTab = ref('demografi');
 
-// Format helpers
 const formatPercent = (val, total) => {
     if (!total) return '0%';
     return `${((val / total) * 100).toFixed(1)}%`;
 };
 
-// Calculate summary numbers
 const totalPenduduk = computed(() => props.demografi?.total_penduduk ?? 0);
 const totalLakiLaki = computed(() => props.demografi?.laki_laki ?? 0);
 const totalPerempuan = computed(() => props.demografi?.perempuan ?? 0);
@@ -37,7 +36,6 @@ const suratSelesai = computed(() => props.layanan?.pengajuan_surat?.selesai ?? 0
 const suratPending = computed(() => props.layanan?.pengajuan_surat?.pending ?? 0);
 const suratDitolak = computed(() => props.layanan?.pengajuan_surat?.ditolak ?? 0);
 
-// Sortable structures
 const agamaSorted = computed(() => {
     if (!props.demografi?.per_agama) return [];
     return Object.entries(props.demografi.per_agama)
@@ -74,7 +72,14 @@ const jenisSuratSorted = computed(() => {
 </script>
 
 <template>
-    <!-- Gampong Editorial Header -->
+    <Head>
+        <title>Statistik Demografi & Layanan - Gampong Udeung, Pidie Jaya, Aceh</title>
+        <meta name="description" content="Visualisasi data demografi kependudukan secara real-time dan statistik aktivitas pelayanan surat di Gampong Udeung, Pidie Jaya." />
+        <meta name="keywords" content="Statistik Kependudukan, Grafik Penduduk Udeung, Demografi Pidie Jaya, Transparansi Data Desa" />
+        <meta property="og:title" content="Statistik Demografi & Layanan - Gampong Udeung, Pidie Jaya, Aceh" />
+        <meta property="og:description" content="Visualisasi data demografi kependudukan secara real-time dan statistik aktivitas pelayanan surat di Gampong Udeung, Pidie Jaya." />
+    </Head>
+
     <header class="bg-white border-b border-gray-200 py-16">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="max-w-3xl">
@@ -93,7 +98,6 @@ const jenisSuratSorted = computed(() => {
         </div>
     </header>
 
-    <!-- Navigation Tab Bar -->
     <div class="bg-white border-b border-gray-200 sticky top-[73px] z-20">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="flex gap-8">
@@ -115,16 +119,12 @@ const jenisSuratSorted = computed(() => {
         </div>
     </div>
 
-    <!-- Main Statistics Canvas -->
     <main class="py-12 bg-[#F8F9FA] min-h-[500px]">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             
-            <!-- Tab 1: Demografi -->
             <div v-if="activeTab === 'demografi'" class="space-y-12">
                 
-                <!-- Headline Cards -->
                 <div class="grid gap-6 md:grid-cols-3">
-                    <!-- Card 1 -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[160px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Total Warga Aktif</span>
@@ -136,7 +136,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                     </div>
                     
-                    <!-- Card 2 -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[160px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Rasio Jenis Kelamin</span>
@@ -153,7 +152,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                     </div>
 
-                    <!-- Card 3 -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[160px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Total Kepala Keluarga</span>
@@ -166,9 +164,7 @@ const jenisSuratSorted = computed(() => {
                     </div>
                 </div>
 
-                <!-- Detailed Breakdowns -->
                 <div class="grid gap-8 lg:grid-cols-2">
-                    <!-- Pekerjaan -->
                     <section class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
                         <div class="mb-6 flex items-center justify-between">
                             <h3 class="text-lg font-normal text-[#202124] flex items-center gap-2">
@@ -192,7 +188,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                     </section>
 
-                    <!-- Kelompok Usia -->
                     <section class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
                         <div class="mb-6 flex items-center justify-between">
                             <h3 class="text-lg font-normal text-[#202124] flex items-center gap-2">
@@ -215,7 +210,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                     </section>
 
-                    <!-- Pendidikan Terakhir -->
                     <section class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
                         <div class="mb-6">
                             <h3 class="text-lg font-normal text-[#202124] flex items-center gap-2">
@@ -238,7 +232,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                     </section>
 
-                    <!-- Kepercayaan / Agama -->
                     <section class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
                         <div class="mb-6">
                             <h3 class="text-lg font-normal text-[#202124] flex items-center gap-2">
@@ -263,11 +256,8 @@ const jenisSuratSorted = computed(() => {
                 </div>
             </div>
 
-            <!-- Tab 2: Layanan Surat -->
             <div v-else class="space-y-12">
-                <!-- Headline Cards -->
                 <div class="grid gap-6 md:grid-cols-4">
-                    <!-- Total -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[140px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Total Pengajuan</span>
@@ -275,7 +265,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                         <div class="text-xs text-[#5F6368] pt-2">Sejak sistem diluncurkan</div>
                     </div>
-                    <!-- Selesai -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[140px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Selesai / Terbit</span>
@@ -283,7 +272,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                         <div class="text-xs text-[#5F6368] pt-2">Tingkat penyelesaian: {{ formatPercent(suratSelesai, totalSurat) }}</div>
                     </div>
-                    <!-- Pending -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[140px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Sedang Antre</span>
@@ -291,7 +279,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                         <div class="text-xs text-[#5F6368] pt-2">Butuh respon admin desa</div>
                     </div>
-                    <!-- Ditolak -->
                     <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[140px]">
                         <div>
                             <span class="text-xs font-semibold text-[#5F6368] uppercase tracking-wider block mb-1">Berkas Ditolak</span>
@@ -301,9 +288,7 @@ const jenisSuratSorted = computed(() => {
                     </div>
                 </div>
 
-                <!-- Detail List -->
                 <div class="grid gap-8 lg:grid-cols-3">
-                    <!-- Jenis Surat Terbanyak -->
                     <section class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm lg:col-span-2">
                         <div class="mb-6 flex items-center justify-between">
                             <h3 class="text-base font-normal text-[#202124] flex items-center gap-2">
@@ -327,7 +312,6 @@ const jenisSuratSorted = computed(() => {
                         </div>
                     </section>
 
-                    <!-- Info Alert Panel -->
                     <section class="bg-[#E8F0FE] rounded-2xl p-8 flex flex-col justify-between border border-[#D2E3FC]">
                         <div class="space-y-4">
                             <div class="flex size-10 items-center justify-center rounded-full bg-white text-[#1A73E8]">

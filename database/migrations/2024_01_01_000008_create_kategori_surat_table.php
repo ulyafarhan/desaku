@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kategori_surat', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('kode_surat', 20)->unique();
             $table->string('nama_surat', 100);
             $table->string('template_view', 100);

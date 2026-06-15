@@ -22,7 +22,6 @@ class CitizenSubmissionController extends Controller
         $keluarga = $warga->keluarga;
         $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
 
-        // Family members for "submit on behalf" dropdown
         $anggotaKeluarga = collect();
         if ($isKepalaKeluarga && $keluarga) {
             $anggotaKeluarga = Penduduk::where('no_kk', $keluarga->no_kk)
@@ -49,7 +48,6 @@ class CitizenSubmissionController extends Controller
                 ]);
         }
 
-        // Current warga data for auto-fill
         $wargaData = [
             'nik' => $warga->nik,
             'nama_lengkap' => $warga->nama_lengkap,
@@ -90,7 +88,6 @@ class CitizenSubmissionController extends Controller
         $warga = $request->user('penduduk');
         $kategori = KategoriSurat::query()->active()->findOrFail($validated['kategori_surat_id']);
 
-        // Validate that the nik_pemohon belongs to the same family
         $nikPemohon = $validated['nik_pemohon'];
         if ($nikPemohon !== $warga->nik) {
             $keluarga = $warga->keluarga;
@@ -103,14 +100,12 @@ class CitizenSubmissionController extends Controller
             );
         }
 
-        // Validate schema fields
         foreach ($kategori->schema_isian ?? [] as $field) {
             if (($field['required'] ?? false) && blank(data_get($validated, 'data_isian.' . $field['field']))) {
                 return back()->withErrors(['data_isian.' . $field['field'] => 'Kolom ini wajib diisi.'])->withInput();
             }
         }
 
-        // Validate and process document fields
         $uploadedPaths = [];
         $pengajuan = null;
 
@@ -120,23 +115,22 @@ class CitizenSubmissionController extends Controller
             foreach ($kategori->syarat_dokumen ?? [] as $dokumen) {
                 $key = str($dokumen)->lower()->slug('_')->toString();
 
-                // Check if there is an uploaded file
                 if ($request->hasFile("file_syarat.$key")) {
+                    $request->validate([
+                        "file_syarat.$key" => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+                    ]);
                     $file = $request->file("file_syarat.$key");
                     $path = $file->store('submissions/documents', 'public');
                     $uploadedPaths[$key] = $path;
 
-                    // Auto-save to profile if it's KTP or KK
                     if ($key === 'ktp' || $key === 'foto_ktp') {
                         $pemohon->update(['foto_ktp' => $path]);
                     } elseif ($key === 'kk' || $key === 'kartu_keluarga' || $key === 'foto_kk') {
                         $pemohon->update(['foto_kk' => $path]);
                     }
                 } else {
-                    // Check if there is an existing path string
                     $value = data_get($validated, "file_syarat.$key");
                     if (is_string($value) && !blank($value)) {
-                        // Strip storage prefix if it's a full URL
                         $storageUrl = asset('storage/');
                         if (str_starts_with($value, $storageUrl)) {
                             $value = substr($value, strlen($storageUrl));
@@ -174,7 +168,6 @@ class CitizenSubmissionController extends Controller
         $keluarga = $warga->keluarga;
         $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
 
-        // Allow viewing if the submission is from self or from a family member (if kepala keluarga)
         $canView = $pengajuan->nik_pemohon === $warga->nik;
         if (!$canView && $isKepalaKeluarga && $keluarga) {
             $canView = Penduduk::where('nik', $pengajuan->nik_pemohon)
@@ -194,7 +187,6 @@ class CitizenSubmissionController extends Controller
         $keluarga = $warga->keluarga;
         $isKepalaKeluarga = $keluarga && $keluarga->kepala_keluarga_nik === $warga->nik;
 
-        // Allow viewing if the submission is from self or from a family member (if kepala keluarga)
         $canView = $pengajuan->nik_pemohon === $warga->nik;
         if (!$canView && $isKepalaKeluarga && $keluarga) {
             $canView = Penduduk::where('nik', $pengajuan->nik_pemohon)

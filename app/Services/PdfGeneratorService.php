@@ -10,17 +10,13 @@ class PdfGeneratorService
 {
     public function generateSuratPdf(PengajuanSurat $pengajuan): string
     {
-        // Generate QR Hash
         $qrHash = $this->generateQrHash($pengajuan);
         $pengajuan->update(['qr_hash' => $qrHash]);
 
-        // Generate QR Code Image
         $qrCodePath = $this->generateQrCode($qrHash);
 
-        // Ensure Logo is present
         $this->ensureLogoDownloaded();
 
-        // Prepare data untuk template
         $data = [
             'pengajuan' => $pengajuan,
             'pemohon' => $pengajuan->pemohon,
@@ -31,19 +27,15 @@ class PdfGeneratorService
             'tanggal_surat' => now()->locale('id')->isoFormat('D MMMM YYYY'),
         ];
 
-        // Render HTML dari blade template
         $html = view('pdf.surat.' . $pengajuan->kategori->template_view, $data)->render();
 
-        // Generate PDF menggunakan library (contoh: DomPDF atau Snappy)
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
         
-        // Save PDF
         $filename = 'surat_' . $pengajuan->nomor_registrasi . '_' . time() . '.pdf';
         $pdfPath = 'surat/' . $filename;
         
         Storage::disk('public')->put($pdfPath, $pdf->output());
 
-        // Update pengajuan dengan URL PDF
         $pdfUrl = Storage::disk('public')->url($pdfPath);
         $pengajuan->update(['file_pdf_url' => $pdfUrl]);
 
@@ -64,7 +56,6 @@ class PdfGeneratorService
 
     protected function generateQrCode(string $hash): string
     {
-        // Generate QR Code menggunakan library (contoh: SimpleSoftwareIO/simple-qrcode)
         $verificationUrl = config('app.url') . '/verifikasi/' . $hash;
         
         $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
