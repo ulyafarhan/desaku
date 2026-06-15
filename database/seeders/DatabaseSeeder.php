@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             AdministratorSeeder::class,
             PengaturanGampongSeeder::class,
             KategoriSuratSeeder::class,
-            DummyDataSeeder::class,
+            WilayahPendudukSeeder::class,
         ]);
     }
 }
