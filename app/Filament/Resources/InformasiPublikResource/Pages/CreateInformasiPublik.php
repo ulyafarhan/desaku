@@ -5,6 +5,16 @@ namespace App\Filament\Resources\InformasiPublikResource\Pages;
 use App\Filament\Resources\InformasiPublikResource;
 use Filament\Resources\Pages\CreateRecord;
 
+/**
+ * Halaman pembuatan artikel informasi publik gampong.
+ *
+ * Menangani logika khusus sebelum menyimpan data, yaitu normalisasi field cover_image
+ * yang dapat berasal dari upload file (cover_image_file) maupun URL eksternal (cover_image_url),
+ * sehingga hanya satu nilai yang disimpan ke database.
+ *
+ * @see \App\Filament\Resources\InformasiPublikResource
+ * @see \App\Models\InformasiPublik
+ */
 class CreateInformasiPublik extends CreateRecord
 {
     protected static string $resource = InformasiPublikResource::class;

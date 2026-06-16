@@ -5,8 +5,17 @@ namespace App\Services;
 use App\Models\BotKnowledge;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Service untuk pencarian basis pengetahuan bot Telegram.
+ *
+ * Mengelola FAQ statis dan konteks RAG dari database (BotKnowledge)
+ * maupun konfigurasi lokal untuk menjawab pertanyaan warga.
+ */
 class TelegramKnowledgeService
 {
+    /**
+     * Mengambil data pengetahuan aktif dari database dengan cache 24 jam.
+     */
     protected function getActiveKnowledges()
     {
         try {
@@ -18,6 +27,11 @@ class TelegramKnowledgeService
         }
     }
 
+    /**
+     * Mencari jawaban statis (FAQ/greeting) berdasarkan input teks.
+     *
+     * Prioritas: database FAQ -> greeting config -> FAQ config.
+     */
     public function findStaticAnswer(string $text): ?string
     {
         $normalizedText = trim(strtolower($text));
@@ -55,6 +69,12 @@ class TelegramKnowledgeService
         return null;
     }
 
+    /**
+     * Mengambil konteks dokumen dari knowledge base (RAG).
+     *
+     * Mencari di database KB terlebih dahulu, lalu fallback ke
+     * konfigurasi lokal berdasarkan kata kunci yang cocok.
+     */
     public function retrieveContext(string $text): string
     {
         $normalizedText = trim(strtolower($text));
@@ -100,6 +120,9 @@ class TelegramKnowledgeService
         return implode(' ', $relevantBlocks);
     }
 
+    /**
+     * Memeriksa apakah teks mengandung salah satu dari kata kunci.
+     */
     protected function matchesAnyKeyword(string $text, array $keywords): bool
     {
         foreach ($keywords as $keyword) {

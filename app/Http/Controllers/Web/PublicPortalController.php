@@ -10,8 +10,14 @@ use App\Services\StatistikService;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk mengelola halaman publik dan layanan portal umum.
+ */
 class PublicPortalController extends Controller
 {
+    /**
+     * Menyajikan halaman beranda publik dengan statistik gampong dan berita terbaru.
+     */
     public function home(StatistikService $statistik): Response
     {
         return Inertia::render('Public/Home', [
@@ -31,6 +37,9 @@ class PublicPortalController extends Controller
         ]);
     }
 
+    /**
+     * Menyajikan halaman profil gampong dan daftar perangkat desa.
+     */
     public function profile(): Response
     {
         return Inertia::render('Public/Profile', [
@@ -54,6 +63,9 @@ class PublicPortalController extends Controller
         ]);
     }
 
+    /**
+     * Menyajikan halaman indeks kumpulan informasi publik/berita/pengumuman gampong.
+     */
     public function information(): Response
     {
         $query = InformasiPublik::query()
@@ -84,6 +96,9 @@ class PublicPortalController extends Controller
         ]);
     }
 
+    /**
+     * Menyajikan detail dari suatu berita/pengumuman publik berdasarkan slug.
+     */
     public function informationShow(string $slug): Response
     {
         return Inertia::render('Public/Information/Show', [
@@ -95,6 +110,9 @@ class PublicPortalController extends Controller
         ]);
     }
 
+    /**
+     * Menyajikan halaman beranda verifikasi keabsahan surat lewat QR Code.
+     */
     public function verifyIndex(): Response
     {
         return Inertia::render('Public/Verify', [
@@ -102,6 +120,9 @@ class PublicPortalController extends Controller
         ]);
     }
 
+    /**
+     * Memproses verifikasi detail data surat berdasarkan hash tanda tangan elektronik.
+     */
     public function verify(string $hash): Response
     {
         $pengajuan = PengajuanSurat::query()
@@ -128,6 +149,9 @@ class PublicPortalController extends Controller
         ]);
     }
 
+    /**
+     * Menyajikan halaman visualisasi data demografi dan statistik layanan gampong.
+     */
     public function statistik(StatistikService $statistik): Response
     {
         return Inertia::render('Public/Statistik', [

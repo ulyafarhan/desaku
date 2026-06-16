@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Support\Str;
 use App\Jobs\SendNewsTelegramNotificationJob;
 
+/**
+ * Model untuk merepresentasikan artikel berita dan pengumuman gampong.
+ */
 class InformasiPublik extends Model
 {
     use HasUlids;
@@ -35,6 +38,9 @@ class InformasiPublik extends Model
         ];
     }
 
+    /**
+     * Accessor untuk mendapatkan URL cover image secara dinamis.
+     */
     public function getCoverImageAttribute($value)
     {
         if (empty($value)) {
@@ -46,11 +52,17 @@ class InformasiPublik extends Model
         return \Illuminate\Support\Facades\Storage::url($value);
     }
 
+    /**
+     * Relasi ke administrator/perangkat desa yang mempublikasikan berita ini.
+     */
     public function author()
     {
         return $this->belongsTo(Administrator::class, 'author_id');
     }
 
+    /**
+     * Scope query untuk hanya menyaring artikel yang telah dipublikasikan.
+     */
     public function scopePublished($query)
     {
         return $query->where('is_published', true);

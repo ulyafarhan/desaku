@@ -17,6 +17,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Resource Filament untuk mengelola akun Administrator (Perangkat Desa).
+ */
 class AdministratorResource extends Resource
 {
     protected static ?string $model = Administrator::class;
@@ -36,6 +39,9 @@ class AdministratorResource extends Resource
 
     protected static ?int $navigationSort = 7;
 
+    /**
+     * Membangun form isian akun administrator.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -71,6 +77,9 @@ class AdministratorResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar administrator.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -119,6 +128,9 @@ class AdministratorResource extends Resource
             ->emptyStateIcon('heroicon-o-shield-check');
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

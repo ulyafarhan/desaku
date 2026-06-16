@@ -15,24 +15,78 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Artisan;
 
+/**
+ * Halaman kustom Filament untuk mengelola pengaturan sistem terintegrasi.
+ *
+ * Mencakup tiga kelompok konfigurasi utama:
+ * 1. **Koneksi AI** — memilih provider AI aktif (Gemini/OpenAI) serta mengelola kunci API dan model.
+ * 2. **Penyimpanan Awan** — mengatur media penyimpanan utama (lokal atau S3/R2) beserta kredensial dan endpoint.
+ * 3. **Aset Visual Desa** — unggah dan kelola logo, favicon, dan banner desa.
+ *
+ * Halaman ini juga menyediakan tombol untuk menjalankan migrasi file dari penyimpanan lokal ke cloud
+ * melalui perintah Artisan `storage:migrate-to-cloud`.
+ */
 class PengaturanSistem extends Page implements HasForms
 {
     use InteractsWithForms;
 
+    /**
+     * Judul halaman yang ditampilkan di tab/heading browser.
+     *
+     * @var string|null
+     */
     protected static ?string $title = 'Pengaturan Sistem';
 
+    /**
+     * Label navigasi yang tampil di menu sidebar panel admin.
+     *
+     * @var string|null
+     */
     protected static ?string $navigationLabel = 'Pengaturan Sistem';
 
+    /**
+     * Ikon navigasi sidebar yang diambil dari heroicons.
+     *
+     * @var string|\BackedEnum|null
+     */
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-adjustments-vertical';
 
+    /**
+     * Grup navigasi tempat menu ini dikelompokkan di sidebar.
+     *
+     * @var string|\UnitEnum|null
+     */
     protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
+    /**
+     * Urutan tampilan menu dalam grup navigasi.
+     *
+     * @var int|null
+     */
     protected static ?int $navigationSort = 9;
 
+    /**
+     * Path ke file view yang merender halaman ini.
+     *
+     * @var string
+     */
     protected static string $view = 'filament.pages.pengaturan-sistem';
 
+    /**
+     * Data formulir yang digunakan untuk mengikat (binding) nilai input.
+     *
+     * @var array|null
+     */
     public ?array $data = [];
 
+    /**
+     * Mengisi data awal formulir dari penyimpanan pengaturan desa.
+     *
+     * Membaca seluruh nilai konfigurasi dari model `PengaturanGampong`
+     * dan mengisi array `$data` untuk ditampilkan di formulir.
+     *
+     * @return void
+     */
     public function mount(): void
     {
         $this->form->fill([
@@ -41,7 +95,7 @@ class PengaturanSistem extends Page implements HasForms
             'ai_openai_key' => PengaturanGampong::get('ai_openai_key'),
             'ai_openai_model' => PengaturanGampong::get('ai_openai_model', 'gpt-4o-mini'),
             'ai_openai_base_url' => PengaturanGampong::get('ai_openai_base_url', 'https://api.openai.com/v1'),
-            
+
             'storage_active_disk' => PengaturanGampong::get('storage_active_disk', 'public'),
             'storage_s3_key' => PengaturanGampong::get('storage_s3_key'),
             'storage_s3_secret' => PengaturanGampong::get('storage_s3_secret'),
@@ -50,13 +104,27 @@ class PengaturanSistem extends Page implements HasForms
             'storage_s3_endpoint' => PengaturanGampong::get('storage_s3_endpoint'),
             'storage_s3_url' => PengaturanGampong::get('storage_s3_url'),
             'storage_s3_use_path_style_endpoint' => PengaturanGampong::get('storage_s3_use_path_style_endpoint', '0'),
-            
+
             'logo_gampong' => PengaturanGampong::get('logo_gampong'),
             'logo_fav' => PengaturanGampong::get('logo_fav'),
             'banner_gampong' => PengaturanGampong::get('banner_gampong'),
         ]);
     }
 
+    /**
+     * Mendefinisikan skema formulir pengaturan sistem dengan tiga tab.
+     *
+     * Tab yang tersedia:
+     * - **Koneksi AI**: Select provider, input API key, model, dan base URL.
+     * - **Penyimpanan Awan**: Select media penyimpanan, input kredensial S3/R2 (key, secret, bucket, region, endpoint, URL).
+     * - **Aset Visual Desa**: File upload untuk logo, favicon, dan banner desa.
+     *
+     * Setiap field yang bersifat opsional akan ditampilkan secara kondisional
+     * berdasarkan nilai field lain (live).
+     *
+     * @param  Form  $form Instance formulir Filament.
+     * @return Form       Formulir yang telah dilengkapi konfigurasi skema.
+     */
     public function form(Form $form): Form
     {
         return $form
@@ -168,6 +236,15 @@ class PengaturanSistem extends Page implements HasForms
             ->statePath('data');
     }
 
+    /**
+     * Menyimpan seluruh data formulir ke penyimpanan pengaturan desa.
+     *
+     * Setiap field dari `$data` akan disimpan melalui model `PengaturanGampong::set()`
+     * dengan deteksi tipe data otomatis (boolean, integer, atau string).
+     * Setelah berhasil, notifikasi sukses akan dikirimkan ke antarmuka pengguna.
+     *
+     * @return void
+     */
     public function save(): void
     {
         $data = $this->form->getState();
@@ -186,6 +263,17 @@ class PengaturanSistem extends Page implements HasForms
             ->send();
     }
 
+    /**
+     * Menjalankan migrasi file dari penyimpanan lokal ke penyimpanan cloud.
+     *
+     * Memanggil perintah Artisan `storage:migrate-to-cloud` dan menampilkan
+     * hasilnya dalam bentuk notifikasi:
+     * - Sukses   => menampilkan output migrasi.
+     * - Gagal    => menampilkan pesan kesalahan umum.
+     * - Exception => menampilkan pesan exception.
+     *
+     * @return void
+     */
     public function runMigration(): void
     {
         try {

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * SEEDER — Pengaturan Gampong
+ *
+ * Mengisi data konfigurasi awal Gampong Udeung, meliputi
+ * identitas wilayah, kontak, pejabat, dan visi-misi.
+ *
+ * @see \App\Models\PengaturanGampong
+ */
+
 namespace Database\Seeders;
 
 use App\Models\PengaturanGampong;
@@ -7,6 +16,14 @@ use Illuminate\Database\Seeder;
 
 class PengaturanGampongSeeder extends Seeder
 {
+    /**
+     * Buat 12 pengaturan default untuk Gampong Udeung.
+     *
+     * Identitas wilayah: nama_gampong, kecamatan, kabupaten, provinsi, kode_pos
+     * Kontak          : email, telepon
+     * Pejabat         : nama_keuchik, nip_keuchik
+     * Profil          : logo_gampong, visi (string), misi (json — array)
+     */
     public function run(): void
     {
         $settings = [

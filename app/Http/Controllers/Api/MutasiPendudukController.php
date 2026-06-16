@@ -10,13 +10,22 @@ use App\Services\TelegramService;
 use App\Services\StatistikService;
 use Illuminate\Http\Request;
 
+/**
+ * Controller untuk menangani pendaftaran, pengambilan, dan verifikasi riwayat mutasi penduduk lewat API.
+ */
 class MutasiPendudukController extends Controller
 {
+    /**
+     * Menginjeksi dependensi TelegramService dan StatistikService.
+     */
     public function __construct(
         protected TelegramService $telegram,
         protected StatistikService $statistik
     ) {}
 
+    /**
+     * Memproses pengajuan mutasi penduduk baru (kelahiran/kematian/kedatangan/kepindahan).
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -52,6 +61,9 @@ class MutasiPendudukController extends Controller
         ], 201);
     }
 
+    /**
+     * Mengambil daftar riwayat mutasi milik warga yang sedang login.
+     */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -64,6 +76,9 @@ class MutasiPendudukController extends Controller
         return response()->json($mutasi);
     }
 
+    /**
+     * Mengambil seluruh data mutasi penduduk untuk panel admin desa.
+     */
     public function adminIndex(Request $request)
     {
         $query = MutasiPenduduk::with(['penduduk', 'verifikator']);
@@ -81,6 +96,9 @@ class MutasiPendudukController extends Controller
         return response()->json($mutasi);
     }
 
+    /**
+     * Menyetujui pengajuan mutasi dan memperbarui status aktif/pasif kependudukan warga terkait.
+     */
     public function approve(Request $request, $id)
     {
         $mutasi = MutasiPenduduk::findOrFail($id);
@@ -115,6 +133,9 @@ class MutasiPendudukController extends Controller
         ]);
     }
 
+    /**
+     * Menolak pengajuan mutasi penduduk.
+     */
     public function reject(Request $request, $id)
     {
         $mutasi = MutasiPenduduk::findOrFail($id);

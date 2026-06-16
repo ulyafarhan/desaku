@@ -7,12 +7,21 @@ use App\Models\ChatbotLog;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Provider AI untuk layanan OpenAI API.
+ *
+ * Mengimplementasikan AiProviderInterface untuk menghasilkan respons chatbot,
+ * memperbaiki copywriting artikel, dan menghasilkan meta data SEO.
+ */
 class OpenAiProvider implements AiProviderInterface
 {
     protected string $apiKey;
     protected string $model;
     protected string $baseUrl;
 
+    /**
+     * Menginisialisasi konfigurasi API OpenAI dari konfigurasi aplikasi.
+     */
     public function __construct()
     {
         $this->apiKey = config('services.ai.openai.api_key') ?? '';
@@ -20,6 +29,9 @@ class OpenAiProvider implements AiProviderInterface
         $this->baseUrl = config('services.ai.openai.base_url', 'https://api.openai.com/v1');
     }
 
+    /**
+     * Menghasilkan respons AI untuk pesan pengguna dengan dukungan cache semantik dan RAG.
+     */
     public function generateResponse(string $userMessage, string $chatId, ?string $context = null): ?string
     {
         try {
@@ -80,6 +92,9 @@ class OpenAiProvider implements AiProviderInterface
         }
     }
 
+    /**
+     * Memperbaiki dan menyempurnakan copywriting artikel berita desa.
+     */
     public function fixCopywriting(string $text, ?string $title = null): ?string
     {
         try {
@@ -123,6 +138,9 @@ class OpenAiProvider implements AiProviderInterface
         }
     }
 
+    /**
+     * Menghasilkan meta deskripsi dan kata kunci SEO untuk artikel berita.
+     */
     public function generateSeoMetadata(string $title, string $content): ?array
     {
         try {
@@ -175,6 +193,9 @@ class OpenAiProvider implements AiProviderInterface
         }
     }
 
+    /**
+     * Memeriksa ketersediaan layanan API OpenAI.
+     */
     public function checkHealth(): bool
     {
         try {
@@ -190,16 +211,25 @@ class OpenAiProvider implements AiProviderInterface
         }
     }
 
+    /**
+     * Menyusun system prompt dengan konteks RAG dari dokumen referensi.
+     */
     protected function getRAGSystemPrompt(string $context): string
     {
         return "Anda adalah asisten virtual resmi Gampong Udeung, Kecamatan Bandar Baru, Pidie Jaya, Aceh.\nJawablah pertanyaan warga secara sopan dan formal HANYA berdasarkan dokumen referensi berikut:\n\n---\nDOKUMEN REFERENSI:\n{$context}\n---\n\nJika informasi tidak ada dalam dokumen referensi di atas, jawab dengan sopan bahwa Anda tidak memiliki informasi detail mengenai hal tersebut dan sarankan untuk menghubungi kantor desa Udeung.";
     }
 
+    /**
+     * Menyusun system prompt default untuk percakapan umum dengan warga.
+     */
     protected function getSystemPrompt(): string
     {
         return "Anda adalah asisten virtual resmi Gampong Udeung, Kecamatan Bandar Baru, Kabupaten Pidie Jaya, Provinsi Aceh.\n\nTUGAS ANDA:\n1. Menjawab pertanyaan warga tentang prosedur administrasi desa\n2. Memberikan informasi tentang persyaratan surat-menyurat\n3. Menjelaskan cara menggunakan sistem SIG-Udeung\n4. Memberikan informasi umum tentang Gampong Udeung\n\nJENIS SURAT YANG TERSEDIA:\n- Surat Keterangan Domisili\n- Surat Keterangan Tidak Mampu (SKTM)\n- Surat Keterangan Usaha\n- Surat Pengantar KTP\n- Surat Keterangan Kelahiran\n\nPROSEDUR UMUM:\n1. Login ke PWA menggunakan NIK\n2. Pilih jenis surat yang dibutuhkan\n3. Isi formulir dan upload dokumen persyaratan\n4. Tunggu verifikasi dari perangkat desa\n5. Surat akan dikirim via Telegram jika disetujui\n\nMUTASI KEPENDUDUKAN:\n- Kelahiran: Upload akta kelahiran\n- Kematian: Upload surat kematian dari RS/Puskesmas\n- Kedatangan: Upload surat pindah dari desa asal\n- Kepindahan: Ajukan surat pindah\n\nATURAN KOMUNIKASI:\n- Gunakan bahasa Indonesia yang sopan dan formal\n- Jika tidak tahu jawaban, arahkan untuk menghubungi kantor desa\n- Jangan memberikan informasi pribadi warga\n- Fokus pada informasi prosedural dan administratif\n\nJawab pertanyaan berikut dengan jelas dan membantu:";
     }
 
+    /**
+     * Menemukan respons cache berdasarkan kecocokan semantik dengan pertanyaan sebelumnya.
+     */
     protected function findSemanticCachedResponse(string $userMessage): ?string
     {
         $normalized = trim(strtolower($userMessage));
@@ -274,6 +304,9 @@ class OpenAiProvider implements AiProviderInterface
         return null;
     }
 
+    /**
+     * Melakukan tokenisasi dan filtering stopwords untuk pencocokan semantik.
+     */
     protected function tokenize(string $text): array
     {
         $clean = preg_replace('/[^\w\s]/u', '', $text);

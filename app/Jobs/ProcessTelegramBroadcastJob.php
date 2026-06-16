@@ -12,14 +12,23 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Job untuk memproses pengiriman pesan siaran (broadcast) massal ke warga via bot Telegram.
+ */
 class ProcessTelegramBroadcastJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * Inisialisasi Job dengan objek antrean broadcast.
+     */
     public function __construct(
         public TelegramBroadcastQueue $broadcast
     ) {}
 
+    /**
+     * Mengeksekusi pengiriman pesan broadcast berdasarkan target kategori warga.
+     */
     public function handle(TelegramService $telegram): void
     {
         try {
@@ -56,6 +65,9 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
         }
     }
 
+    /**
+     * Mendapatkan daftar chat ID Telegram berdasarkan kategori target.
+     */
     protected function getTargetChatIds(string $kategori): array
     {
         $query = Penduduk::whereNotNull('telegram_chat_id');

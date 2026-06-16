@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
+/**
+ * Model untuk merepresentasikan data permohonan pengajuan surat warga.
+ */
 class PengajuanSurat extends Model
 {
     use HasUlids;
@@ -28,6 +31,9 @@ class PengajuanSurat extends Model
         'diverifikasi_oleh',
     ];
 
+    /**
+     * Accessor untuk memformat nomor registrasi surat resmi secara dinamis.
+     */
     public function getNomorSuratAttribute(): string
     {
         $counter = self::where('kategori_surat_id', $this->kategori_surat_id)
@@ -54,26 +60,41 @@ class PengajuanSurat extends Model
         ];
     }
 
+    /**
+     * Relasi ke data penduduk yang mengajukan surat ini.
+     */
     public function pemohon()
     {
         return $this->belongsTo(Penduduk::class, 'nik_pemohon', 'nik');
     }
 
+    /**
+     * Relasi ke kategori/template surat yang diajukan.
+     */
     public function kategori()
     {
         return $this->belongsTo(KategoriSurat::class, 'kategori_surat_id');
     }
 
+    /**
+     * Relasi ke administrator yang menolak/menyetujui pengajuan surat ini.
+     */
     public function verifikator()
     {
         return $this->belongsTo(Administrator::class, 'diverifikasi_oleh');
     }
 
+    /**
+     * Relasi ke kumpulan log riwayat perubahan status (tracking) pengajuan.
+     */
     public function tracking()
     {
         return $this->hasMany(TrackingPengajuanSurat::class, 'pengajuan_surat_id');
     }
 
+    /**
+     * Scope query untuk menyaring surat yang masih berstatus pending.
+     */
     public function scopePending($query)
     {
         return $query->where('status', 'Pending');
@@ -95,6 +116,9 @@ class PengajuanSurat extends Model
         });
     }
 
+    /**
+     * Menghasilkan nomor registrasi pengajuan surat harian secara otomatis.
+     */
     public static function generateNomorRegistrasi(): string
     {
         $prefix = date('Ymd');

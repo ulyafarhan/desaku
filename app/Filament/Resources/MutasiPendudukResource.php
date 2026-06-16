@@ -19,6 +19,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola data permohonan mutasi kependudukan warga.
+ */
 class MutasiPendudukResource extends Resource
 {
     protected static ?string $model = MutasiPenduduk::class;
@@ -38,17 +41,26 @@ class MutasiPendudukResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    /**
+     * Menampilkan jumlah mutasi pending sebagai badge navigasi.
+     */
     public static function getNavigationBadge(): ?string
     {
         $count = MutasiPenduduk::query()->pending()->count();
         return $count > 0 ? (string) $count : null;
     }
 
+    /**
+     * Warna badge navigasi.
+     */
     public static function getNavigationBadgeColor(): ?string
     {
         return 'warning';
     }
 
+    /**
+     * Membangun form isian data mutasi penduduk.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -98,6 +110,9 @@ class MutasiPendudukResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar mutasi penduduk dengan aksi setujui/tolak.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -179,11 +194,17 @@ class MutasiPendudukResource extends Resource
             ->emptyStateIcon('heroicon-o-arrow-path');
     }
 
+    /**
+     * Query dengan eager load relasi penduduk.
+     */
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->with(['penduduk']);
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

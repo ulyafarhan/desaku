@@ -9,16 +9,33 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Event yang dipicu ketika status pengajuan surat warga diperbarui.
+ * Berfungsi untuk mengirimkan siaran (broadcast) perubahan status ke panel warga maupun admin.
+ */
 class PengajuanStatusUpdated
 {
     use Dispatchable, SerializesModels;
 
+    /**
+     * Membuat instance event baru.
+     *
+     * @param PengajuanSurat $pengajuan Objek pengajuan surat yang statusnya diperbarui.
+     * @param string $oldStatus Status lama sebelum diperbarui.
+     * @param string $newStatus Status baru setelah diperbarui.
+     */
     public function __construct(
         public PengajuanSurat $pengajuan,
         public string $oldStatus,
         public string $newStatus,
     ) {}
 
+    /**
+     * Mendapatkan saluran (channel) tempat event ini harus disiarkan.
+     * Siaran dikirimkan ke channel umum 'pengajuan' dan channel privat/spesifik milik warga pemohon.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
     public function broadcastOn(): array
     {
         return [
@@ -27,6 +44,11 @@ class PengajuanStatusUpdated
         ];
     }
 
+    /**
+     * Mendapatkan data yang akan dikirimkan bersama dengan siaran event.
+     *
+     * @return array<string, mixed>
+     */
     public function broadcastWith(): array
     {
         return [

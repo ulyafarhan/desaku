@@ -7,8 +7,14 @@ use App\Models\InformasiPublik;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 
+/**
+ * Controller untuk mengelola data artikel berita dan pengumuman gampong lewat API.
+ */
 class InformasiPublikController extends Controller
 {
+    /**
+     * Mengambil daftar seluruh artikel informasi publik yang telah terbit.
+     */
     public function index(Request $request)
     {
         $query = InformasiPublik::published()->with('author');
@@ -22,6 +28,9 @@ class InformasiPublikController extends Controller
         return response()->json($informasi);
     }
 
+    /**
+     * Menampilkan detail informasi publik tertentu berdasarkan slug.
+     */
     public function show($slug)
     {
         $informasi = InformasiPublik::where('slug', $slug)
@@ -34,6 +43,9 @@ class InformasiPublikController extends Controller
         ]);
     }
 
+    /**
+     * Mengambil daftar informasi publik untuk keperluan panel admin (termasuk draf).
+     */
     public function adminIndex(Request $request)
     {
         $query = InformasiPublik::with('author');
@@ -47,6 +59,9 @@ class InformasiPublikController extends Controller
         return response()->json($informasi);
     }
 
+    /**
+     * Menyimpan artikel informasi publik baru ke database.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -76,6 +91,9 @@ class InformasiPublikController extends Controller
         ], 201);
     }
 
+    /**
+     * Memperbarui detail artikel informasi publik tertentu berdasarkan ID.
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -107,6 +125,9 @@ class InformasiPublikController extends Controller
         ]);
     }
 
+    /**
+     * Menghapus artikel informasi publik tertentu dari database.
+     */
     public function destroy($id)
     {
         $informasi = InformasiPublik::findOrFail($id);

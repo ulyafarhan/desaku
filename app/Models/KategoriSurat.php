@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
+/**
+ * Model untuk merepresentasikan template/kategori layanan persuratan gampong.
+ */
 class KategoriSurat extends Model
 {
     use HasUlids;
@@ -31,11 +34,17 @@ class KategoriSurat extends Model
         ];
     }
 
+    /**
+     * Relasi ke seluruh berkas pengajuan surat yang menggunakan kategori ini.
+     */
     public function pengajuan()
     {
         return $this->hasMany(PengajuanSurat::class, 'kategori_surat_id');
     }
 
+    /**
+     * Scope query untuk memfilter hanya template surat yang sedang aktif pelayanan.
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * RUTE KONSOL & JADWAL — SIG-Udeung
+ *
+ * Perintah Artisan kustom dan jadwal task terjadwal.
+ *
+ * Jadwal:
+ * - system:cleanup → harian pukul 02:00 (pembersihan data sementara)
+ *
+ * @see \App\Console\Commands\SystemCleanupCommand
+ */
+
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;

@@ -1,16 +1,26 @@
 <?php
 
+/**
+ * @deprecated TIDAK DIGUNAKAN — Digantikan oleh WilayahPendudukSeeder
+ *
+ * Seeder ini sebelumnya digunakan untuk data dummy, tetapi telah
+ * digantikan oleh WilayahPendudukSeeder yang menggunakan data
+ * wilayah dan penduduk autentik (nyata).
+ *
+ * @see \Database\Seeders\WilayahPendudukSeeder
+ */
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-/**
- * Deprecated: DummyDataSeeder has been replaced by WilayahPendudukSeeder to use real, authentic village data.
- */
 class DummyDataSeeder extends Seeder
 {
+    /**
+     * Tidak melakukan apa-apa — digantikan oleh WilayahPendudukSeeder.
+     */
     public function run(): void
     {
-        // No-op: replaced by WilayahPendudukSeeder.
+        // No-op: digantikan oleh WilayahPendudukSeeder.
     }
 }

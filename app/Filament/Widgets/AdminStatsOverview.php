@@ -10,6 +10,9 @@ use App\Models\PengajuanSurat;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
+/**
+ * Widget dasbor untuk menampilkan ikhtisar statistik cepat (warga, surat, mutasi, berita).
+ */
 class AdminStatsOverview extends StatsOverviewWidget
 {
     protected ?string $pollingInterval = '15s';
@@ -21,6 +24,9 @@ class AdminStatsOverview extends StatsOverviewWidget
         'echo:mutasi,MutasiStatusUpdated' => '$refresh',
     ];
 
+    /**
+     * Membangun daftar komponen statistik (cards) untuk ditampilkan di dasbor.
+     */
     protected function getStats(): array
     {
         $pendudukAktif = Penduduk::query()->aktif()->count();

@@ -6,12 +6,27 @@ use App\Models\Penduduk;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Service untuk integrasi dengan Bot API Telegram.
+ *
+ * Menyediakan fungsi kirim pesan, foto, dokumen, broadcast,
+ * notifikasi status pengajuan/mutasi, dan pengaturan webhook.
+ */
 class TelegramService
 {
+    /**
+     * Token bot Telegram dari konfigurasi services.
+     */
     protected ?string $botToken = null;
 
+    /**
+     * URL endpoint API Telegram.
+     */
     protected ?string $apiUrl = null;
 
+    /**
+     * Menginisialisasi token bot dan URL API dari konfigurasi.
+     */
     public function __construct()
     {
         $this->botToken = config('services.telegram.bot_token');
@@ -20,6 +35,11 @@ class TelegramService
         }
     }
 
+    /**
+     * Mengirim pesan teks ke chat Telegram.
+     *
+     * Mendukung parse mode HTML dan inline keyboard.
+     */
     public function sendMessage(string $chatId, string $message, ?array $keyboard = null): bool
     {
         try {
@@ -54,6 +74,9 @@ class TelegramService
         }
     }
 
+    /**
+     * Mengirim foto ke chat Telegram dengan caption.
+     */
     public function sendPhoto(string $chatId, string $photoUrl, string $caption): bool
     {
         try {
@@ -83,6 +106,11 @@ class TelegramService
         }
     }
 
+    /**
+     * Mengirim dokumen/file ke chat Telegram.
+     *
+     * Menggunakan multipart form-data untuk upload file.
+     */
     public function sendDocument(string $chatId, string $filePath, string $caption = ''): bool
     {
         try {
@@ -109,6 +137,11 @@ class TelegramService
         }
     }
 
+    /**
+     * Mengirim pesan ke banyak chat secara bertahap.
+     *
+     * Memberi jeda 50ms antar pengiriman untuk menghindari rate limit.
+     */
     public function broadcast(array $chatIds, string $message): array
     {
         $results = [
@@ -129,6 +162,9 @@ class TelegramService
         return $results;
     }
 
+    /**
+     * Mengirim notifikasi perubahan status pengajuan surat ke warga.
+     */
     public function notifyPengajuanStatus(string $nik, string $status, string $nomorRegistrasi, ?string $catatan = null): void
     {
         $penduduk = Penduduk::find($nik);
@@ -156,6 +192,9 @@ class TelegramService
         $this->sendMessage($penduduk->telegram_chat_id, $message);
     }
 
+    /**
+     * Mengirim notifikasi perubahan status mutasi kependudukan ke warga.
+     */
     public function notifyMutasiStatus(string $nik, string $jenisMutasi, string $status): void
     {
         $penduduk = Penduduk::find($nik);
@@ -173,11 +212,17 @@ class TelegramService
         $this->sendMessage($penduduk->telegram_chat_id, $message);
     }
 
+    /**
+     * Meng-escape karakter HTML untuk keamanan output.
+     */
     protected function escapeHtml(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
+    /**
+     * Mengatur webhook Telegram ke URL yang ditentukan.
+     */
     public function setWebhook(string $url): bool
     {
         try {
@@ -193,6 +238,9 @@ class TelegramService
         }
     }
 
+    /**
+     * Mendapatkan informasi bot dari API Telegram.
+     */
     public function getMe(): ?array
     {
         try {
@@ -208,6 +256,11 @@ class TelegramService
         return null;
     }
 
+    /**
+     * Mengonversi sintaks Markdown sederhana ke HTML untuk Telegram.
+     *
+     * Menangani heading, bold, italic, dan list item.
+     */
     protected function convertMarkdownToHtml(string $text): string
     {
         $text = preg_replace('/^###\s+(.+)$/m', '<b>$1</b>', $text);

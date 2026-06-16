@@ -17,6 +17,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola data master Kependudukan (Penduduk).
+ * Menyediakan form pengisian data identitas dan tabel pelaporan lengkap.
+ */
 class PendudukResource extends Resource
 {
     protected static ?string $model = Penduduk::class;
@@ -36,6 +40,9 @@ class PendudukResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    /**
+     * Membangun form isian data penduduk.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -69,6 +76,9 @@ class PendudukResource extends Resource
                         ->required(),
                 ])->columns(1)->columnSpanFull(),
 
+            /**
+             * Bagian kedua form untuk menampilkan data kependudukan.
+             */
             Section::make('Data Kependudukan')
                 ->description('Informasi status kependudukan.')
                 ->icon('heroicon-o-building-library')
@@ -89,6 +99,9 @@ class PendudukResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel data penduduk lengkap.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -119,6 +132,9 @@ class PendudukResource extends Resource
                         default => 'gray',
                     }),
             ])
+            /**
+             * Filter untuk menyaring data penduduk berdasarkan status mutasi dan jenis kelamin.
+             */
             ->filters([
                 SelectFilter::make('status_mutasi')
                     ->label('Status')
@@ -137,11 +153,17 @@ class PendudukResource extends Resource
             ->emptyStateIcon('heroicon-o-user-group');
     }
 
+    /**
+     * Mengembalikan query builder yang sudah dimuat relasi keluarga.
+     */
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->with(['keluarga']);
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

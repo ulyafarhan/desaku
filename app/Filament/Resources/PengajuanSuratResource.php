@@ -21,6 +21,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 
+/**
+ * Resource Filament untuk mengelola berkas Permohonan Pengajuan Surat warga.
+ */
 class PengajuanSuratResource extends Resource
 {
     protected static ?string $model = PengajuanSurat::class;
@@ -40,17 +43,29 @@ class PengajuanSuratResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    /**
+     * Menampilkan jumlah pengajuan pending sebagai badge navigasi.
+     */
     public static function getNavigationBadge(): ?string
     {
         $count = PengajuanSurat::query()->pending()->count();
         return $count > 0 ? (string) $count : null;
     }
 
+    /**
+     * Warna badge navigasi.
+     */
     public static function getNavigationBadgeColor(): ?string
     {
         return 'warning';
     }
 
+    /**
+     * Membangun form isian/edit pengajuan surat.
+     *
+     * Menampilkan informasi registrasi, pemohon, jenis surat, status,
+     * catatan penolakan, dan detail data isian serta dokumen pendukung.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -137,6 +152,13 @@ class PengajuanSuratResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar pengajuan surat dengan aksi setujui/tolak.
+     *
+     * Menyediakan polling otomatis, filter status, aksi persetujuan individual
+     * dan massal dengan lock-for-update, dispatch GenerateSuratPdfJob,
+     * serta pencatatan TrackingPengajuanSurat.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -299,11 +321,17 @@ class PengajuanSuratResource extends Resource
             ->emptyStateIcon('heroicon-o-inbox');
     }
 
+    /**
+     * Query dengan eager load relasi pemohon dan kategori.
+     */
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->with(['pemohon', 'kategori']);
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

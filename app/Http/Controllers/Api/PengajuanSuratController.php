@@ -11,12 +11,21 @@ use App\Jobs\GenerateSuratPdfJob;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
+/**
+ * Controller untuk mengelola pengajuan surat pelayanan warga lewat API.
+ */
 class PengajuanSuratController extends Controller
 {
+    /**
+     * Menginjeksi dependensi TelegramService.
+     */
     public function __construct(
         protected TelegramService $telegram
     ) {}
 
+    /**
+     * Mengambil daftar seluruh kategori surat yang aktif untuk diajukan.
+     */
     public function kategori()
     {
         $kategori = KategoriSurat::active()->get();
@@ -26,6 +35,9 @@ class PengajuanSuratController extends Controller
         ]);
     }
 
+    /**
+     * Mengambil spesifikasi skema data dan syarat dari satu kategori surat.
+     */
     public function detailKategori($id)
     {
         $kategori = KategoriSurat::findOrFail($id);
@@ -35,6 +47,9 @@ class PengajuanSuratController extends Controller
         ]);
     }
 
+    /**
+     * Memproses pengiriman permohonan pengajuan surat pelayanan baru dari warga.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -73,6 +88,9 @@ class PengajuanSuratController extends Controller
         ], 201);
     }
 
+    /**
+     * Mengambil daftar riwayat permohonan surat milik warga yang sedang login.
+     */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -85,6 +103,9 @@ class PengajuanSuratController extends Controller
         return response()->json($pengajuan);
     }
 
+    /**
+     * Mengambil detail dari permohonan surat tertentu beserta riwayat tracking-nya.
+     */
     public function show($id)
     {
         $pengajuan = PengajuanSurat::with(['kategori', 'pemohon', 'tracking.updater'])
@@ -95,6 +116,9 @@ class PengajuanSuratController extends Controller
         ]);
     }
 
+    /**
+     * Mengambil data seluruh pengajuan surat untuk kebutuhan panel admin desa.
+     */
     public function adminIndex(Request $request)
     {
         $query = PengajuanSurat::with(['kategori', 'pemohon']);
@@ -108,6 +132,9 @@ class PengajuanSuratController extends Controller
         return response()->json($pengajuan);
     }
 
+    /**
+     * Menyetujui pengajuan surat dan memicu proses tanda tangan digital PDF otomatis.
+     */
     public function approve(Request $request, $id)
     {
         $pengajuan = PengajuanSurat::findOrFail($id);
@@ -148,6 +175,9 @@ class PengajuanSuratController extends Controller
         ]);
     }
 
+    /**
+     * Menolak pengajuan permohonan surat warga dengan menyertakan catatan penolakan.
+     */
     public function reject(Request $request, $id)
     {
         $request->validate([

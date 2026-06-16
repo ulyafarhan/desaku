@@ -20,8 +20,15 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+/**
+ * Penyedia konfigurasi panel admin Filament (SIG-Udeung).
+ * Menentukan tema warna, grup navigasi, resource, halaman, widget, serta middleware panel.
+ */
 class AdminPanelProvider extends PanelProvider
 {
+    /**
+     * Mengonfigurasi properti panel Filament admin.
+     */
     public function panel(Panel $panel): Panel
     {
         return $panel

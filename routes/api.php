@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * RUTE API — SIG-Udeung v1
+ *
+ * Struktur endpoint REST API untuk aplikasi Sistem Informasi Gampong.
+ *
+ * Publik  : auth login, informasi publik, statistik, verifikasi QR, webhook Telegram
+ * Terotentikasi : logout, profil
+ * Warga   : bind Telegram, pengajuan surat, mutasi penduduk
+ * Admin   : manajemen surat, mutasi, informasi publik, statistik
+ *
+ * @see \App\Http\Controllers\Api\
+ */
+
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InformasiPublikController;
 use App\Http\Controllers\Api\MutasiPendudukController;

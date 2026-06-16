@@ -17,6 +17,9 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola data Master Kategori/Jenis Surat Layanan.
+ */
 class KategoriSuratResource extends Resource
 {
     protected static ?string $model = KategoriSurat::class;
@@ -36,6 +39,9 @@ class KategoriSuratResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    /**
+     * Membangun form isian kategori surat.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -94,6 +100,9 @@ class KategoriSuratResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar kategori surat.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -134,6 +143,9 @@ class KategoriSuratResource extends Resource
             ->emptyStateIcon('heroicon-o-document-duplicate');
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

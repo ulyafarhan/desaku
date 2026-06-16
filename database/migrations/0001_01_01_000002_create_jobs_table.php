@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migrasi untuk membuat tabel jobs, job_batches, dan failed_jobs.
+ */
 return new class extends Migration
 {
     /**

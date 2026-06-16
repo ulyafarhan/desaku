@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Model untuk merepresentasikan data Penduduk (warga) Gampong.
+ */
 class Penduduk extends Authenticatable
 {
     use HasApiTokens;
@@ -50,6 +53,9 @@ class Penduduk extends Authenticatable
         ];
     }
 
+    /**
+     * Accessor untuk mendapatkan URL foto profil warga secara dinamis.
+     */
     public function getFotoProfilAttribute($value)
     {
         if (empty($value)) {
@@ -61,6 +67,9 @@ class Penduduk extends Authenticatable
         return \Illuminate\Support\Facades\Storage::url($value);
     }
 
+    /**
+     * Accessor untuk mendapatkan URL dokumen KTP warga secara dinamis.
+     */
     public function getFotoKtpAttribute($value)
     {
         if (empty($value)) {
@@ -72,6 +81,9 @@ class Penduduk extends Authenticatable
         return \Illuminate\Support\Facades\Storage::url($value);
     }
 
+    /**
+     * Accessor untuk mendapatkan URL dokumen Kartu Keluarga (KK) warga secara dinamis.
+     */
     public function getFotoKkAttribute($value)
     {
         if (empty($value)) {
@@ -83,26 +95,41 @@ class Penduduk extends Authenticatable
         return \Illuminate\Support\Facades\Storage::url($value);
     }
 
+    /**
+     * Relasi ke data Keluarga (Kartu Keluarga) yang menaungi warga ini.
+     */
     public function keluarga()
     {
         return $this->belongsTo(Keluarga::class, 'no_kk', 'no_kk');
     }
 
+    /**
+     * Relasi ke data riwayat mutasi warga (jika ada).
+     */
     public function mutasi()
     {
         return $this->hasMany(MutasiPenduduk::class, 'nik', 'nik');
     }
 
+    /**
+     * Relasi ke data riwayat pengajuan surat pelayanan oleh warga ini.
+     */
     public function pengajuanSurat()
     {
         return $this->hasMany(PengajuanSurat::class, 'nik_pemohon', 'nik');
     }
 
+    /**
+     * Accessor untuk mendapatkan umur penduduk secara dinamis berdasarkan tanggal lahir.
+     */
     public function getUmurAttribute()
     {
         return $this->tanggal_lahir->age;
     }
 
+    /**
+     * Scope query untuk menyaring penduduk tetap yang aktif (tidak meninggal/pindah).
+     */
     public function scopeAktif($query)
     {
         return $query->where('status_mutasi', 'Tetap');

@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Konfigurasi basis pengetahuan bot Telegram.
+ *
+ * Berisi greeting, FAQ, dan knowledge base (KB) yang digunakan
+ * oleh TelegramKnowledgeService untuk menjawab pertanyaan warga
+ * secara statis tanpa memanggil API AI.
+ *
+ * - greetings: Kata sambutan dan respon awal bot.
+ * - faqs: Daftar pertanyaan umum dengan kata kunci dan jawaban.
+ * - kb: Konteks pengetahuan (RAG) tentang profil desa dan layanan.
+ */
+
 return [
     'greetings' => [
         'keywords' => ['halo', 'hai', 'p', 'tes', 'test', 'assalamualaikum', 'pagi', 'siang', 'sore', 'malam', 'hello', 'ping', 'hi'],

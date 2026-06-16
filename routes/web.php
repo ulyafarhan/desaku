@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * RUTE WEB — SIG-Udeung
+ *
+ * Halaman portal publik dan area warga (frontend web).
+ *
+ * Publik (tanpa auth) : beranda, profil gampong, informasi, verifikasi QR, statistik
+ * Guest (belum login) : login warga (NIK-based)
+ * Warga (auth:penduduk): dashboard, profil, keluarga, pengajuan surat & cetak
+ *
+ * @see \App\Http\Controllers\Web\
+ */
+
 use App\Http\Controllers\Web\CitizenAuthController;
 use App\Http\Controllers\Web\CitizenDashboardController;
 use App\Http\Controllers\Web\CitizenFamilyController;

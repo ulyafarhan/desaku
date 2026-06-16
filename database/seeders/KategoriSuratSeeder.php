@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * SEEDER — Kategori Surat Desa
+ *
+ * Mengisi data master jenis-jenis surat desa yang tersedia untuk
+ * diajukan oleh warga. Setiap kategori memiliki template view,
+ * skema isian (field yang harus diisi), dan syarat dokumen.
+ */
+
 namespace Database\Seeders;
 
 use App\Models\KategoriSurat;
@@ -7,6 +15,15 @@ use Illuminate\Database\Seeder;
 
 class KategoriSuratSeeder extends Seeder
 {
+    /**
+     * Buat 5 kategori surat default.
+     *
+     * 1. SKD  — Surat Keterangan Domisili (keperluan, lama tinggal)
+     * 2. SKTM — Surat Keterangan Tidak Mampu (keperluan, tanggungan, penghasilan)
+     * 3. SKU  — Surat Keterangan Usaha (nama, jenis, alamat, tahun berdiri)
+     * 4. SKP  — Surat Pengantar KTP (jenis permohonan: baru/perpanjangan/hilang)
+     * 5. SKL  — Surat Keterangan Kelahiran (data bayi dan orang tua)
+     */
     public function run(): void
     {
         $kategoriSurat = [

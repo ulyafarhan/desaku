@@ -4,8 +4,16 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Service provider utama aplikasi untuk registrasi binding dan inisialisasi boot.
+ */
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Mendaftarkan binding service container.
+     *
+     * Menginisialisasi AiProviderInterface sesuai dengan konfigurasi aktif (Gemini/OpenAI).
+     */
     public function register(): void
     {
         $this->app->singleton(\App\Services\Contracts\AiProviderInterface::class, function ($app) {
@@ -17,6 +25,12 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Menjalakan inisialisasi boot aplikasi.
+     *
+     * Mendaftarkan event listeners untuk membersihkan cache statistik,
+     * serta mengisi konfigurasi AI dan penyimpanan dari database pengaturan gampong.
+     */
     public function boot(): void
     {
         $clearStatistikCache = function () {

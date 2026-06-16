@@ -5,10 +5,19 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
+/**
+ * Middleware untuk membagikan data global secara dinamis dari backend Laravel ke frontend Vue via Inertia.js.
+ */
 class HandleInertiaRequests extends Middleware
 {
+    /**
+     * @var string Root view yang digunakan untuk memuat aset frontend utama.
+     */
     protected $rootView = 'app';
 
+    /**
+     * Mendefinisikan kumpulan data bersama (shared data) yang akan diakses di seluruh komponen Vue.
+     */
     public function share(Request $request): array
     {
         return [

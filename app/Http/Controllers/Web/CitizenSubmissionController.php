@@ -12,8 +12,14 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk mengelola siklus hidup pengajuan surat oleh warga.
+ */
 class CitizenSubmissionController extends Controller
 {
+    /**
+     * Menampilkan form pembuatan pengajuan surat berdasarkan kategori tertentu.
+     */
     public function create(Request $request, KategoriSurat $kategori): Response
     {
         abort_unless($kategori->is_active, 404);
@@ -76,6 +82,9 @@ class CitizenSubmissionController extends Controller
         ]);
     }
 
+    /**
+     * Memproses penyimpanan berkas pengajuan surat baru beserta lampiran dokumennya.
+     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -162,6 +171,9 @@ class CitizenSubmissionController extends Controller
             ->with('success', 'Pengajuan surat berhasil dibuat.');
     }
 
+    /**
+     * Menampilkan detail tracking dan status pengajuan surat warga.
+     */
     public function show(Request $request, PengajuanSurat $pengajuan): Response
     {
         $warga = $request->user('penduduk');
@@ -181,6 +193,9 @@ class CitizenSubmissionController extends Controller
         ]);
     }
 
+    /**
+     * Menampilkan halaman cetak hasil surat yang telah disetujui (selesai).
+     */
     public function print(Request $request, PengajuanSurat $pengajuan): Response
     {
         $warga = $request->user('penduduk');

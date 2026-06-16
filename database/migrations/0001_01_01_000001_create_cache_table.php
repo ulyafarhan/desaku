@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migrasi untuk membuat tabel cache dan cache_locks.
+ */
 return new class extends Migration
 {
     /**

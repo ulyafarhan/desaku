@@ -16,6 +16,9 @@ use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola data Konfigurasi Pengaturan Gampong.
+ */
 class PengaturanGampongResource extends Resource
 {
     protected static ?string $model = PengaturanGampong::class;
@@ -35,6 +38,9 @@ class PengaturanGampongResource extends Resource
 
     protected static ?int $navigationSort = 8;
 
+    /**
+     * Membangun form isian konfigurasi desa.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -74,6 +80,9 @@ class PengaturanGampongResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar konfigurasi desa.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -121,6 +130,9 @@ class PengaturanGampongResource extends Resource
             ->emptyStateIcon('heroicon-o-cog-6-tooth');
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

@@ -19,6 +19,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola data basis pengetahuan chatbot Telegram.
+ */
 class BotKnowledgeResource extends Resource
 {
     protected static ?string $model = BotKnowledge::class;
@@ -38,6 +41,9 @@ class BotKnowledgeResource extends Resource
 
     protected static ?int $navigationSort = 9;
 
+    /**
+     * Membangun form isian data basis pengetahuan bot.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -89,6 +95,9 @@ class BotKnowledgeResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar basis pengetahuan bot.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -130,6 +139,9 @@ class BotKnowledgeResource extends Resource
             ->striped();
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

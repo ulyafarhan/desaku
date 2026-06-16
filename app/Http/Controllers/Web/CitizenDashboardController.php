@@ -10,8 +10,14 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk mengelola dasbor personal warga dan keluarga.
+ */
 class CitizenDashboardController extends Controller
 {
+    /**
+     * Memproses dan menyajikan data statistik pengajuan serta kelengkapan profil warga.
+     */
     public function __invoke(Request $request): Response
     {
         $warga = $request->user('penduduk');

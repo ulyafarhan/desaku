@@ -2,8 +2,20 @@
 
 namespace App\Services;
 
+/**
+ * Service untuk memproses dan mengompres gambar.
+ */
 class ImageService
 {
+    /**
+     * Mengompres gambar ke format WebP dengan resize otomatis.
+     *
+     * @param string $sourcePath Path asal file gambar.
+     * @param string|null $destPath Path tujuan (null = ganti ekstensi asli dengan .webp).
+     * @param int $maxDimension Dimensi maksimal (pixel) untuk resize.
+     * @param int $quality Kualitas kompresi (0-100).
+     * @return string|null Path file hasil kompresi, atau null jika gagal.
+     */
     public static function compressToWebP(string $sourcePath, ?string $destPath = null, int $maxDimension = 1600, int $quality = 80): ?string
     {
         if (!file_exists($sourcePath)) {

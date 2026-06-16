@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * SEEDER — Wilayah, Keluarga, Penduduk & Informasi Publik
+ *
+ * Mengisi data autentik Gampong Udeung meliputi:
+ * 1. Referensi wilayah (Provinsi Aceh → Gampong Udeung)
+ * 2. 5 keluarga contoh dengan total 16 penduduk
+ * 3. 3 informasi publik (berita & pengumuman)
+ *
+ * @see \App\Models\ReferensiWilayah
+ * @see \App\Models\Keluarga
+ * @see \App\Models\Penduduk
+ * @see \App\Models\InformasiPublik
+ */
+
 namespace Database\Seeders;
 
 use App\Models\Keluarga;
@@ -12,6 +26,14 @@ use Illuminate\Support\Str;
 
 class WilayahPendudukSeeder extends Seeder
 {
+    /**
+     * Jalankan proses seeding data awal.
+     *
+     * Tahapan:
+     * 1. Wilayah     — 6 referensi: 1 provinsi, 1 kabupaten, 1 kecamatan, 3 gampong
+     * 2. Penduduk    — 5 keluarga (KK) dengan total 16 anggota tersebar di 3 dusun
+     * 3. Informasi   — 3 konten publik (2 pengumuman, 1 berita)
+     */
     public function run(): void
     {
         // 1. Referensi Wilayah

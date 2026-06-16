@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * MIGRASI — Tabel Notifikasi (Laravel)
+ *
+ * Tabel bawaan Laravel untuk menyimpan notifikasi yang dikirim
+ * ke pengguna (admin maupun warga). Mendukung notifikasi
+ * polymorphic dengan ULID dan status read/unread.
+ *
+ * @see https://laravel.com/docs/notifications
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -7,7 +17,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Buat tabel `notifications`.
+     *
+     * - id               : UUID (PK)
+     * - type             : Nama kelas notifikasi (contoh: 'MutasiDisetujui')
+     * - notifiable_type  : Model penerima (polymorphic: Penduduk / Administrator)
+     * - notifiable_id    : ULID penerima (ulidMorphs)
+     * - data             : JSON — konten notifikasi (pesan, link, dll)
+     * - read_at          : Waktu dibaca (null = belum dibaca)
+     * - timestamps       : created_at & updated_at
      */
     public function up(): void
     {
@@ -22,7 +40,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Hapus tabel `notifications`.
      */
     public function down(): void
     {

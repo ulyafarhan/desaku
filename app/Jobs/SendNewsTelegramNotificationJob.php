@@ -12,16 +12,32 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+/**
+ * Job untuk mengirimkan notifikasi rilis berita ke grup Telegram secara asinkronus.
+ */
 class SendNewsTelegramNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * @var int Jumlah maksimum percobaan ulang jika pengiriman gagal.
+     */
     public int $tries = 3;
 
+    /**
+     * Inisialisasi Job dengan ID informasi publik.
+     *
+     * @param string $informasiId ID dari berita/pengumuman (format ULID).
+     */
     public function __construct(
         public string $informasiId
     ) {}
 
+    /**
+     * Mengeksekusi pengiriman pesan siaran ke grup Telegram terkait.
+     *
+     * @param TelegramService $telegram Layanan bot API Telegram.
+     */
     public function handle(TelegramService $telegram): void
     {
         $informasi = InformasiPublik::find($this->informasiId);

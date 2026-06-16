@@ -11,13 +11,22 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk menangani autentikasi warga menggunakan NIK dan Nomor KK.
+ */
 class CitizenAuthController extends Controller
 {
+    /**
+     * Menampilkan halaman formulir login warga.
+     */
     public function create(): Response
     {
         return Inertia::render('Auth/Login');
     }
 
+    /**
+     * Memproses permintaan autentikasi masuk (login) warga.
+     */
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -42,6 +51,9 @@ class CitizenAuthController extends Controller
         return redirect()->intended(route('warga.dashboard'));
     }
 
+    /**
+     * Memproses permintaan keluar (logout) warga.
+     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('penduduk')->logout();

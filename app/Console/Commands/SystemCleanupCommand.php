@@ -7,11 +7,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Perintah Artisan untuk membersihkan data lama secara berkala (chatbot logs, audit logs, token expired, failed jobs).
+ *
+ * @package App\Console\Commands
+ */
 class SystemCleanupCommand extends Command
 {
+    /**
+     * Nama dan tanda tangan perintah Artisan.
+     *
+     * @var string
+     */
     protected $signature = 'system:cleanup';
+
+    /**
+     * Deskripsi singkat perintah Artisan.
+     *
+     * @var string
+     */
     protected $description = 'Perform periodic system maintenance and data cleanup';
 
+    /**
+     * Eksekusi utama perintah untuk pembersihan dan pemeliharaan data sistem.
+     */
     public function handle(): int
     {
         $this->info('Starting system cleanup...');

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * MIGRASI — Tambah kolom dokumen ke tabel penduduk
+ *
+ * Menambahkan field foto untuk profil, KTP, dan Kartu Keluarga
+ * ke tabel penduduk untuk keperluan verifikasi data warga.
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -7,7 +14,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Tambah kolom dokumen ke tabel `penduduk`.
+     *
+     * - foto_profil : Path foto profil warga (nullable)
+     * - foto_ktp    : Path hasil scan/foto KTP (nullable)
+     * - foto_kk     : Path hasil scan/foto Kartu Keluarga (nullable)
+     *
+     * Ketiga kolom ditempatkan setelah `telegram_chat_id`.
      */
     public function up(): void
     {
@@ -19,7 +32,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Balikkan: hapus ketiga kolom dokumen.
      */
     public function down(): void
     {

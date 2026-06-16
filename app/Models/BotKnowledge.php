@@ -6,10 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Model untuk merepresentasikan basis pengetahuan (knowledge base) chatbot Telegram.
+ */
 class BotKnowledge extends Model
 {
     use HasUlids;
 
+    /**
+     * @var string Nama tabel database yang terhubung dengan model ini.
+     */
     protected $table = 'bot_knowledges';
 
     protected $fillable = [

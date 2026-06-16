@@ -13,14 +13,23 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Job untuk memproses pembuatan tanda tangan digital (hash QR) dan pembaruan status surat menjadi Selesai.
+ */
 class GenerateSuratPdfJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * Inisialisasi Job dengan objek pengajuan surat.
+     */
     public function __construct(
         public PengajuanSurat $pengajuan
     ) {}
 
+    /**
+     * Mengeksekusi pembuatan tanda tangan digital dan notifikasi ke warga via Telegram.
+     */
     public function handle(
         PdfGeneratorService $pdfService,
         TelegramService $telegram

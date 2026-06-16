@@ -4,6 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migrasi untuk membuat tabel users, password_reset_tokens, dan sessions.
+ *
+ * Tabel users menggunakan ULID sebagai primary key.
+ */
 return new class extends Migration
 {
     /**

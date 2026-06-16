@@ -10,8 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Controller untuk menangani API Autentikasi (warga & admin) berbasis Token.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Memproses login warga menggunakan NIK & No KK via API.
+     */
     public function loginWarga(Request $request)
     {
         $request->validate([
@@ -40,6 +46,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Memproses login administrator menggunakan Username & Password via API.
+     */
     public function loginAdmin(Request $request)
     {
         $request->validate([
@@ -66,6 +75,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Memproses keluar log (logout) dengan menghapus token akses saat ini.
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -75,6 +87,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Mengambil detail informasi profil pengguna yang sedang login.
+     */
     public function profile(Request $request)
     {
         $user = $request->user();
@@ -88,6 +103,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Menghubungkan ID chat Telegram dengan akun warga.
+     */
     public function bindTelegram(Request $request)
     {
         $request->validate([

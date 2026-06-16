@@ -5,6 +5,16 @@ namespace App\Filament\Resources\InformasiPublikResource\Pages;
 use App\Filament\Resources\InformasiPublikResource;
 use Filament\Resources\Pages\EditRecord;
 
+/**
+ * Halaman edit artikel informasi publik gampong.
+ *
+ * Menerapkan logika normalisasi cover_image yang sama dengan halaman create,
+ * yaitu menyatukan input file upload (cover_image_file) atau URL eksternal
+ * (cover_image_url) menjadi satu field sebelum penyimpanan.
+ *
+ * @see \App\Filament\Resources\InformasiPublikResource
+ * @see \App\Models\InformasiPublik
+ */
 class EditInformasiPublik extends EditRecord
 {
     protected static string $resource = InformasiPublikResource::class;

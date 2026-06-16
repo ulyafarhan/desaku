@@ -20,6 +20,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola artikel berita, transparansi, dan pengumuman gampong.
+ */
 class InformasiPublikResource extends Resource
 {
     protected static ?string $model = InformasiPublik::class;
@@ -39,6 +42,9 @@ class InformasiPublikResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    /**
+     * Menampilkan jumlah artikel yang sudah dipublikasikan sebagai badge navigasi.
+     */
     public static function getNavigationBadge(): ?string
     {
         $count = InformasiPublik::query()->published()->count();
@@ -46,11 +52,20 @@ class InformasiPublikResource extends Resource
         return $count > 0 ? (string) $count : null;
     }
 
+    /**
+     * Warna badge navigasi.
+     */
     public static function getNavigationBadgeColor(): ?string
     {
         return 'success';
     }
 
+    /**
+     * Membangun form isian artikel informasi publik.
+     *
+     * Mencakup konten artikel, upload/URL cover image, optimasi SEO,
+     * dan pengaturan publikasi dengan dukungan AI copywriting.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -244,6 +259,9 @@ class InformasiPublikResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar artikel informasi publik.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -277,6 +295,9 @@ class InformasiPublikResource extends Resource
             ]);
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

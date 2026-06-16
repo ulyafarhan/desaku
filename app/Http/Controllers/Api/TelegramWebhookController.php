@@ -10,13 +10,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Controller untuk menangani Webhook API Telegram (Bot virtual SIG-Udeung).
+ */
 class TelegramWebhookController extends Controller
 {
+    /**
+     * Inisialisasi controller dengan layanan Telegram dan Pangkalan Pengetahuan.
+     */
     public function __construct(
         protected TelegramService $telegram,
         protected TelegramKnowledgeService $knowledge
     ) {}
 
+    /**
+     * Endpoint utama penerima payload webhook Telegram.
+     */
     public function handle(Request $request)
     {
         $update = $request->all();
@@ -34,6 +43,12 @@ class TelegramWebhookController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    /**
+     * Memproses pesan teks dari pengguna Telegram.
+     *
+     * Menangani perintah /start, /bind, menjawab dari basis pengetahuan statis,
+     * cache, dan AI dengan pembatasan kuota harian.
+     */
     protected function handleMessage(array $message)
     {
         $chatId = $message['chat']['id'];
@@ -103,6 +118,9 @@ class TelegramWebhookController extends Controller
         ProcessTelegramMessageJob::dispatch((string) $chatId, $text);
     }
 
+    /**
+     * Memproses callback query dari tombol inline Telegram.
+     */
     protected function handleCallbackQuery(array $callbackQuery)
     {
         $chatId = $callbackQuery['message']['chat']['id'];

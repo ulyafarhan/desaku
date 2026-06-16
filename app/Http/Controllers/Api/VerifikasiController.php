@@ -5,8 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanSurat;
 
+/**
+ * Controller untuk menangani validasi keaslian dokumen surat melalui API.
+ */
 class VerifikasiController extends Controller
 {
+    /**
+     * Memverifikasi tanda tangan digital surat berdasarkan hash QR Code.
+     */
     public function verify($hash)
     {
         $pengajuan = PengajuanSurat::where('qr_hash', $hash)

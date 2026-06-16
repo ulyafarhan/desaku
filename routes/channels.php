@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * SALURAN BROADCAST — SIG-Udeung
+ *
+ * Mendefinisikan kanal real-time untuk event update status:
+ *
+ * Publik  (tanpa auth): pengajuan, mutasi, dashboard, informasi
+ * Privat (auth NIK)  : warga.{nik} — notifikasi per warga
+ *
+ * @see \App\Events\PengajuanStatusUpdated
+ * @see \App\Events\MutasiStatusUpdated
+ * @see \App\Events\DashboardStatsUpdated
+ * @see \App\Events\InformasiBaru
+ */
+
 use Illuminate\Support\Facades\Broadcast;
 
 /*

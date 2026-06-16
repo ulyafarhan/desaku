@@ -6,11 +6,32 @@ use App\Models\TelegramBroadcastQueue;
 use App\Jobs\ProcessTelegramBroadcastJob;
 use Illuminate\Console\Command;
 
+/**
+ * Perintah Artisan untuk memproses antrean pesan siaran (broadcast) Telegram warga yang terjadwal.
+ *
+ * @package App\Console\Commands
+ */
 class ProcessBroadcastQueue extends Command
 {
+    /**
+     * Nama dan tanda tangan perintah Artisan.
+     *
+     * @var string
+     */
     protected $signature = 'telegram:process-broadcast';
+
+    /**
+     * Deskripsi singkat perintah Artisan.
+     *
+     * @var string
+     */
     protected $description = 'Process pending Telegram broadcast queue';
 
+    /**
+     * Eksekusi utama perintah untuk memicu pengiriman pesan siaran terjadwal.
+     *
+     * @return int
+     */
     public function handle(): int
     {
         $this->info('Processing broadcast queue...');
@@ -29,7 +50,7 @@ class ProcessBroadcastQueue extends Command
             $this->info("Dispatched broadcast #{$broadcast->id}");
         }
 
-        $this->info('✅ All broadcasts dispatched to queue');
+        $this->info('All broadcasts dispatched to queue');
         return self::SUCCESS;
     }
 }

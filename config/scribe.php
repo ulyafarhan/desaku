@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * KONFIGURASI SCRIBE — Generator Dokumentasi API
+ *
+ * File ini mengatur bagaimana Scribe menghasilkan dokumentasi API untuk
+ * Sistem Informasi Gampong (SIG) Udeung. Scribe secara otomatis
+ * mengekstrak informasi dari route, controller, dan model Laravel
+ * untuk menghasilkan halaman dokumentasi yang interaktif, koleksi Postman,
+ * dan spesifikasi OpenAPI.
+ *
+ * @see https://scribe.knuckles.wtf/laravel/reference/config
+ */
+
 use Knuckles\Scribe\Config\AuthIn;
 use Knuckles\Scribe\Config\Defaults;
 use Knuckles\Scribe\Extracting\Strategies;
@@ -7,16 +19,41 @@ use Knuckles\Scribe\Extracting\Strategies;
 use function Knuckles\Scribe\Config\configureStrategy;
 use function Knuckles\Scribe\Config\removeStrategies;
 
-// Only the most common configs are shown. See the https://scribe.knuckles.wtf/laravel/reference/config for all.
-
 return [
-    // The HTML <title> for the generated documentation.
+
+    /*
+    |--------------------------------------------------------------------------
+    | JUDUL DOKUMENTASI
+    |--------------------------------------------------------------------------
+    |
+    | Nilai dari tag <title> HTML pada halaman dokumentasi yang dihasilkan.
+    | Akan muncul di tab/judul browser.
+    |
+    */
     'title' => 'SIG-Udeung API Documentation',
 
-    // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
+    /*
+    |--------------------------------------------------------------------------
+    | DESKRIPSI API
+    |--------------------------------------------------------------------------
+    |
+    | Deskripsi singkat tentang API Anda. Akan disertakan dalam halaman web
+    | dokumentasi, koleksi Postman, dan spesifikasi OpenAPI.
+    |
+    */
     'description' => 'API Documentation untuk Sistem Informasi Gampong (SIG) Udeung - Gampong Udeung, Kec. Bandar Baru, Kab. Pidie Jaya, Provinsi Aceh',
 
-    // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
+    /*
+    |--------------------------------------------------------------------------
+    | TEKS PENGANTAR
+    |--------------------------------------------------------------------------
+    |
+    | Teks yang ditempatkan di bagian "Pendahuluan", tepat setelah `description`.
+    | Mendukung format Markdown dan HTML. Di sini Anda bisa menjelaskan base URL,
+    | cara autentikasi, format response, rate limiting, dan panduan awal lainnya
+    | bagi pengguna API.
+    |
+    */
     'intro_text' => <<<'INTRO'
             Dokumentasi ini menyediakan semua informasi yang Anda butuhkan untuk bekerja dengan API SIG-Udeung.
 
@@ -79,124 +116,219 @@ return [
             <aside>Kode contoh untuk bekerja dengan API tersedia di area gelap di sebelah kanan (atau sebagai bagian dari konten di mobile).</aside>
         INTRO,
 
-    // The base URL displayed in the docs.
-    // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
+    /*
+    |--------------------------------------------------------------------------
+    | BASE URL
+    |--------------------------------------------------------------------------
+    |
+    | URL dasar yang ditampilkan di dokumentasi.
+    | Untuk tipe `laravel`, Anda bisa menggunakan string dinamis seperti
+    | {{ config("app.tenant_url") }} untuk mendapatkan base URL yang dinamis.
+    |
+    */
     'base_url' => config('app.url'),
 
-    // Routes to include in the docs
+    /*
+    |--------------------------------------------------------------------------
+    | RUTE YANG AKAN DISERTAKAN
+    |--------------------------------------------------------------------------
+    |
+    | Menentukan route/rute API mana yang akan disertakan dalam dokumentasi.
+    | Anda dapat mencocokkan berdasarkan prefiks path dan domain.
+    | Gunakan * sebagai wildcard untuk mencocokkan karakter apa pun.
+    |
+    */
     'routes' => [
         [
             'match' => [
-                // Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
+                // Hanya sertakan route yang path-nya cocok dengan pola ini (contoh: 'users/*')
                 'prefixes' => ['api/*'],
 
-                // Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
+                // Hanya sertakan route yang domain-nya cocok dengan pola ini (contoh: 'api.*')
                 'domains' => ['*'],
             ],
 
-            // Include these routes even if they did not match the rules above.
+            // Sertakan route ini meskipun tidak cocok dengan aturan di atas
             'include' => [
                 // 'users.index', 'POST /new', '/auth/*'
             ],
 
-            // Exclude these routes even if they matched the rules above.
+            // Kecualikan route ini meskipun cocok dengan aturan di atas
             'exclude' => [
                 // 'GET /health', 'admin.*'
             ],
         ],
     ],
 
-    // The type of documentation output to generate.
-    // - "static" will generate a static HTMl page in the /public/docs folder,
-    // - "laravel" will generate the documentation as a Blade view, so you can add routing and authentication.
-    // - "external_static" and "external_laravel" do the same as above, but pass the OpenAPI spec as a URL to an external UI template
+    /*
+    |--------------------------------------------------------------------------
+    | JENIS OUTPUT DOKUMENTASI
+    |--------------------------------------------------------------------------
+    |
+    | - "static"   → menghasilkan halaman HTML statis di folder /public/docs
+    | - "laravel"  → menghasilkan dokumentasi sebagai Blade view, sehingga
+    |                Anda bisa menambahkan routing dan autentikasi sendiri
+    | - "external_static" / "external_laravel" → sama seperti di atas, tetapi
+    |                spesifikasi OpenAPI diberikan sebagai URL ke template UI eksternal
+    |
+    */
     'type' => 'laravel',
 
-    // See https://scribe.knuckles.wtf/laravel/reference/config#theme for supported options
+    /*
+    |--------------------------------------------------------------------------
+    | TEMA TAMPILAN
+    |--------------------------------------------------------------------------
+    |
+    | Tema yang digunakan untuk merender halaman dokumentasi.
+    | Opsi yang didukung: 'default' (lihat dokumentasi Scribe untuk tema lain).
+    |
+    */
     'theme' => 'default',
 
+    /*
+    |--------------------------------------------------------------------------
+    | KONFIGURASI OUTPUT STATIS
+    |--------------------------------------------------------------------------
+    |
+    | Digunakan ketika `type` diatur ke 'static'.
+    | Menentukan folder output untuk HTML, asset, dan koleksi Postman.
+    | Sumber Markdown asli tetap berada di resources/docs.
+    |
+    */
     'static' => [
-        // HTML documentation, assets and Postman collection will be generated to this folder.
-        // Source Markdown will still be in resources/docs.
         'output_path' => 'public/docs',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | KONFIGURASI LARAVEL (BLADE)
+    |--------------------------------------------------------------------------
+    |
+    | Digunakan ketika `type` diatur ke 'laravel'.
+    | Mengontrol pembuatan route otomatis, URL dokumentasi, direktori asset,
+    | dan middleware yang dipasang ke endpoint dokumentasi.
+    |
+    */
     'laravel' => [
-        // Whether to automatically create a docs route for you to view your generated docs. You can still set up routing manually.
+        // Buat route otomatis untuk melihat dokumentasi yang dihasilkan
         'add_routes' => true,
 
-        // URL path to use for the docs endpoint (if `add_routes` is true).
-        // By default, `/docs` opens the HTML page, `/docs.postman` opens the Postman collection, and `/docs.openapi` the OpenAPI spec.
+        // Pola URL untuk endpoint dokumentasi (jika `add_routes` true):
+        // - `/docs`          → halaman HTML
+        // - `/docs.postman`  → koleksi Postman
+        // - `/docs.openapi`  → spesifikasi OpenAPI
         'docs_url' => '/docs',
 
-        // Directory within `public` in which to store CSS and JS assets.
-        // By default, assets are stored in `public/vendor/scribe`.
-        // If set, assets will be stored in `public/{{assets_directory}}`
+        // Direktori di dalam folder `public` untuk menyimpan asset CSS dan JS.
+        // Default: public/vendor/scribe. Jika diisi, asset akan disimpan di public/{direktori}
         'assets_directory' => null,
 
-        // Middleware to attach to the docs endpoint (if `add_routes` is true).
+        // Middleware yang dipasang ke endpoint dokumentasi
         'middleware' => [],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | KONFIGURASI EKSTERNAL
+    |--------------------------------------------------------------------------
+    |
+    | Atribut HTML tambahan untuk template dokumentasi eksternal.
+    |
+    */
     'external' => [
         'html_attributes' => [],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | FITUR "COBA LANGSUNG" (TRY IT OUT)
+    |--------------------------------------------------------------------------
+    |
+    | Menambahkan tombol "Coba Langsung" pada setiap endpoint sehingga
+    | pengguna dapat menguji endpoint langsung dari browser.
+    | Pastikan header CORS sudah diaktifkan untuk endpoint Anda.
+    |
+    */
     'try_it_out' => [
-        // Add a Try It Out button to your endpoints so consumers can test endpoints right from their browser.
-        // Don't forget to enable CORS headers for your endpoints.
+        // Aktifkan tombol "Coba Langsung"
         'enabled' => true,
 
-        // The base URL to use in the API tester. Leave as null to be the same as the displayed URL (`scribe.base_url`).
+        // Base URL untuk penguji API. Biarkan null agar sama dengan base_url yang ditampilkan
         'base_url' => null,
 
-        // [Laravel Sanctum] Fetch a CSRF token before each request, and add it as an X-XSRF-TOKEN header.
+        // [Laravel Sanctum] Ambil token CSRF sebelum setiap request dan
+        // tambahkan sebagai header X-XSRF-TOKEN
         'use_csrf' => false,
 
-        // The URL to fetch the CSRF token from (if `use_csrf` is true).
+        // URL untuk mengambil token CSRF (jika `use_csrf` true)
         'csrf_url' => '/sanctum/csrf-cookie',
     ],
 
-    // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
+    /*
+    |--------------------------------------------------------------------------
+    | KONFIGURASI AUTENTIKASI
+    |--------------------------------------------------------------------------
+    |
+    | Informasi tentang cara API Anda diautentikasi. Akan digunakan dalam
+    | dokumentasi yang ditampilkan, contoh yang dihasilkan, dan pemanggilan response.
+    |
+    */
     'auth' => [
-        // Set this to true if ANY endpoints in your API use authentication.
+        // Aktifkan jika ADA endpoint yang menggunakan autentikasi
         'enabled' => true,
 
-        // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
-        // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
+        // Aktifkan jika API Anda harus diautentikasi secara default.
+        // Jika true, Anda bisa menggunakan @unauthenticated atau @authenticated
+        // pada endpoint tertentu untuk mengubah statusnya dari default.
         'default' => false,
 
-        // Where is the auth value meant to be sent in a request?
+        // Di mana nilai auth dikirim dalam request?
+        // Opsi: AuthIn::BEARER (header Authorization: Bearer), AuthIn::HEADER, AuthIn::QUERY, dll.
         'in' => AuthIn::BEARER->value,
 
-        // The name of the auth parameter (e.g. token, key, apiKey) or header (e.g. Authorization, Api-Key).
+        // Nama parameter auth (mis: token, key, apiKey) atau header (mis: Authorization, Api-Key)
         'name' => 'Authorization',
 
-        // The value of the parameter to be used by Scribe to authenticate response calls.
-        // This will NOT be included in the generated documentation. If empty, Scribe will use a random value.
+        // Nilai parameter yang digunakan oleh Scribe untuk mengautentikasi pemanggilan response.
+        // Nilai ini TIDAK akan disertakan dalam dokumentasi yang dihasilkan.
+        // Jika kosong, Scribe akan menggunakan nilai acak.
         'use_value' => env('SCRIBE_AUTH_KEY'),
 
-        // Placeholder your users will see for the auth parameter in the example requests.
-        // Set this to null if you want Scribe to use a random value as placeholder instead.
+        // Placeholder yang akan dilihat pengguna untuk parameter auth di contoh request.
+        // Set ke null jika ingin Scribe menggunakan nilai acak sebagai placeholder.
         'placeholder' => '{YOUR_AUTH_TOKEN}',
 
-        // Any extra authentication-related info for your users. Markdown and HTML are supported.
+        // Informasi tambahan terkait autentikasi untuk pengguna. Mendukung Markdown dan HTML.
         'extra_info' => 'Untuk mendapatkan token, login terlebih dahulu menggunakan endpoint <code>POST /api/v1/auth/login/warga</code> (untuk warga) atau <code>POST /api/v1/auth/login/admin</code> (untuk admin). Token yang didapat kemudian digunakan sebagai Bearer token di header Authorization.',
     ],
 
-    // Example requests for each endpoint will be shown in each of these languages.
-    // Supported options are: bash, javascript, php, python
-    // To add a language of your own, see https://scribe.knuckles.wtf/laravel/advanced/example-requests
-    // Note: does not work for `external` docs types
+    /*
+    |--------------------------------------------------------------------------
+    | BAHASA CONTOH REQUEST
+    |--------------------------------------------------------------------------
+    |
+    | Contoh request untuk setiap endpoint akan ditampilkan dalam bahasa-bahasa
+    | berikut. Opsi yang didukung: bash, javascript, php, python.
+    | Untuk menambahkan bahasa sendiri, lihat dokumentasi Scribe.
+    | Catatan: tidak berfungsi untuk tipe dokumentasi `external`.
+    |
+    */
     'example_languages' => [
         'bash',
         'javascript',
     ],
 
-    // Generate a Postman collection (v2.1.0) in addition to HTML docs.
-    // For 'static' docs, the collection will be generated to public/docs/collection.json.
-    // For 'laravel' docs, it will be generated to storage/app/scribe/collection.json.
-    // Setting `laravel.add_routes` to true (above) will also add a route for the collection.
+    /*
+    |--------------------------------------------------------------------------
+    | KOLEKSI POSTMAN
+    |--------------------------------------------------------------------------
+    |
+    | Menghasilkan koleksi Postman (v2.1.0) selain dokumentasi HTML.
+    | Untuk tipe 'static': koleksi akan dihasilkan ke public/docs/collection.json.
+    | Untuk tipe 'laravel': koleksi akan dihasilkan ke storage/app/scribe/collection.json.
+    | Jika `laravel.add_routes` true, route untuk koleksi juga akan ditambahkan.
+    |
+    */
     'postman' => [
         'enabled' => true,
 
@@ -205,68 +337,124 @@ return [
         ],
     ],
 
-    // Generate an OpenAPI spec in addition to docs webpage.
-    // For 'static' docs, the collection will be generated to public/docs/openapi.yaml.
-    // For 'laravel' docs, it will be generated to storage/app/scribe/openapi.yaml.
-    // Setting `laravel.add_routes` to true (above) will also add a route for the spec.
+    /*
+    |--------------------------------------------------------------------------
+    | SPESIFIKASI OPENAPI (SWAGGER)
+    |--------------------------------------------------------------------------
+    |
+    | Menghasilkan spesifikasi OpenAPI selain halaman dokumentasi.
+    | Untuk tipe 'static': file akan dihasilkan ke public/docs/openapi.yaml.
+    | Untuk tipe 'laravel': file akan dihasilkan ke storage/app/scribe/openapi.yaml.
+    | Jika `laravel.add_routes` true, route untuk spesifikasi juga akan ditambahkan.
+    |
+    */
     'openapi' => [
         'enabled' => true,
 
-        // The OpenAPI spec version to generate. Supported versions: '3.0.3', '3.1.0'.
-        // OpenAPI 3.1 is more compatible with JSON Schema and is becoming the dominant version.
-        // See https://spec.openapis.org/oas/v3.1.0 for details on 3.1 changes.
+        // Versi spesifikasi OpenAPI: '3.0.3' atau '3.1.0'
+        // OpenAPI 3.1 lebih kompatibel dengan JSON Schema dan menjadi versi dominan.
         'version' => '3.0.3',
 
         'overrides' => [
             // 'info.version' => '2.0.0',
         ],
 
-        // Additional generators to use when generating the OpenAPI spec.
-        // Should extend `Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator`.
+        // Generator tambahan untuk membuat spesifikasi OpenAPI.
+        // Harus merupakan turunan dari `Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator`.
         'generators' => [],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | GRUP ENDPOINT & URUTAN
+    |--------------------------------------------------------------------------
+    |
+    | Mengatur grup default untuk endpoint yang tidak memiliki @group,
+    | serta urutan tampilan grup dan endpoint dalam dokumentasi.
+    |
+    */
     'groups' => [
-        // Endpoints which don't have a @group will be placed in this default group.
+        // Grup default untuk endpoint yang tidak memiliki anotasi @group
         'default' => 'Endpoints',
 
-        // By default, Scribe will sort groups alphabetically, and endpoints in the order their routes are defined.
-        // You can override this by listing the groups, subgroups and endpoints here in the order you want them.
-        // See https://scribe.knuckles.wtf/blog/laravel-v4#easier-sorting and https://scribe.knuckles.wtf/laravel/reference/config#order for details
-        // Note: does not work for `external` docs types
+        // Daftar grup, subgrup, dan endpoint dalam urutan yang diinginkan.
+        // Secara default, Scribe mengurutkan grup secara alfabetis dan
+        // endpoint sesuai urutan definisi route.
+        // Catatan: tidak berfungsi untuk tipe dokumentasi `external`
         'order' => [],
     ],
 
-    // Custom logo path. This will be used as the value of the src attribute for the <img> tag,
-    // so make sure it points to an accessible URL or path. Set to false to not use a logo.
-    // For example, if your logo is in public/img:
-    // - 'logo' => '../img/logo.png' // for `static` type (output folder is public/docs)
-    // - 'logo' => 'img/logo.png' // for `laravel` type
+    /*
+    |--------------------------------------------------------------------------
+    | LOGO KUSTOM
+    |--------------------------------------------------------------------------
+    |
+    | Path logo kustom. Akan digunakan sebagai nilai atribut src pada tag <img>.
+    | Pastikan path menunjuk ke URL atau path yang dapat diakses.
+    | Set ke false untuk tidak menggunakan logo.
+    |
+    | Contoh jika logo ada di public/img:
+    | - 'logo' => '../img/logo.png'  → untuk tipe 'static'
+    | - 'logo' => 'img/logo.png'     → untuk tipe 'laravel'
+    |
+    */
     'logo' => false,
 
-    // Customize the "Last updated" value displayed in the docs by specifying tokens and formats.
-    // Examples:
-    // - {date:F j Y} => March 28, 2022
-    // - {git:short} => Short hash of the last Git commit
-    // Available tokens are `{date:<format>}` and `{git:<format>}`.
-    // The format you pass to `date` will be passed to PHP's `date()` function.
-    // The format you pass to `git` can be either "short" or "long".
-    // Note: does not work for `external` docs types
+    /*
+    |--------------------------------------------------------------------------
+    | INFORMASI "TERAKHIR DIPERBARUI"
+    |
+    | Kustomisasi nilai "Terakhir diperbarui" yang ditampilkan di dokumentasi.
+    |
+    | Token yang tersedia:
+    | - {date:<format>}  → format tanggal PHP (contoh: {date:F j Y} => March 28, 2022)
+    | - {git:<format>}   → hash Git, format "short" atau "long"
+    |
+    | Catatan: tidak berfungsi untuk tipe dokumentasi `external`
+    |
+    */
     'last_updated' => 'Last updated: {date:F j, Y}',
 
+    /*
+    |--------------------------------------------------------------------------
+    | GENERATOR CONTOH
+    |--------------------------------------------------------------------------
+    |
+    | Mengontrol bagaimana Scribe menghasilkan nilai contoh untuk parameter
+    | dan model response.
+    |
+    */
     'examples' => [
-        // Set this to any number to generate the same example values for parameters on each run,
+        // Seed untuk Faker — gunakan angka yang sama untuk menghasilkan
+        // nilai contoh yang konsisten di setiap proses generating
         'faker_seed' => 1234,
 
-        // With API resources and transformers, Scribe tries to generate example models to use in your API responses.
-        // By default, Scribe will try the model's factory, and if that fails, try fetching the first from the database.
-        // You can reorder or remove strategies here.
+        // Sumber model contoh untuk response API.
+        // Scribe akan mencoba factory model terlebih dahulu, lalu mengambil
+        // data pertama dari database jika factory gagal.
+        // Urutan dapat diubah atau strategi dapat dihapus.
         'models_source' => ['factoryCreate', 'factoryMake', 'databaseFirst'],
     ],
 
-    // The strategies Scribe will use to extract information about your routes at each stage.
-    // Use configureStrategy() to specify settings for a strategy in the list.
-    // Use removeStrategies() to remove an included strategy.
+    /*
+    |--------------------------------------------------------------------------
+    | STRATEGI EKSTRAKSI
+    |--------------------------------------------------------------------------
+    |
+    | Strategi yang digunakan Scribe untuk mengekstrak informasi tentang route
+    | pada setiap tahap:
+    | - metadata      → informasi umum endpoint
+    | - headers       → header request
+    | - urlParameters → parameter di URL
+    | - queryParameters → parameter query string
+    | - bodyParameters → parameter body request
+    | - responses     → response endpoint
+    | - responseFields → field dalam response
+    |
+    | Gunakan configureStrategy() untuk mengatur pengaturan strategi tertentu.
+    | Gunakan removeStrategies() untuk menghapus strategi.
+    |
+    */
     'strategies' => [
         'metadata' => [
             ...Defaults::METADATA_STRATEGIES,
@@ -290,8 +478,9 @@ return [
         'responses' => configureStrategy(
             Defaults::RESPONSES_STRATEGIES,
             Strategies\Responses\ResponseCalls::withSettings(
+                // Hanya panggil endpoint GET untuk menghasilkan response contoh
                 only: ['GET *'],
-                // Recommended: disable debug mode in response calls to avoid error stack traces in responses
+                // Nonaktifkan mode debug untuk menghindari stack trace error di response
                 config: [
                     'app.debug' => false,
                 ]
@@ -302,13 +491,29 @@ return [
         ],
     ],
 
-    // For response calls, API resource responses and transformer responses,
-    // Scribe will try to start database transactions, so no changes are persisted to your database.
-    // Tell Scribe which connections should be transacted here. If you only use one db connection, you can leave this as is.
+    /*
+    |--------------------------------------------------------------------------
+    | TRANSaksi DATABASE UNTUK PANGGILAN RESPONSE
+    |--------------------------------------------------------------------------
+    |
+    | Saat menghasilkan response contoh, Scribe akan mencoba memulai transaksi
+    | database agar tidak ada perubahan yang benar-benar tersimpan ke database.
+    | Tentukan koneksi database mana yang harus ditransaksikan di sini.
+    | Jika hanya menggunakan satu koneksi db, biarkan apa adanya.
+    |
+    */
     'database_connections_to_transact' => [config('database.default')],
 
+    /*
+    |--------------------------------------------------------------------------
+    | KONFIGURASI FRACTAL (SERIALIZER)
+    |--------------------------------------------------------------------------
+    |
+    | Jika Anda menggunakan serializer kustom dengan league/fractal,
+    | Anda dapat menentukannya di sini.
+    |
+    */
     'fractal' => [
-        // If you are using a custom serializer with league/fractal, you can specify it here.
         'serializer' => null,
     ],
 ];

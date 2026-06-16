@@ -16,6 +16,9 @@ use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk mengelola data Kartu Keluarga (KK).
+ */
 class KeluargaResource extends Resource
 {
     protected static ?string $model = Keluarga::class;
@@ -35,6 +38,9 @@ class KeluargaResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    /**
+     * Membangun form isian data keluarga.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -66,6 +72,9 @@ class KeluargaResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar keluarga.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -98,11 +107,17 @@ class KeluargaResource extends Resource
             ->emptyStateIcon('heroicon-o-home-modern');
     }
 
+    /**
+     * Query dengan eager load relasi kepala keluarga.
+     */
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->with(['kepalaKeluarga']);
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return [

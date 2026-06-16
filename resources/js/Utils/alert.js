@@ -1,5 +1,9 @@
 import Swal from 'sweetalert2';
 
+/**
+ * Utilitas pembungkus SweetAlert2 dengan gaya kustom.
+ * Menyelaraskan tampilan dialog modal/toast dengan tema desain premium (Teal & Slate).
+ */
 const customSwal = Swal.mixin({
     customClass: {
         confirmButton: 'px-6 py-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer mx-1',
@@ -11,6 +15,9 @@ const customSwal = Swal.mixin({
     buttonsStyling: false
 });
 
+/**
+ * Kumpulan fungsi helper SweetAlert2 untuk aksi responsif.
+ */
 export const alert = {
     success(title, text = '') {
         return customSwal.fire({

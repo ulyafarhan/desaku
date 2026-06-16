@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
+/**
+ * Model untuk mencatat log riwayat audit aktivitas pengguna/sistem (audit trails).
+ */
 class AuditLog extends Model
 {
     use HasUlids;
@@ -25,6 +28,9 @@ class AuditLog extends Model
         'user_agent',
     ];
 
+    /**
+     * Casting atribut ke tipe data native.
+     */
     protected function casts(): array
     {
         return [
@@ -34,6 +40,17 @@ class AuditLog extends Model
         ];
     }
 
+    /**
+     * Membuat catatan log aktivitas audit baru.
+     *
+     * @param string $userType Tipe user ('admin', 'warga', atau 'system').
+     * @param string|null $userId ID pengidentifikasi user.
+     * @param string $tindakan Jenis tindakan (misal: 'create', 'update', 'delete').
+     * @param string $namaTabel Nama tabel database terkait.
+     * @param string|null $recordId ID record tabel yang dimanipulasi.
+     * @param array|null $dataLama Payload data sebelum perubahan.
+     * @param array|null $dataBaru Payload data setelah perubahan.
+     */
     public static function log(
         string $userType,
         ?string $userId,

@@ -9,8 +9,20 @@ use App\Models\MutasiPenduduk;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Service untuk menyediakan data statistik kependudukan dan layanan desa.
+ *
+ * Mengelola agregasi data demografi (penduduk, keluarga, dusun, agama,
+ * pendidikan, pekerjaan, usia) dan statistik layanan (pengajuan surat,
+ * mutasi penduduk) dengan cache 1 jam.
+ */
 class StatistikService
 {
+    /**
+     * Mengambil data demografi penduduk secara lengkap.
+     *
+     * Data di-cache selama 1 jam untuk menghindari perhitungan berulang.
+     */
     public function getDemografi(): array
     {
         return Cache::remember('statistik_demografi', 3600, function () {
@@ -31,6 +43,9 @@ class StatistikService
         });
     }
 
+    /**
+     * Menghitung jumlah kepala keluarga per dusun.
+     */
     protected function getPerDusun(): array
     {
         return Keluarga::select('dusun', DB::raw('count(*) as jumlah'))
@@ -40,6 +55,9 @@ class StatistikService
             ->toArray();
     }
 
+    /**
+     * Menghitung jumlah penduduk per agama.
+     */
     protected function getPerAgama(): array
     {
         return Penduduk::aktif()
@@ -50,6 +68,9 @@ class StatistikService
             ->toArray();
     }
 
+    /**
+     * Menghitung jumlah penduduk per tingkat pendidikan.
+     */
     protected function getPerPendidikan(): array
     {
         return Penduduk::aktif()
@@ -60,6 +81,9 @@ class StatistikService
             ->toArray();
     }
 
+    /**
+     * Menghitung 10 jenis pekerjaan terbanyak penduduk.
+     */
     protected function getPerPekerjaan(): array
     {
         return Penduduk::aktif()
@@ -72,6 +96,12 @@ class StatistikService
             ->toArray();
     }
 
+    /**
+     * Menghitung jumlah penduduk per kelompok usia.
+     *
+     * Mendukung driver database MySQL, SQLite, dan PostgreSQL.
+     * Kelompok: 0-5, 6-12, 13-17, 18-25, 26-40, 41-60, 60+.
+     */
     protected function getPerKelompokUsia(): array
     {
         $driver = DB::connection()->getDriverName();
@@ -107,7 +137,13 @@ class StatistikService
         ];
     }
 
-     public function getLayanan(): array
+     /**
+     * Mengambil statistik layanan administrasi desa.
+     *
+     * Mencakup data pengajuan surat dan mutasi penduduk
+     * berdasarkan status, di-cache selama 1 jam.
+     */
+    public function getLayanan(): array
     {
         return Cache::remember('statistik_layanan', 3600, function () {
             return [
@@ -129,6 +165,9 @@ class StatistikService
         });
     }
 
+    /**
+     * Menghitung jumlah pengajuan surat per kategori.
+     */
     protected function getPerJenisSurat(): array
     {
         return PengajuanSurat::select('kategori_surat_id', DB::raw('count(*) as jumlah'))
@@ -141,6 +180,9 @@ class StatistikService
             ->toArray();
     }
 
+    /**
+     * Membersihkan cache data statistik demografi dan layanan.
+     */
     public function clearCache(): void
     {
         Cache::forget('statistik_demografi');

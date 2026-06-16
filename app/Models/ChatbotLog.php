@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
+/**
+ * Model untuk mencatat riwayat interaksi percakapan warga dengan chatbot Telegram.
+ */
 class ChatbotLog extends Model
 {
     use HasUlids;

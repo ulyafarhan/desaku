@@ -1,11 +1,24 @@
 <?php
 
+/**
+ * MIGRASI — Tambah kolom SEO ke tabel informasi_publik
+ *
+ * Menambahkan meta deskripsi dan kata kunci untuk optimasi
+ * mesin pencari (SEO) pada konten informasi publik.
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Tambah kolom SEO ke tabel `informasi_publik`.
+     *
+     * - meta_description : Deskripsi pendek untuk meta tag (ditampilkan di hasil pencarian)
+     * - kata_kunci       : Kata kunci SEO (contoh: 'berita desa, kegiatan gampong')
+     */
     public function up(): void
     {
         Schema::table('informasi_publik', function (Blueprint $table) {
@@ -14,6 +27,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Balikkan: hapus kedua kolom SEO.
+     */
     public function down(): void
     {
         Schema::table('informasi_publik', function (Blueprint $table) {

@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk mengelola data profil personal warga.
+ */
 class CitizenProfileController extends Controller
 {
+    /**
+     * Menampilkan detail profil warga dan tingkat kelengkapan datanya.
+     */
     public function show(Request $request): Response
     {
         $warga = $request->user('penduduk');
@@ -25,6 +31,9 @@ class CitizenProfileController extends Controller
         ]);
     }
 
+    /**
+     * Memperbarui biodata warga beserta berkas penunjang (KTP, KK, Foto Profil).
+     */
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([

@@ -6,8 +6,20 @@ use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * Service untuk menghasilkan dokumen PDF surat resmi desa.
+ *
+ * Membuat PDF dari template Blade, menambahkan QR Code, nomor surat,
+ * dan menyimpannya ke storage publik.
+ */
 class PdfGeneratorService
 {
+    /**
+     * Menghasilkan PDF surat untuk pengajuan yang telah disetujui.
+     *
+     * Membuat QR hash, QR code, nomor surat, merender template Blade,
+     * dan menyimpan hasil PDF ke storage.
+     */
     public function generateSuratPdf(PengajuanSurat $pengajuan): string
     {
         $qrHash = $this->generateQrHash($pengajuan);
@@ -42,6 +54,9 @@ class PdfGeneratorService
         return $pdfUrl;
     }
 
+    /**
+     * Menghasilkan hash SHA-256 dari data pengajuan untuk QR code.
+     */
     protected function generateQrHash(PengajuanSurat $pengajuan): string
     {
         $data = implode('|', [
@@ -54,6 +69,9 @@ class PdfGeneratorService
         return hash('sha256', $data);
     }
 
+    /**
+     * Membuat gambar QR code dalam format SVG berdasarkan hash.
+     */
     protected function generateQrCode(string $hash): string
     {
         $verificationUrl = config('app.url') . '/verifikasi/' . $hash;
@@ -70,6 +88,11 @@ class PdfGeneratorService
         return Storage::disk('public')->path($path);
     }
 
+    /**
+     * Memastikan logo gampong tersedia di direktori publik.
+     *
+     * Mengunduh logo dari Wikimedia jika belum ada di storage lokal.
+     */
     protected function ensureLogoDownloaded(): void
     {
         $logoDir = public_path('images');
@@ -96,6 +119,12 @@ class PdfGeneratorService
         }
     }
 
+    /**
+     * Menghasilkan nomor surat resmi berdasarkan format desa.
+     *
+     * Format: {kode_surat}/{counter}/GAMPONG-UDEUNG/{bulan}/{tahun}.
+     * Counter dihitung dari jumlah pengajuan tahun berjalan per kategori.
+     */
     protected function generateNomorSurat(PengajuanSurat $pengajuan): string
     {
         $counter = PengajuanSurat::where('kategori_surat_id', $pengajuan->kategori_surat_id)

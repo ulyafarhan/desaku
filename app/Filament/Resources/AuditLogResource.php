@@ -10,6 +10,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+/**
+ * Resource Filament untuk memantau catatan log aktivitas audit (Audit Trail) sistem.
+ */
 class AuditLogResource extends Resource
 {
     protected static ?string $model = AuditLog::class;
@@ -29,11 +32,20 @@ class AuditLogResource extends Resource
 
     protected static ?int $navigationSort = 9;
 
+    /**
+     * Audit log bersifat read-only; tidak ada tombol buat data baru.
+     */
     public static function canCreate(): bool
     {
         return false;
     }
 
+    /**
+     * Membangun form detail audit log (read-only).
+     *
+     * Menampilkan metadata aktivitas (waktu, pelaku, IP, user-agent)
+     * dan diff perubahan data sebelum vs sesudah dalam format tabel.
+     */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -129,6 +141,9 @@ class AuditLogResource extends Resource
         ]);
     }
 
+    /**
+     * Membangun tabel daftar log audit.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -206,6 +221,9 @@ class AuditLogResource extends Resource
             ->emptyStateIcon('heroicon-o-finger-print');
     }
 
+    /**
+     * Mengembalikan daftar halaman yang tersedia untuk resource ini.
+     */
     public static function getPages(): array
     {
         return ['index' => ManageAuditLogs::route('/')];

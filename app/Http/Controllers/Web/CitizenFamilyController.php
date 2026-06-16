@@ -9,8 +9,14 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk mengelola data anggota keluarga (Kartu Keluarga).
+ */
 class CitizenFamilyController extends Controller
 {
+    /**
+     * Menampilkan daftar anggota keluarga yang terdaftar dalam KK yang sama.
+     */
     public function index(Request $request): Response
     {
         $warga = $request->user('penduduk');
@@ -46,6 +52,9 @@ class CitizenFamilyController extends Controller
         ]);
     }
 
+    /**
+     * Memperbarui informasi profil anggota keluarga tertentu (Hanya boleh diakses Kepala Keluarga).
+     */
     public function update(Request $request, string $nik): RedirectResponse
     {
         $warga = $request->user('penduduk');

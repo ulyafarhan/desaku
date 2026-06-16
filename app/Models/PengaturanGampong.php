@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
+/**
+ * Model untuk merepresentasikan konfigurasi/pengaturan sistem (keuchik, visi-misi, kunci API, dsb).
+ */
 class PengaturanGampong extends Model
 {
     use HasUlids;
@@ -27,6 +30,9 @@ class PengaturanGampong extends Model
         ];
     }
 
+    /**
+     * Mengambil nilai pengaturan berdasarkan kunci beserta casting tipe datanya.
+     */
     public static function get(string $key, $default = null)
     {
         $setting = static::where('kunci', $key)->first();
@@ -43,6 +49,9 @@ class PengaturanGampong extends Model
         };
     }
 
+    /**
+     * Menyimpan atau memperbarui nilai pengaturan sistem.
+     */
     public static function set(string $key, $value, string $type = 'string'): void
     {
         $nilai = is_array($value) ? json_encode($value) : $value;

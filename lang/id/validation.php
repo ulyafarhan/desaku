@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * PESAN VALIDASI — Bahasa Indonesia
+ *
+ * Terjemahan resmi Laravel untuk pesan validasi formulir.
+ * Digunakan oleh Validator untuk menampilkan error dalam bahasa Indonesia.
+ *
+ * @see https://laravel.com/docs/validation
+ */
+
 return [
     'accepted' => 'Kolom :attribute harus diterima.',
     'accepted_if' => 'Kolom :attribute harus diterima ketika :other berisi :value.',
