@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
@@ -31,16 +32,14 @@ class InformasiPublikResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['judul', 'kategori'];
+        return ['judul', 'kategori', 'konten'];
     }
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
-
-    protected static string|\UnitEnum|null $navigationGroup = 'Konten';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationLabel = 'Informasi Publik';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 4;
 
     /**
      * Menampilkan jumlah artikel yang sudah dipublikasikan sebagai badge navigasi.
@@ -61,37 +60,29 @@ class InformasiPublikResource extends Resource
     }
 
     /**
-     * Membangun form isian artikel informasi publik.
-     *
-     * Mencakup konten artikel, upload/URL cover image, optimasi SEO,
-     * dan pengaturan publikasi dengan dukungan AI copywriting.
+     * Membangun form isian artikel berita dengan asisten AI.
      */
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Section::make('Konten Artikel')
-                ->description('Tulis judul, isi, dan gambar cover artikel.')
+                ->description('Tulis judul, kategori, konten, serta sematkan gambar sampul berita.')
                 ->icon('heroicon-o-pencil-square')
                 ->schema([
                     TextInput::make('judul')
                         ->label('Judul Artikel')
                         ->required()
-                        ->maxLength(255)
-                        ->columnSpanFull()
+                        ->maxLength(150)
                         ->prefixIcon('heroicon-o-document-text')
-                        ->placeholder('Tulis judul yang menarik...')
+                        ->placeholder('Masukkan judul berita atau pengumuman...')
                         ->live(onBlur: true)
-                        ->afterStateUpdated(function ($state, $set, $record) {
-                            if (!$record || empty($record->slug)) {
-                                $set('slug', \Illuminate\Support\Str::slug($state));
-                            }
-                        }),
+                        ->afterStateUpdated(fn ($state, $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
                     TextInput::make('slug')
-                        ->label('Slug URL')
-                        ->maxLength(255)
-                        ->prefixIcon('heroicon-o-link')
-                        ->placeholder('Otomatis dari judul')
+                        ->label('Slug URL (Otomatis)')
                         ->required()
+                        ->maxLength(180)
+                        ->prefixIcon('heroicon-o-link')
+                        ->placeholder('slug-artikel-otomatis')
                         ->unique(ignoreRecord: true),
                     TextInput::make('kategori')
                         ->label('Kategori')
@@ -107,8 +98,11 @@ class InformasiPublikResource extends Resource
                         ->columnSpanFull()
                         ->imagePreviewHeight('200')
                         ->afterStateHydrated(function ($component, $state, $record) {
-                            if ($record && $record->cover_image && !str_starts_with($record->cover_image, 'http')) {
-                                $component->state($record->cover_image);
+                            if ($record) {
+                                $rawCover = $record->getRawOriginal('cover_image');
+                                if ($rawCover && !str_starts_with($rawCover, 'http')) {
+                                    $component->state($rawCover);
+                                }
                             }
                         })
                         ->saveUploadedFileUsing(function (\Livewire\Features\SupportFileUploads\TemporaryUploadedFile $file) {
@@ -133,8 +127,11 @@ class InformasiPublikResource extends Resource
                         ->prefixIcon('heroicon-o-photo')
                         ->placeholder('https://example.com/gambar.jpg')
                         ->afterStateHydrated(function ($component, $state, $record) {
-                            if ($record && $record->cover_image && str_starts_with($record->cover_image, 'http')) {
-                                $component->state($record->cover_image);
+                            if ($record) {
+                                $rawCover = $record->getRawOriginal('cover_image');
+                                if ($rawCover && str_starts_with($rawCover, 'http')) {
+                                    $component->state($rawCover);
+                                }
                             }
                         }),
                     RichEditor::make('konten')
@@ -169,8 +166,16 @@ class InformasiPublikResource extends Resource
 
                                     if ($fixedText) {
                                         $set('konten', $fixedText);
+                                        
+                                        // Secara otomatis menghasilkan optimasi SEO agar admin tidak perlu klik 2 kali
+                                        $seo = $ai->generateSeoMetadata($judul, $fixedText);
+                                        if ($seo) {
+                                            $set('meta_description', $seo['meta_description']);
+                                            $set('kata_kunci', $seo['kata_kunci']);
+                                        }
+
                                         \Filament\Notifications\Notification::make()
-                                            ->title($isGenerating ? 'Artikel berhasil ditulis dengan AI!' : 'Tulisan berhasil diperbaiki dengan AI!')
+                                            ->title($isGenerating ? 'Artikel & optimasi SEO berhasil dibuat dengan AI!' : 'Tulisan & optimasi SEO berhasil diperbaiki dengan AI!')
                                             ->success()
                                             ->send();
                                     } else {
@@ -267,6 +272,21 @@ class InformasiPublikResource extends Resource
         return $table
             ->poll('15s')
             ->columns([
+                ImageColumn::make('cover_image')
+                    ->label('Cover')
+                    ->square()
+                    ->state(function ($record) {
+                        $raw = $record->getRawOriginal('cover_image');
+                        if (empty($raw)) {
+                            return null;
+                        }
+                        if (str_starts_with($raw, 'http://') || str_starts_with($raw, 'https://')) {
+                            return $raw;
+                        }
+                        return asset('storage/' . $raw);
+                    })
+                    ->disk(null)
+                    ->defaultImageUrl(fn () => asset('images/logo-gampong.png')),
                 TextColumn::make('judul')
                     ->label('Judul')
                     ->sortable()
@@ -288,10 +308,34 @@ class InformasiPublikResource extends Resource
                     ->label('Penulis')
                     ->toggleable(),
             ])
-            ->headerActions([CreateAction::make()])
+            ->headerActions([
+                \Filament\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        if (!empty($data['cover_image_file'])) {
+                            $data['cover_image'] = $data['cover_image_file'];
+                        } elseif (!empty($data['cover_image_url'])) {
+                            $data['cover_image'] = $data['cover_image_url'];
+                        } else {
+                            $data['cover_image'] = null;
+                        }
+                        unset($data['cover_image_file'], $data['cover_image_url']);
+                        return $data;
+                    })
+            ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Actions\EditAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        if (!empty($data['cover_image_file'])) {
+                            $data['cover_image'] = $data['cover_image_file'];
+                        } elseif (!empty($data['cover_image_url'])) {
+                            $data['cover_image'] = $data['cover_image_url'];
+                        } else {
+                            $data['cover_image'] = null;
+                        }
+                        unset($data['cover_image_file'], $data['cover_image_url']);
+                        return $data;
+                    }),
+                \Filament\Actions\DeleteAction::make(),
             ]);
     }
 

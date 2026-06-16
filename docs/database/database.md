@@ -79,7 +79,9 @@ erDiagram
 
 * **`bot_knowledges`**: Menyimpan basis pengetahuan (FAQ & RAG Context) untuk Telegram chatbot. Kunci-kunci dicari secara dinamis oleh AI atau sistem bot.
 * **`audit_logs`**: Mencatat semua log mutasi database (INSERT, UPDATE, DELETE) lengkap dengan data lama (`data_lama`), data baru (`data_baru`), IP address, dan user agent aktor yang memicu.
-* **`pengaturan_gampong`**: Berisi konfigurasi global sistem desa (Key-Value), seperti nama Keuchik, alamat kantor desa, serta path URL foto profil perangkat desa.
+* **`pengaturan_gampong`**: Berisi konfigurasi global sistem desa (Key-Value), seperti identitas wilayah, visi misi, serta kredensial API AI dan Cloud Storage.
+* **`pengaturan_frontend`**: Menyimpan konfigurasi khusus konten publik, meliputi data nama & foto aparat gampong, kontak layanan warga, serta link akun media sosial resmi desa.
+* **`traffic_logs`**: Mencatat log aktivitas kunjungan web publik dan area warga untuk keperluan analisis lalu lintas dan statistik grafik dasbor secara riil.
 
 ---
 
@@ -88,7 +90,16 @@ Untuk memastikan kecepatan eksekusi kueri di bawah 500ms, indeks database dibuat
 * `idx_pengaturan_kunci` pada `pengaturan_gampong(kunci)`
 * `idx_penduduk_nama` pada `penduduk(nama_lengkap)`
 * `idx_penduduk_no_kk` pada `penduduk(no_kk)`
+* `idx_penduduk_status_mutasi` pada `penduduk(status_mutasi)`
+* `idx_penduduk_jenis_kelamin` pada `penduduk(jenis_kelamin)`
+* `idx_penduduk_tanggal_lahir` pada `penduduk(tanggal_lahir)`
+* `idx_keluarga_dusun` pada `keluarga(dusun)`
 * `idx_pengajuan_status` pada `pengajuan_surat(status)`
 * `idx_pengajuan_nik` pada `pengajuan_surat(nik_pemohon)`
+* `idx_pengajuan_created_at` pada `pengajuan_surat(created_at)`
+* `idx_mutasi_jenis` pada `mutasi_penduduk(jenis_mutasi)`
+* `idx_mutasi_tanggal` pada `mutasi_penduduk(tanggal_mutasi)`
+* `idx_chatbot_logs_created_at` pada `chatbot_logs(created_at)`
 * `idx_bot_knowledges_kunci` pada `bot_knowledges(kunci)`
 * `idx_audit_tabel_record` pada `audit_logs(nama_tabel, record_id)`
+* `idx_traffic_logs_created_at` pada `traffic_logs(created_at)`

@@ -79,3 +79,23 @@ Sistem backend SIG-Udeung mengimplementasikan hibrida **Exact Match Cache** dan 
    * **Threshold & Output**: Jika skor kemiripan tertinggi mencapai **>= 80% (0.80)**, sistem mengembalikan balasan ter-cache, menyimpan relasi pencarian baru ke Redis, dan mencatat log dengan penggunaan token `0` (*zero cost*).
    * Jika di bawah 80%, request baru akan diteruskan ke API Provider AI (OpenAI/Gemini).
 
+---
+
+## 6. Fitur Pemantauan Server & Lalu Lintas (Traffic)
+
+Untuk membantu administrator gampong dalam memantau kesehatan server secara real-time dan melacak aktivitas kunjungan warga, backend SIG-Udeung dilengkapi dengan sistem pemantauan terintegrasi:
+
+### 6.1. Middleware Pemantau Lalu Lintas (`TrackTraffic`)
+* Terdaftar secara global dalam grup middleware `web` di `bootstrap/app.php`.
+* Memfilter request internal admin (`/admin*`), request AJAX Livewire (`/livewire*`), dan request telemetri agar data lalu lintas murni berasal dari warga/publik.
+* Menganalisis *User Agent* secara dinamis untuk mengidentifikasi apakah request berasal dari bot/crawler mesin pencari.
+* Menyimpan log kunjungan ke dalam tabel `traffic_logs` (IP address, user agent, URL path, HTTP method, referer, dan status bot).
+
+### 6.2. Widget Pemantau Performa Server (`ServerPerformanceWidget`)
+* Membaca kapasitas ruang penyimpanan (disk space) secara real-time menggunakan fungsi `disk_free_space` & `disk_total_space`.
+* Mendeteksi penggunaan memori (RAM) fisik server. Mendukung pembacaan Windows OS menggunakan perintah `wmic` dan Linux OS dengan mem-parsing berkas `/proc/meminfo`.
+* Menampilkan informasi sistem operasi, versi PHP, versi Laravel, dan alamat IP server secara dinamis pada dasbor backoffice admin.
+
+### 6.3. Widget Dasbor Kustom Lainnya
+* **`TrafficChartWidget`**: Menyajikan grafik garis (line chart) interaktif 7 hari terakhir yang menghitung statistik kunjungan harian unik warga (mengecualikan search engine bot).
+* **`RecentSubmissionsWidget`**: Menampilkan tabel 5 permohonan pengajuan surat terbaru dari warga secara langsung di dasbor backoffice dengan badge warna-warni dinamis (Pending, Proses, Selesai, Ditolak).

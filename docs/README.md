@@ -13,7 +13,7 @@ Untuk memudahkan pemahaman sistem secara cepat dan profesional, dokumentasi diba
 2. **[docs/frontend/frontend.md](frontend/frontend.md)**
    * Berisi spesifikasi frontend (Vue 3, Inertia.js, Vite 8, Tailwind CSS v4), detail Single File Component (SFC), form dinamis, penanganan avatar, optimasi SEO & GEO menggunakan JSON-LD, dan pengujian unit (Vitest).
 3. **[docs/database/database.md](database/database.md)** & **[docs/database/erd.md](database/erd.md)**
-   * Berisi skema database MySQL/MariaDB (15 tabel utama), diagram kardinalitas relasi, pemetaan lengkap ERD rinci, penempatan indexing kueri, dan sistem logging audit data (audit trail).
+   * Berisi skema database MySQL/MariaDB (17 tabel utama), diagram kardinalitas relasi, pemetaan lengkap ERD rinci, penempatan indexing kueri, dan sistem logging audit data (audit trail).
 4. **[docs/api/api.md](api/api.md)**
    * Berisi panduan lengkap integrasi 29 endpoint API, alur autentikasi token Sanctum, parameter data isian dinamis, dan integrasi webhook bot Telegram.
 5. **[docs/api-contract.yaml](api-contract.yaml)**

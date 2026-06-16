@@ -149,7 +149,7 @@ class OpenAiProvider implements AiProviderInterface
                 return null;
             }
 
-            $prompt = "Tolong buatkan meta deskripsi (maksimal 150-160 karakter, padat, profesional, ramah SEO, merangkum isi berita, tanpa emoji) dan kata kunci SEO (5-7 kata kunci dipisahkan dengan koma) berdasarkan judul dan konten berita desa berikut. Balas HANYA dengan format JSON valid seperti ini tanpa markdown/formatting tambahan: {\"meta_description\": \"...\", \"kata_kunci\": \"...\"}\n\nJudul: {$title}\nKonten: " . strip_tags($content);
+            $prompt = "Tolong buatkan meta deskripsi (sangat penting: HARUS kurang dari 150 karakter terhitung spasi, jangan sampai melebihi 150 karakter, padat, profesional, ramah SEO, merangkum isi berita, tanpa emoji) dan kata kunci SEO (5-7 kata kunci dipisahkan dengan koma) berdasarkan judul dan konten berita desa berikut. Balas HANYA dengan format JSON valid seperti ini tanpa markdown/formatting tambahan: {\"meta_description\": \"...\", \"kata_kunci\": \"...\"}\n\nJudul: {$title}\nKonten: " . strip_tags($content);
 
             $payload = [
                 'model' => $this->model,
@@ -180,6 +180,11 @@ class OpenAiProvider implements AiProviderInterface
 
                 $decoded = json_decode($text, true);
                 if (is_array($decoded) && isset($decoded['meta_description']) && isset($decoded['kata_kunci'])) {
+                    $metaDesc = trim($decoded['meta_description']);
+                    if (mb_strlen($metaDesc) > 160) {
+                        $metaDesc = mb_substr($metaDesc, 0, 157) . '...';
+                    }
+                    $decoded['meta_description'] = $metaDesc;
                     return $decoded;
                 }
             }

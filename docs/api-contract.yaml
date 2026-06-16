@@ -146,6 +146,40 @@ paths:
       responses:
         '200':
           description: Daftar informasi berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "01ARZ3NDEKTSV4RRFFQ61RA5GG"
+                    judul:
+                      type: string
+                      example: "Agenda Gotong Royong Gampong"
+                    slug:
+                      type: string
+                      example: "agenda-gotong-royong-gampong"
+                    konten:
+                      type: string
+                      example: "<p>Konten artikel...</p>"
+                    kategori:
+                      type: string
+                      example: "Agenda"
+                    cover_image:
+                      type: string
+                      nullable: true
+                      description: URL dinamis gambar sampul (atau null jika kosong)
+                      example: "http://127.0.0.1:8000/storage/informasi/cover.webp"
+                    is_published:
+                      type: boolean
+                      example: true
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2026-06-01T00:00:00Z"
 
   /informasi/{slug}:
     get:
@@ -163,6 +197,38 @@ paths:
       responses:
         '200':
           description: Detail informasi berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "01ARZ3NDEKTSV4RRFFQ61RA5GG"
+                  judul:
+                    type: string
+                    example: "Agenda Gotong Royong Gampong"
+                  slug:
+                    type: string
+                    example: "agenda-gotong-royong-gampong"
+                  konten:
+                    type: string
+                    example: "<p>Konten artikel...</p>"
+                  kategori:
+                    type: string
+                    example: "Agenda"
+                  cover_image:
+                    type: string
+                    nullable: true
+                    description: URL dinamis gambar sampul (atau null jika kosong)
+                    example: "http://127.0.0.1:8000/storage/informasi/cover.webp"
+                  is_published:
+                    type: boolean
+                    example: true
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2026-06-01T00:00:00Z"
         '404':
           description: Informasi tidak ditemukan
 

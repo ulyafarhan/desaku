@@ -118,7 +118,7 @@ desaku/
 
 ### <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 8px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 2.2 4 4 9 4s9-1.8 9-4V5"></path><path d="M3 12c0 2.2 4 4 9 4s9-1.8 9-4"></path></svg> 4. Skema Database
 
-Sistem ini didukung oleh 15 tabel relasional utama yang saling terintegrasi dengan struktur integritas data yang ketat:
+Sistem ini didukung oleh 17 tabel relasional utama yang saling terintegrasi dengan struktur integritas data yang ketat:
 
 | Nama Tabel | Deskripsi Fungsi | Relasi Kunci |
 | :--- | :--- | :--- |
@@ -137,6 +137,8 @@ Sistem ini didukung oleh 15 tabel relasional utama yang saling terintegrasi deng
 | `audit_logs` | Jejak audit (*audit trail*) mencakup seluruh aksi mutasi database. | FK ke `users.id`. |
 | `pengaturan_gampong` | Pengaturan konfigurasi dinamis (nama desa, logo, dsb). | Data tunggal (Key-Value Pair). |
 | `referensi_wilayah` | Data wilayah administratif (Dusun, RT, RW). | Terhubung dengan data kependudukan. |
+| `pengaturan_frontend` | Menyimpan pengaturan identitas dan media sosial aparat gampong untuk frontend publik. | Data tunggal (Key-Value Pair). |
+| `traffic_logs` | Pencatatan statistik kunjungan/lalu lintas publik secara riil. | Data log mandiri. |
 
 ---
 

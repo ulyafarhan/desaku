@@ -37,7 +37,7 @@ class BotKnowledgeResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
 
-    protected static ?string $navigationLabel = 'Bot Knowledge Base';
+    protected static ?string $navigationLabel = 'Tanya Jawab Bot Telegram';
 
     protected static ?int $navigationSort = 9;
 
@@ -47,46 +47,48 @@ class BotKnowledgeResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Bot Knowledge Base')
-                ->description('Kelola data FAQ dan basis pengetahuan Telegram Bot.')
+            Section::make('Panduan & Basis Pengetahuan Bot')
+                ->description('Kelola daftar tanya jawab otomatis (FAQ) dan data pendukung untuk kecerdasan buatan (AI) Bot Telegram Desa.')
                 ->icon('heroicon-o-chat-bubble-left-right')
                 ->schema([
                     TextInput::make('kunci')
-                        ->label('Kunci / Slug')
+                        ->label('Kode Singkat Topik (Tanpa Spasi)')
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(50)
                         ->prefixIcon('heroicon-o-key')
-                        ->placeholder('Contoh: sktm, profil_desa'),
+                        ->placeholder('Contoh: sktm, profil_desa, jam_layanan')
+                        ->disabled(fn ($context) => $context === 'edit'),
                     Select::make('tipe')
-                        ->label('Tipe Data')
+                        ->label('Jenis Jawaban Bot')
                         ->options([
-                            'faq' => 'FAQ (Jawaban Instan)',
-                            'kb' => 'RAG KB (Context AI)',
+                            'faq' => 'Tanya Jawab Langsung (FAQ - Jawaban Pasti)',
+                            'kb' => 'Informasi Pendukung AI (Konteks Latar Belakang)',
                         ])
                         ->required()
                         ->prefixIcon('heroicon-o-variable'),
                     TextInput::make('pertanyaan_atau_topik')
-                        ->label('Pertanyaan atau Topik')
+                        ->label('Pertanyaan / Topik Utama')
                         ->required()
                         ->maxLength(255)
                         ->prefixIcon('heroicon-o-information-circle')
-                        ->placeholder('Contoh: Surat Keterangan Tidak Mampu'),
+                        ->placeholder('Contoh: Bagaimana syarat pengajuan Surat Keterangan Tidak Mampu (SKTM)?'),
                     TextInput::make('kata_kunci')
-                        ->label('Kata Kunci (dipisahkan koma)')
+                        ->label('Kata Kunci Pencarian (Pisahkan dengan Koma)')
                         ->required()
-                        ->placeholder('sktm, tidak mampu, miskin')
+                        ->placeholder('Contoh: sktm, tidak mampu, bantuan, miskin')
                         ->dehydrateStateUsing(fn ($state) => is_array($state) ? $state : array_map('trim', explode(',', $state)))
                         ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : $state)
-                        ->prefixIcon('heroicon-o-tag'),
+                        ->prefixIcon('heroicon-o-tag')
+                        ->helperText('Kata-kata yang sering diketik warga di Telegram untuk memicu jawaban ini.'),
                     Textarea::make('jawaban_atau_konten')
-                        ->label('Jawaban atau Konten Context')
+                        ->label('Isi Jawaban / Penjelasan Informasi')
                         ->required()
                         ->rows(6)
                         ->columnSpanFull()
-                        ->placeholder('Masukkan jawaban langsung (FAQ) atau konten pendukung (KB)...'),
+                        ->placeholder('Tulis jawaban langsung yang akan dikirimkan bot ke warga, atau tulis penjelasan detail informasi desa yang akan diolah oleh kecerdasan buatan (AI)...'),
                     Toggle::make('is_aktif')
-                        ->label('Aktif')
+                        ->label('Aktifkan Respon Ini')
                         ->default(true)
                         ->onIcon('heroicon-m-check')
                         ->offIcon('heroicon-m-x-mark')
@@ -103,23 +105,28 @@ class BotKnowledgeResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('pertanyaan_atau_topik')
-                    ->label('Pertanyaan / Topik')
+                    ->label('Topik / Pertanyaan Utama')
                     ->sortable()
                     ->weight('bold'),
                 TextColumn::make('kunci')
-                    ->label('Kunci')
+                    ->label('Kode Topik')
                     ->sortable()
                     ->copyable(),
                 TextColumn::make('tipe')
-                    ->label('Tipe')
+                    ->label('Jenis Jawaban')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'faq' => 'success',
                         'kb' => 'info',
                         default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'faq' => 'Tanya Jawab Langsung',
+                        'kb' => 'Informasi Pendukung AI',
+                        default => $state,
                     }),
                 IconColumn::make('is_aktif')
-                    ->label('Aktif')
+                    ->label('Status Aktif')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')

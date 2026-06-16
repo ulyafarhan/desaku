@@ -78,11 +78,15 @@ class AdminPanelProvider extends PanelProvider
                     ->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 AdminDashboard::class,
             ])
             ->widgets([
                 AdminStatsOverview::class,
+                \App\Filament\Widgets\ServerPerformanceWidget::class,
+                \App\Filament\Widgets\TrafficChartWidget::class,
+                \App\Filament\Widgets\RecentSubmissionsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -6,11 +6,13 @@ use App\Models\PengaturanGampong;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Artisan;
@@ -18,13 +20,7 @@ use Illuminate\Support\Facades\Artisan;
 /**
  * Halaman kustom Filament untuk mengelola pengaturan sistem terintegrasi.
  *
- * Mencakup tiga kelompok konfigurasi utama:
- * 1. **Koneksi AI** — memilih provider AI aktif (Gemini/OpenAI) serta mengelola kunci API dan model.
- * 2. **Penyimpanan Awan** — mengatur media penyimpanan utama (lokal atau S3/R2) beserta kredensial dan endpoint.
- * 3. **Aset Visual Desa** — unggah dan kelola logo, favicon, dan banner desa.
- *
- * Halaman ini juga menyediakan tombol untuk menjalankan migrasi file dari penyimpanan lokal ke cloud
- * melalui perintah Artisan `storage:migrate-to-cloud`.
+ * Mencakup konfigurasi identitas, kontak, visi-misi, AI, dan aset desa.
  */
 class PengaturanSistem extends Page implements HasForms
 {
@@ -35,14 +31,14 @@ class PengaturanSistem extends Page implements HasForms
      *
      * @var string|null
      */
-    protected static ?string $title = 'Pengaturan Sistem';
+    protected static ?string $title = 'Pengaturan Gampong / Desa';
 
     /**
      * Label navigasi yang tampil di menu sidebar panel admin.
      *
      * @var string|null
      */
-    protected static ?string $navigationLabel = 'Pengaturan Sistem';
+    protected static ?string $navigationLabel = 'Pengaturan Gampong';
 
     /**
      * Ikon navigasi sidebar yang diambil dari heroicons.
@@ -63,14 +59,14 @@ class PengaturanSistem extends Page implements HasForms
      *
      * @var int|null
      */
-    protected static ?int $navigationSort = 9;
+    protected static ?int $navigationSort = 8;
 
     /**
      * Path ke file view yang merender halaman ini.
      *
      * @var string
      */
-    protected static string $view = 'filament.pages.pengaturan-sistem';
+    protected string $view = 'filament.pages.pengaturan-sistem';
 
     /**
      * Data formulir yang digunakan untuk mengikat (binding) nilai input.
@@ -82,14 +78,23 @@ class PengaturanSistem extends Page implements HasForms
     /**
      * Mengisi data awal formulir dari penyimpanan pengaturan desa.
      *
-     * Membaca seluruh nilai konfigurasi dari model `PengaturanGampong`
-     * dan mengisi array `$data` untuk ditampilkan di formulir.
-     *
      * @return void
      */
     public function mount(): void
     {
         $this->form->fill([
+            'nama_gampong' => PengaturanGampong::get('nama_gampong'),
+            'kecamatan' => PengaturanGampong::get('kecamatan'),
+            'kabupaten' => PengaturanGampong::get('kabupaten'),
+            'provinsi' => PengaturanGampong::get('provinsi'),
+            'kode_pos' => PengaturanGampong::get('kode_pos'),
+            'email' => PengaturanGampong::get('email'),
+            'telepon' => PengaturanGampong::get('telepon'),
+            'nama_keuchik' => PengaturanGampong::get('nama_keuchik'),
+            'nip_keuchik' => PengaturanGampong::get('nip_keuchik'),
+            'visi' => PengaturanGampong::get('visi'),
+            'misi' => PengaturanGampong::get('misi', []),
+
             'ai_active_provider' => PengaturanGampong::get('ai_active_provider', 'gemini'),
             'ai_gemini_key' => PengaturanGampong::get('ai_gemini_key'),
             'ai_openai_key' => PengaturanGampong::get('ai_openai_key'),
@@ -112,25 +117,95 @@ class PengaturanSistem extends Page implements HasForms
     }
 
     /**
-     * Mendefinisikan skema formulir pengaturan sistem dengan tiga tab.
+     * Mendefinisikan skema formulir pengaturan sistem.
      *
-     * Tab yang tersedia:
-     * - **Koneksi AI**: Select provider, input API key, model, dan base URL.
-     * - **Penyimpanan Awan**: Select media penyimpanan, input kredensial S3/R2 (key, secret, bucket, region, endpoint, URL).
-     * - **Aset Visual Desa**: File upload untuk logo, favicon, dan banner desa.
-     *
-     * Setiap field yang bersifat opsional akan ditampilkan secara kondisional
-     * berdasarkan nilai field lain (live).
-     *
-     * @param  Form  $form Instance formulir Filament.
-     * @return Form       Formulir yang telah dilengkapi konfigurasi skema.
+     * @param  Schema  $form Instance skema Filament.
+     * @return Schema       Skema yang telah dilengkapi konfigurasi.
      */
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
-            ->schema([
+            ->components([
                 Tabs::make('Pengaturan')
                     ->tabs([
+                        Tab::make('Identitas Desa')
+                            ->icon('heroicon-o-home-modern')
+                            ->schema([
+                                TextInput::make('nama_gampong')
+                                    ->label('Nama Gampong / Desa')
+                                    ->required()
+                                    ->maxLength(100),
+                                TextInput::make('kecamatan')
+                                    ->label('Kecamatan')
+                                    ->required()
+                                    ->maxLength(100),
+                                TextInput::make('kabupaten')
+                                    ->label('Kabupaten / Kota')
+                                    ->required()
+                                    ->maxLength(100),
+                                TextInput::make('provinsi')
+                                    ->label('Provinsi')
+                                    ->required()
+                                    ->maxLength(100),
+                                TextInput::make('kode_pos')
+                                    ->label('Kode Pos')
+                                    ->required()
+                                    ->maxLength(10),
+                            ]),
+                        Tab::make('Kontak & Pejabat')
+                            ->icon('heroicon-o-user-group')
+                            ->schema([
+                                TextInput::make('nama_keuchik')
+                                    ->label('Nama Keuchik (Kepala Desa)')
+                                    ->required()
+                                    ->maxLength(150),
+                                TextInput::make('nip_keuchik')
+                                    ->label('NIP Keuchik (Opsional jika PNS)')
+                                    ->maxLength(50),
+                                TextInput::make('email')
+                                    ->label('Email Resmi Desa')
+                                    ->email()
+                                    ->maxLength(100),
+                                TextInput::make('telepon')
+                                    ->label('Nomor Telepon Kantor')
+                                    ->maxLength(50),
+                            ]),
+                        Tab::make('Visi & Misi')
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                Textarea::make('visi')
+                                    ->label('Visi Gampong / Desa')
+                                    ->rows(3)
+                                    ->maxLength(500),
+                                Repeater::make('misi')
+                                    ->label('Misi Gampong / Desa')
+                                    ->simple(
+                                        TextInput::make('misi_item')
+                                            ->placeholder('Masukkan poin misi...')
+                                            ->required()
+                                    )
+                                    ->helperText('Klik tombol "+ Tambah" di bawah untuk menambah poin misi gampong.')
+                                    ->default([]),
+                            ]),
+                        Tab::make('Aset Visual Desa')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                FileUpload::make('logo_gampong')
+                                    ->label('Logo Resmi Gampong')
+                                    ->image()
+                                    ->directory('gampong/logo')
+                                    ->helperText('Unggah logo desa. Disarankan rasio 1:1 format PNG/SVG transparan.'),
+                                FileUpload::make('logo_fav')
+                                    ->label('Favicon Resmi Gampong')
+                                    ->image()
+                                    ->directory('gampong/favicon')
+                                    ->helperText('Unggah favicon desa. Disarankan rasio 1:1 format SVG/PNG/ICO transparan.'),
+                                FileUpload::make('banner_gampong')
+                                    ->label('Foto/Banner Utama Desa')
+                                    ->image()
+                                    ->directory('gampong/banners')
+                                    ->helperText('Unggah foto/banner pemandangan desa atau kantor keuchik untuk beranda publik.'),
+                            ]),
                         Tab::make('Koneksi AI')
                             ->icon('heroicon-o-cpu-chip')
                             ->schema([
@@ -212,25 +287,6 @@ class PengaturanSistem extends Page implements HasForms
                                     ->default('0')
                                     ->visible(fn ($get) => $get('storage_active_disk') === 's3'),
                             ]),
-                        Tab::make('Aset Visual Desa')
-                            ->icon('heroicon-o-photo')
-                            ->schema([
-                                FileUpload::make('logo_gampong')
-                                    ->label('Logo Resmi Gampong')
-                                    ->image()
-                                    ->directory('gampong/logo')
-                                    ->helperText('Unggah logo desa. Disarankan rasio 1:1 format PNG/SVG transparan.'),
-                                FileUpload::make('logo_fav')
-                                    ->label('Favicon Resmi Gampong')
-                                    ->image()
-                                    ->directory('gampong/favicon')
-                                    ->helperText('Unggah favicon desa. Disarankan rasio 1:1 format SVG/PNG/ICO transparan.'),
-                                FileUpload::make('banner_gampong')
-                                    ->label('Foto/Banner Utama Desa')
-                                    ->image()
-                                    ->directory('gampong/banners')
-                                    ->helperText('Unggah foto/banner pemandangan desa atau kantor keuchik untuk beranda publik.'),
-                            ]),
                     ])
             ])
             ->statePath('data');
@@ -239,8 +295,6 @@ class PengaturanSistem extends Page implements HasForms
     /**
      * Menyimpan seluruh data formulir ke penyimpanan pengaturan desa.
      *
-     * Setiap field dari `$data` akan disimpan melalui model `PengaturanGampong::set()`
-     * dengan deteksi tipe data otomatis (boolean, integer, atau string).
      * Setelah berhasil, notifikasi sukses akan dikirimkan ke antarmuka pengguna.
      *
      * @return void
@@ -254,6 +308,9 @@ class PengaturanSistem extends Page implements HasForms
             if (is_numeric($value) && !is_string($value)) {
                 $type = 'integer';
             }
+            if ($key === 'misi') {
+                $type = 'json';
+            }
             PengaturanGampong::set($key, $value, $type);
         }
 
@@ -261,6 +318,8 @@ class PengaturanSistem extends Page implements HasForms
             ->title('Konfigurasi Berhasil Disimpan')
             ->success()
             ->send();
+
+        $this->redirect(static::getUrl(), navigate: false);
     }
 
     /**

@@ -69,6 +69,7 @@ SIG-Udeung menggunakan **Laravel Sanctum** untuk pengelolaan sesi API:
   * **Fungsi**: Mengambil daftar artikel pengumuman atau berita desa yang sudah terbit. (Terbuka untuk Umum)
 * **`GET /v1/informasi/{slug}`**
   * **Fungsi**: Mengambil konten detail berita berdasarkan parameter slug. (Terbuka untuk Umum)
+  * **Catatan Respons**: Kolom `cover_image` dikembalikan sebagai URL gambar lengkap dan dinamis (misalnya `http://127.0.0.1:8000/storage/informasi/nama-file.webp` atau URL eksternal) sesuai dengan domain host aktif. Jika artikel tidak memiliki cover kustom, properti ini bernilai `null` (aplikasi klien dapat menggunakan fallback gambar default).
 * **`GET /v1/admin/informasi`**
   * **Fungsi**: [Khusus Admin] Mengambil semua draf maupun berita terbit. (Memerlukan Token Admin)
 * **`POST /v1/admin/informasi`**

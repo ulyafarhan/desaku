@@ -23,6 +23,8 @@ class PengaturanGampongResource extends Resource
 {
     protected static ?string $model = PengaturanGampong::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $recordTitleAttribute = 'kunci';
 
     public static function getGloballySearchableAttributes(): array
@@ -53,7 +55,8 @@ class PengaturanGampongResource extends Resource
                         ->required()
                         ->maxLength(50)
                         ->prefixIcon('heroicon-o-key')
-                        ->placeholder('Contoh: nama_desa'),
+                        ->placeholder('Contoh: nama_desa')
+                        ->disabled(fn ($context) => $context === 'edit'),
                     Select::make('tipe_data')
                         ->label('Tipe Data')
                         ->options([
@@ -63,13 +66,27 @@ class PengaturanGampongResource extends Resource
                             'json' => 'JSON',
                         ])
                         ->required()
-                        ->prefixIcon('heroicon-o-variable'),
+                        ->prefixIcon('heroicon-o-variable')
+                        ->disabled(fn ($context) => $context === 'edit'),
                     Textarea::make('nilai')
                         ->label('Nilai')
                         ->required()
                         ->columnSpanFull()
                         ->rows(4)
-                        ->placeholder('Masukkan nilai pengaturan...'),
+                        ->placeholder('Masukkan nilai pengaturan...')
+                        ->helperText(fn ($get) => $get('tipe_data') === 'json' ? 'Perhatian: Nilai harus ditulis dalam format JSON yang valid (contoh: ["Misi 1", "Misi 2"]). Jangan menghapus tanda kurung siku [] atau kutip "".' : null)
+                        ->rules([
+                            function ($get) {
+                                return function ($attribute, $value, $fail) use ($get) {
+                                    if ($get('tipe_data') === 'json') {
+                                        json_decode($value);
+                                        if (json_last_error() !== JSON_ERROR_NONE) {
+                                            $fail('Nilai harus berupa format JSON yang valid.');
+                                        }
+                                    }
+                                };
+                            }
+                        ]),
                     TextInput::make('deskripsi')
                         ->label('Deskripsi')
                         ->maxLength(255)
@@ -121,7 +138,6 @@ class PengaturanGampongResource extends Resource
             ->headerActions([CreateAction::make()])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
             ])
             ->actionsColumnLabel('Aksi')
             ->striped()

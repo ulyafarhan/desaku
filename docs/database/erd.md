@@ -165,6 +165,24 @@ erDiagram
         timestamp created_at
     }
 
+    pengaturan_frontend {
+        varchar_50 kunci PK
+        text nilai
+        varchar_20 tipe_data
+        varchar_255 deskripsi
+    }
+
+    traffic_logs {
+        ulid id PK
+        varchar_45 ip_address
+        text user_agent
+        varchar_255 path
+        varchar_10 method
+        varchar_255 referer
+        boolean is_bot
+        timestamp created_at
+    }
+
     keluarga ||--o{ penduduk : "memiliki anggota (1:N)"
     penduduk ||--o{ keluarga : "kepala keluarga (1:1)"
     referensi_wilayah ||--o{ referensi_wilayah : "sub-wilayah (1:N)"
@@ -271,6 +289,24 @@ Berita dan siaran pers desa.
 * `is_published`: `BOOLEAN DEFAULT FALSE`.
 * `author_id`: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
 
+### 2.9. Tabel `pengaturan_frontend`
+Penyimpanan konten statis yang dapat diedit secara dinamis untuk landing page publik.
+* `kunci`: `VARCHAR(50) PRIMARY KEY` -> Kunci pengaturan unik (misal: `medsos_instagram`).
+* `nilai`: `TEXT NULL` -> Nilai dari pengaturan yang diisi oleh admin.
+* `tipe_data`: `VARCHAR(20) DEFAULT 'string'` -> Jenis data (string, dll).
+* `deskripsi`: `VARCHAR(255) NULL` -> Keterangan kegunaan kunci konfigurasi.
+
+### 2.10. Tabel `traffic_logs`
+Pencatatan statistik kunjungan publik secara otomatis.
+* `id`: `ULID PRIMARY KEY` -> ID kunjungan unik.
+* `ip_address`: `VARCHAR(45) NULL` -> Alamat IP penjelajah.
+* `user_agent`: `TEXT NULL` -> Informasi platform/browser penjelajah.
+* `path`: `VARCHAR(255) NULL` -> Alamat URI yang dikunjungi.
+* `method`: `VARCHAR(10) NULL` -> HTTP request method (GET, POST, dll).
+* `referer`: `VARCHAR(255) NULL` -> URL asal lalu lintas.
+* `is_bot`: `BOOLEAN DEFAULT FALSE` -> Menandai apakah kunjungan berasal dari search engine/bot.
+* `created_at`: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP` -> Waktu kunjungan.
+
 ---
 
 ## 3. Aturan Relasi Terikat & Integritas
@@ -282,3 +318,4 @@ Berita dan siaran pers desa.
    * Setiap keluarga memiliki satu kepala keluarga yang diidentifikasi oleh `kepala_keluarga_nik`.
 3. **Cascading Delete pada Transaksi**:
    * Jika data `penduduk` dihapus, seluruh data transaksi terkait seperti `mutasi_penduduk` dan `pengajuan_surat` akan dihapus secara otomatis (`ON DELETE CASCADE`) untuk mencegah residu data tak terikat.
+

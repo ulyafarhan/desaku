@@ -42,22 +42,36 @@ class PublicPortalController extends Controller
      */
     public function profile(): Response
     {
+        $getFotoUrl = function ($kunci, $fallbackKey = null) {
+            $val = \App\Models\PengaturanFrontend::get($kunci);
+            if (!$val && $fallbackKey) {
+                $val = \App\Models\PengaturanGampong::get($fallbackKey);
+            }
+            if (empty($val)) {
+                return '/images/default-avatar.png';
+            }
+            if (str_starts_with($val, 'http://') || str_starts_with($val, 'https://') || str_starts_with($val, '/images/')) {
+                return $val;
+            }
+            return \Illuminate\Support\Facades\Storage::url($val);
+        };
+
         return Inertia::render('Public/Profile', [
             'perangkat' => [
                 [
                     'jabatan' => 'Keuchik',
                     'nama' => \App\Models\PengaturanGampong::get('nama_keuchik', 'Nama Keuchik'),
-                    'foto' => \App\Models\PengaturanGampong::get('foto_keuchik'),
+                    'foto' => $getFotoUrl('foto_keuchik', 'foto_keuchik'),
                 ],
                 [
                     'jabatan' => 'Sekretaris Desa',
-                    'nama' => \App\Models\PengaturanGampong::get('nama_sekdes', 'Nama Sekretaris Desa'),
-                    'foto' => \App\Models\PengaturanGampong::get('foto_sekdes'),
+                    'nama' => \App\Models\PengaturanFrontend::get('nama_sekdes') ?? \App\Models\PengaturanGampong::get('nama_sekdes', 'Nama Sekretaris Desa'),
+                    'foto' => $getFotoUrl('foto_sekdes', 'foto_sekdes'),
                 ],
                 [
                     'jabatan' => 'Operator Layanan',
-                    'nama' => \App\Models\PengaturanGampong::get('nama_operator', 'Nama Operator'),
-                    'foto' => \App\Models\PengaturanGampong::get('foto_operator'),
+                    'nama' => \App\Models\PengaturanFrontend::get('nama_operator') ?? \App\Models\PengaturanGampong::get('nama_operator', 'Nama Operator'),
+                    'foto' => $getFotoUrl('foto_operator', 'foto_operator'),
                 ],
             ],
         ]);

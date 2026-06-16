@@ -23,7 +23,7 @@ Ekosistem SIG-Udeung beroperasi di bawah satu domain utama (`udeung.desa.id`) ya
 
 1. **Portal Publik Gampong (Landing Page):** Pintu depan sistem yang dapat diakses publik. Menampilkan profil desa (termasuk foto perangkat desa yang diatur secara dinamis), berita, dan statistik demografi *real-time*.
 2. **Progressive Web App (PWA) Warga:** Area privat bagi warga (login via NIK) untuk mengajukan mutasi kependudukan dan memproses surat menyurat digital (Inertia.js + Vue 3).
-3. **Web Dashboard Admin (SPA):** Panel kontrol terpusat bagi Keuchik, Sekdes, dan Operator untuk memverifikasi pengajuan, mengatur konten portal, basis pengetahuan chatbot, dan memantau log sistem (Filament PHP v5).
+3. **Web Dashboard Admin (SPA):** Panel kontrol terpusat bagi Keuchik, Sekdes, dan Operator untuk memverifikasi pengajuan, mengatur konten portal publik secara visual menggunakan input dinamis (Repeater) alih-alih editor JSON mentah, mengelola basis pengetahuan chatbot, memantau log sistem, memantau utilisasi RAM & penyimpanan (disk) server secara riil, serta menganalisis grafik statistik lalu lintas unik warga. (Filament PHP v5).
 4. **Telegram Bot & AI Gateway:** Saluran distribusi notifikasi sistem (bebas biaya) dan asisten virtual publik berteknologi AI (Gemini/OpenAI) dengan pemrosesan basis pengetahuan dinamis dari database dan kebijakan penulisan formal (Zero-Emoji).
 
 ---
@@ -280,6 +280,25 @@ CREATE TABLE audit_logs (
 );
 CREATE INDEX idx_audit_tabel_record ON audit_logs(nama_tabel, record_id);
 CREATE INDEX idx_audit_waktu ON audit_logs(created_at);
+
+CREATE TABLE pengaturan_frontend (
+    kunci VARCHAR(50) PRIMARY KEY,
+    nilai TEXT,
+    tipe_data VARCHAR(20) DEFAULT 'string',
+    deskripsi VARCHAR(255)
+);
+
+CREATE TABLE traffic_logs (
+    id CHAR(26) PRIMARY KEY,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    path VARCHAR(255),
+    method VARCHAR(10),
+    referer VARCHAR(255),
+    is_bot BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_traffic_logs_created_at ON traffic_logs(created_at);
 ```
 
 ---

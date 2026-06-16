@@ -7,6 +7,8 @@ use App\Models\KategoriSurat;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -73,29 +75,64 @@ class KategoriSuratResource extends Resource
                         ->onIcon('heroicon-m-check')
                         ->offIcon('heroicon-m-x-mark')
                         ->onColor('success'),
-                ])->columns(1)->columnSpanFull(),
+                ])->columns(2)->columnSpanFull(),
 
             Section::make('Schema & Persyaratan')
-                ->description('Konfigurasi JSON untuk isian formulir dan dokumen persyaratan.')
+                ->description('Tentukan kolom form isian tambahan dan dokumen persyaratan untuk kategori surat ini.')
                 ->icon('heroicon-o-code-bracket-square')
                 ->collapsible()
                 ->schema([
-                    Textarea::make('schema_isian')
-                        ->label('Schema Isian (JSON)')
-                        ->formatStateUsing(fn ($state) => json_encode($state ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))
-                        ->dehydrateStateUsing(fn ($state) => json_decode($state ?: '[]', true) ?: [])
-                        ->required()
+                    Repeater::make('schema_isian')
+                        ->label('Kolom Form Isian Warga')
+                        ->schema([
+                            TextInput::make('field')
+                                ->label('Kunci Data (Teks Kecil & Tanpa Spasi)')
+                                ->required()
+                                ->placeholder('Contoh: keperluan, nama_usaha')
+                                ->rules(['regex:/^[a-z0-9_]+$/']),
+                            TextInput::make('label')
+                                ->label('Nama Input (Tampil di Form)')
+                                ->required()
+                                ->placeholder('Contoh: Keperluan Surat'),
+                            Select::make('type')
+                                ->label('Tipe Kolom')
+                                ->options([
+                                    'text' => 'Teks Singkat',
+                                    'number' => 'Angka',
+                                    'textarea' => 'Teks Panjang',
+                                    'date' => 'Tanggal',
+                                    'select' => 'Pilihan Dropdown',
+                                ])
+                                ->required()
+                                ->live(),
+                            Repeater::make('options')
+                                ->label('Opsi Pilihan (Hanya jika tipe input adalah Pilihan Dropdown)')
+                                ->simple(
+                                    TextInput::make('option_val')
+                                        ->placeholder('Contoh: Baru')
+                                        ->required()
+                                )
+                                ->visible(fn ($get) => $get('type') === 'select')
+                                ->helperText('Masukkan opsi pilihan untuk dropdown di atas.')
+                                ->default([]),
+                            Toggle::make('required')
+                                ->label('Wajib Diisi')
+                                ->default(true),
+                        ])
+                        ->columns(2)
                         ->columnSpanFull()
-                        ->rows(8)
-                        ->placeholder('Definisi field formulir dalam format JSON'),
-                    Textarea::make('syarat_dokumen')
-                        ->label('Syarat Dokumen (JSON)')
-                        ->formatStateUsing(fn ($state) => json_encode($state ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))
-                        ->dehydrateStateUsing(fn ($state) => json_decode($state ?: '[]', true) ?: [])
-                        ->required()
+                        ->helperText('Konfigurasi isian dinamis yang wajib diisi oleh warga saat membuat pengajuan surat ini.')
+                        ->default([]),
+                    Repeater::make('syarat_dokumen')
+                        ->label('Dokumen Persyaratan')
+                        ->simple(
+                            TextInput::make('nama_dokumen')
+                                ->placeholder('Contoh: KTP, Kartu Keluarga')
+                                ->required()
+                        )
                         ->columnSpanFull()
-                        ->rows(6)
-                        ->placeholder('Daftar dokumen yang diperlukan dalam format JSON'),
+                        ->helperText('Daftar berkas dokumen yang wajib diunggah/dilampirkan oleh warga.')
+                        ->default([]),
                 ])->columnSpanFull(),
         ]);
     }
