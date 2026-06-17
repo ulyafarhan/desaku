@@ -60,10 +60,9 @@ composer run test
 * Semua model utama (`Penduduk`, `PengajuanSurat`, `Keluarga`) menggunakan eager loading global (`$with`) untuk relasi yang sering diakses.
 * Fungsi query Filament admin mengimplementasikan modifikasi `getEloquentQuery` dengan eager load relasi guna memastikan performa database tetap optimal dan bebas dari overhead N+1 query.
 
----
+## 5. Optimasi Performa & Caching AI & Multi-AI Fallback
 
-## 5. Optimasi Performa & Caching AI (Exact & Semantic Caching)
-Sistem backend SIG-Udeung mengimplementasikan hibrida **Exact Match Cache** dan **Semantic Cache** pada `OpenAiProvider` dan `GeminiProvider` untuk menghemat penggunaan token API AI dan mempercepat respons chatbot (<2ms jika hit cache).
+Sistem backend SIG-Udeung mengimplementasikan hibrida **Exact Match Cache** dan **Semantic Cache** pada `OpenAiProvider` dan `GeminiProvider` untuk menghemat penggunaan token API AI dan mempercepat respons chatbot (<2ms jika hit cache). Selain itu, sistem menggunakan penanganan failover berantai (*fallback*) untuk menjamin ketersediaan layanan.
 
 ### 5.1. Alur Kerja Caching AI:
 1. **Normalisasi**: Pesan masuk dipangkas spasi kosongnya dan diubah ke huruf kecil (lowercase).
@@ -78,6 +77,13 @@ Sistem backend SIG-Udeung mengimplementasikan hibrida **Exact Match Cache** dan 
    * **Levenshtein Distance**: Untuk pesan pendek (<20 karakter), jarak Levenshtein dihitung untuk mengukur kedekatan edit teks.
    * **Threshold & Output**: Jika skor kemiripan tertinggi mencapai **>= 80% (0.80)**, sistem mengembalikan balasan ter-cache, menyimpan relasi pencarian baru ke Redis, dan mencatat log dengan penggunaan token `0` (*zero cost*).
    * Jika di bawah 80%, request baru akan diteruskan ke API Provider AI (OpenAI/Gemini).
+
+### 5.2. Mekanisme Multi-AI Fallback & Prioritas Dinamis:
+Untuk menjamin keandalan layanan AI tanpa perlu mengedit berkas `.env` di server production, sistem menggunakan kelas `FallbackAiService` yang membungkus antarmuka `AiProviderInterface`.
+* **Penyimpanan Konfigurasi**: Seluruh rantai penyedia AI cadangan disimpan dalam format JSON (`ai_providers_list`) pada tabel database `pengaturan_gampong`.
+* **Pengurutan Prioritas**: Setiap penyedia dikonfigurasi melalui Filament dengan kolom `priority`. Sistem secara otomatis mengurutkan pemanggilan dari prioritas angka terkecil ke terbesar.
+* **Failover Otomatis**: Jika pemanggilan API dari penyedia utama mengalami limitasi kuota (HTTP 429), token habis/salah (HTTP 401), atau error koneksi lainnya sehingga menghasilkan nilai `null` atau melemparkan exception, sistem otomatis merekam peringatan log dan langsung mencoba penyedia cadangan berikutnya.
+* **Kompatibilitas Mundur**: Apabila konfigurasi daftar penyedia dinamis di database kosong, sistem akan otomatis beralih menggunakan kredensial tunggal default yang tertera pada berkas `.env` (Gemini atau OpenAI).
 
 ---
 

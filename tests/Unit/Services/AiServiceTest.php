@@ -10,22 +10,60 @@ use Illuminate\Support\Facades\Http;
 
 class AiServiceTest extends TestCase
 {
-    public function test_it_resolves_gemini_provider_by_default()
+    public function test_it_resolves_fallback_service()
     {
-        config(['services.ai.active_provider' => 'gemini']);
-        
         $ai = app(AiProviderInterface::class);
-        
-        $this->assertInstanceOf(GeminiProvider::class, $ai);
+        $this->assertInstanceOf(\App\Services\FallbackAiService::class, $ai);
     }
 
-    public function test_it_resolves_openai_provider_when_configured()
+    public function test_fallback_service_falls_back_when_first_provider_fails()
     {
-        config(['services.ai.active_provider' => 'openai']);
-        
+        \App\Models\PengaturanGampong::set('ai_providers_list', [
+            [
+                'name' => 'Provider 1 (Invalid)',
+                'provider_type' => 'openai',
+                'api_key' => 'invalid-key-1',
+                'model' => 'gpt-4o-mini',
+                'base_url' => 'https://api.openai.com/v1',
+                'priority' => 1,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Provider 2 (Valid)',
+                'provider_type' => 'openai',
+                'api_key' => 'valid-key-2',
+                'model' => 'gpt-4o-mini',
+                'base_url' => 'https://api.openai.com/v1',
+                'priority' => 2,
+                'is_active' => true,
+            ]
+        ], 'json');
+
+        Http::fake([
+            'api.openai.com/*' => function (\Illuminate\Http\Client\Request $request) {
+                if ($request->hasHeader('Authorization', 'Bearer invalid-key-1')) {
+                    return Http::response(['error' => 'Invalid API Key'], 401);
+                }
+                if ($request->hasHeader('Authorization', 'Bearer valid-key-2')) {
+                    return Http::response([
+                        'choices' => [
+                            [
+                                'message' => [
+                                    'content' => '{"meta_description": "Deskripsi meta fallback.", "kata_kunci": "gampong, desa"}'
+                                ]
+                            ]
+                        ]
+                    ], 200);
+                }
+                return Http::response([], 404);
+            }
+        ]);
+
         $ai = app(AiProviderInterface::class);
-        
-        $this->assertInstanceOf(OpenAiProvider::class, $ai);
+        $result = $ai->generateSeoMetadata('Judul Artikel', 'Konten.');
+
+        $this->assertIsArray($result);
+        $this->assertEquals('Deskripsi meta fallback.', $result['meta_description']);
     }
 
     public function test_gemini_provider_can_generate_seo_metadata_successfully()

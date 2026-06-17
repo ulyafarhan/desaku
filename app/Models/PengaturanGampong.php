@@ -54,7 +54,7 @@ class PengaturanGampong extends Model
      */
     public static function set(string $key, $value, string $type = 'string'): void
     {
-        $nilai = is_array($value) ? json_encode($value) : $value;
+        $nilai = is_array($value) ? json_encode($value) : ($value ?? '');
         
         static::updateOrCreate(
             ['kunci' => $key],

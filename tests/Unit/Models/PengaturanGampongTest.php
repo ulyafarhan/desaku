@@ -67,4 +67,20 @@ class PengaturanGampongTest extends TestCase
         $this->assertIsArray($value);
         $this->assertEquals($data, $value);
     }
+
+    /**
+     * Memastikan metode set dapat menangani nilai null dengan mengubahnya menjadi string kosong.
+     */
+    public function test_set_menangani_nilai_null_dengan_mengubahnya_ke_string_kosong()
+    {
+        PengaturanGampong::set('null_key', null);
+
+        $this->assertDatabaseHas('pengaturan_gampong', [
+            'kunci' => 'null_key',
+            'nilai' => '',
+        ]);
+
+        $value = PengaturanGampong::get('null_key');
+        $this->assertEquals('', $value);
+    }
 }

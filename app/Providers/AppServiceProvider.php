@@ -16,13 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(\App\Services\Contracts\AiProviderInterface::class, function ($app) {
-            $provider = config('services.ai.active_provider', 'gemini');
-            if ($provider === 'openai') {
-                return new \App\Services\AiProviders\OpenAiProvider();
-            }
-            return new \App\Services\AiProviders\GeminiProvider();
-        });
+        $this->app->singleton(\App\Services\Contracts\AiProviderInterface::class, \App\Services\FallbackAiService::class);
     }
 
     /**
@@ -55,10 +49,10 @@ class AppServiceProvider extends ServiceProvider
                 config(['services.ai.active_provider' => $aiActiveProvider]);
             }
             if ($aiGeminiKey = \App\Models\PengaturanGampong::get('ai_gemini_key')) {
-                config(['services.ai.gemini.key' => $aiGeminiKey]);
+                config(['services.gemini.api_key' => $aiGeminiKey]);
             }
             if ($aiOpenAiKey = \App\Models\PengaturanGampong::get('ai_openai_key')) {
-                config(['services.ai.openai.key' => $aiOpenAiKey]);
+                config(['services.ai.openai.api_key' => $aiOpenAiKey]);
             }
             if ($aiOpenAiModel = \App\Models\PengaturanGampong::get('ai_openai_model')) {
                 config(['services.ai.openai.model' => $aiOpenAiModel]);

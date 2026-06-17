@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
@@ -100,6 +101,7 @@ class PengaturanSistem extends Page implements HasForms
             'ai_openai_key' => PengaturanGampong::get('ai_openai_key'),
             'ai_openai_model' => PengaturanGampong::get('ai_openai_model', 'gpt-4o-mini'),
             'ai_openai_base_url' => PengaturanGampong::get('ai_openai_base_url', 'https://api.openai.com/v1'),
+            'ai_providers_list' => PengaturanGampong::get('ai_providers_list', []),
 
             'storage_active_disk' => PengaturanGampong::get('storage_active_disk', 'public'),
             'storage_s3_key' => PengaturanGampong::get('storage_s3_key'),
@@ -210,7 +212,7 @@ class PengaturanSistem extends Page implements HasForms
                             ->icon('heroicon-o-cpu-chip')
                             ->schema([
                                 Select::make('ai_active_provider')
-                                    ->label('Provider AI Aktif')
+                                    ->label('Provider AI Aktif (Legacy)')
                                     ->options([
                                         'gemini' => 'Google Gemini AI',
                                         'openai' => 'OpenAI (atau kompatibel)',
@@ -239,6 +241,47 @@ class PengaturanSistem extends Page implements HasForms
                                     ->default('https://api.openai.com/v1')
                                     ->requiredIf('ai_active_provider', 'openai')
                                     ->visible(fn ($get) => $get('ai_active_provider') === 'openai'),
+
+                                Repeater::make('ai_providers_list')
+                                    ->label('Daftar Prioritas & Fallback AI (Utama)')
+                                    ->helperText('Jika daftar ini diisi, sistem akan menggunakan provider di bawah sesuai prioritas. Seret kartu untuk mengurutkan prioritas. Jika provider teratas limit/error, sistem otomatis fallback ke provider berikutnya.')
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->label('Nama Pengenal')
+                                            ->placeholder('Contoh: AI Utama (TokenRouter), Gemini Backup')
+                                            ->required(),
+                                        Select::make('provider_type')
+                                            ->label('Tipe Provider')
+                                            ->options([
+                                                'gemini' => 'Google Gemini AI',
+                                                'openai' => 'OpenAI (atau kompatibel)',
+                                            ])
+                                            ->required()
+                                            ->live(),
+                                        TextInput::make('api_key')
+                                            ->label('API Key / Token')
+                                            ->password()
+                                            ->revealable()
+                                            ->required(),
+                                        TextInput::make('model')
+                                            ->label('Model AI')
+                                            ->placeholder('Contoh: gemini-flash-lite-latest atau deepseek-v4-flash')
+                                            ->required(),
+                                        TextInput::make('base_url')
+                                            ->label('OpenAI Base URL')
+                                            ->placeholder('https://api.openai.com/v1')
+                                            ->visible(fn ($get) => $get('provider_type') === 'openai'),
+                                        TextInput::make('priority')
+                                            ->label('Urutan Prioritas')
+                                            ->numeric()
+                                            ->default(1)
+                                            ->required(),
+                                        Toggle::make('is_active')
+                                            ->label('Aktif')
+                                            ->default(true),
+                                    ])
+                                    ->columns(2)
+                                    ->default([]),
                             ]),
                         Tab::make('Penyimpanan Awan')
                             ->icon('heroicon-o-cloud')
@@ -308,7 +351,7 @@ class PengaturanSistem extends Page implements HasForms
             if (is_numeric($value) && !is_string($value)) {
                 $type = 'integer';
             }
-            if ($key === 'misi') {
+            if ($key === 'misi' || $key === 'ai_providers_list') {
                 $type = 'json';
             }
             PengaturanGampong::set($key, $value, $type);
