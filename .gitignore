@@ -16,6 +16,7 @@
 .phpactor.json
 .nova
 .zed
+.qodo
 
 # Dependencies
 /node_modules
