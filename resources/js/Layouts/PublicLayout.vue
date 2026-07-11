@@ -11,8 +11,19 @@ const mobileMenuOpen = ref(false);
 
 const aspirasiInput = ref('');
 const suggestionSent = ref(false);
-const sendAspirasi = () => {
+const sendAspirasi = async () => {
     if (aspirasiInput.value.trim() === '') return;
+    try {
+        await fetch('/aspirasi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-XSRF-TOKEN': decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] || ''),
+            },
+            body: JSON.stringify({ pesan: aspirasiInput.value }),
+        });
+    } catch (e) {}
     suggestionSent.value = true;
     setTimeout(() => {
         aspirasiInput.value = '';
@@ -23,7 +34,7 @@ const sendAspirasi = () => {
 
 <template>
     <div class="min-h-screen bg-slate-50 flex flex-col font-sans w-full overflow-x-hidden">
-        <div v-if="progress?.value" class="fixed left-0 top-0 z-50 h-[3px] w-full overflow-hidden bg-blue-100">
+        <div v-if="progress" class="fixed left-0 top-0 z-50 h-[3px] w-full overflow-hidden bg-blue-100">
             <div class="h-full w-1/3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 animate-progress" />
         </div>
         <Toast />

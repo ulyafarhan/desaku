@@ -47,9 +47,10 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Amber,
                 'info' => Color::Sky,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->font('Inter')
             ->darkMode(true)
-            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
             ->sidebarWidth('17rem')
             ->globalSearch()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
@@ -62,18 +63,18 @@ class AdminPanelProvider extends PanelProvider
                 'panels::head.end',
                 fn () => view('filament.custom-styles'),
             )
+            ->renderHook(
+                'panels::auth.login.form.after',
+                fn () => view('filament.login-credentials'),
+            )
             ->navigationGroups([
                 NavigationGroup::make('Layanan')
-                    ->icon('heroicon-o-inbox-stack')
                     ->collapsible(),
                 NavigationGroup::make('Data Kependudukan')
-                    ->icon('heroicon-o-user-group')
                     ->collapsible(),
                 NavigationGroup::make('Konten')
-                    ->icon('heroicon-o-newspaper')
                     ->collapsible(),
                 NavigationGroup::make('Pengaturan')
-                    ->icon('heroicon-o-cog-6-tooth')
                     ->collapsible()
                     ->collapsed(),
             ])

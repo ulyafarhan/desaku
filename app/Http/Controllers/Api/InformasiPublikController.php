@@ -9,11 +9,46 @@ use Illuminate\Http\Request;
 
 /**
  * Controller untuk mengelola data artikel berita dan pengumuman gampong lewat API.
+ *
+ * @group Informasi Publik
  */
 class InformasiPublikController extends Controller
 {
     /**
      * Mengambil daftar seluruh artikel informasi publik yang telah terbit.
+     *
+     * @unauthenticated
+     *
+     * @queryParameter kategori string Filter berdasarkan kategori artikel. Contoh: Pengumuman, Berita, Pengumuman.
+     *
+     * @responseField current_page int Halaman saat ini.
+     * @responseField data array Daftar artikel informasi publik.
+     * @responseField data[].id int ID artikel.
+     * @responseField data[].judul string Judul artikel.
+     * @responseField data[].slug string Slug unik artikel.
+     * @responseField data[].konten string Isi konten artikel.
+     * @responseField data[].kategori string Kategori artikel.
+     * @responseField data[].author object Data penulis artikel.
+     * @responseField per_page int Jumlah item per halaman (10).
+     *
+     * @response {
+     *   "current_page": 1,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "judul": "Pengumuman Pemilihan Keuchik 2026",
+     *       "slug": "pengumuman-pemilihan-keuchik-2026",
+     *       "konten": "Diumumkan kepada seluruh warga Gampong Udeung...",
+     *       "kategori": "Pengumuman",
+     *       "cover_image": "images/pemilihan.jpg",
+     *       "author": {
+     *         "id": 1,
+     *         "nama_lengkap": "Administrator Desa"
+     *       }
+     *     }
+     *   ],
+     *   "per_page": 10
+     * }
      */
     public function index(Request $request)
     {
@@ -30,6 +65,36 @@ class InformasiPublikController extends Controller
 
     /**
      * Menampilkan detail informasi publik tertentu berdasarkan slug.
+     *
+     * @unauthenticated
+     *
+     * @urlParameter slug string Slug unik artikel informasi publik. Contoh: pengumuman-pemilihan-keuchik-2026.
+     *
+     * @responseField data object Detail artikel informasi publik.
+     * @responseField data.id int ID artikel.
+     * @responseField data.judul string Judul artikel.
+     * @responseField data.slug string Slug unik artikel.
+     * @responseField data.konten string Isi konten artikel.
+     * @responseField data.kategori string Kategori artikel.
+     * @responseField data.author object Data penulis artikel.
+     *
+     * @response {
+     *   "data": {
+     *     "id": 1,
+     *     "judul": "Pengumuman Pemilihan Keuchik 2026",
+     *     "slug": "pengumuman-pemilihan-keuchik-2026",
+     *     "konten": "Diumumkan kepada seluruh warga Gampong Udeung...",
+     *     "kategori": "Pengumuman",
+     *     "cover_image": "images/pemilihan.jpg",
+     *     "is_published": true,
+     *     "author": {
+     *       "id": 1,
+     *       "nama_lengkap": "Administrator Desa"
+     *     }
+     *   }
+     * }
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika artikel dengan slug tidak ditemukan.
      */
     public function show($slug)
     {
@@ -45,6 +110,38 @@ class InformasiPublikController extends Controller
 
     /**
      * Mengambil daftar informasi publik untuk keperluan panel admin (termasuk draf).
+     *
+     * @group Administrasi
+     * @subgroup Informasi
+     * @authenticated
+     *
+     * @queryParameter is_published boolean Filter berdasarkan status publikasi. Nilai: true/false.
+     *
+     * @responseField current_page int Halaman saat ini.
+     * @responseField data array Daftar artikel informasi publik untuk admin.
+     * @responseField data[].id int ID artikel.
+     * @responseField data[].judul string Judul artikel.
+     * @responseField data[].is_published boolean Status publikasi artikel.
+     * @responseField data[].author object Data penulis artikel.
+     * @responseField per_page int Jumlah item per halaman (20).
+     *
+     * @response {
+     *   "current_page": 1,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "judul": "Pengumuman Pemilihan Keuchik 2026",
+     *       "slug": "pengumuman-pemilihan-keuchik-2026",
+     *       "is_published": true,
+     *       "kategori": "Pengumuman",
+     *       "author": {
+     *         "id": 1,
+     *         "nama_lengkap": "Administrator Desa"
+     *       }
+     *     }
+     *   ],
+     *   "per_page": 20
+     * }
      */
     public function adminIndex(Request $request)
     {
@@ -61,6 +158,39 @@ class InformasiPublikController extends Controller
 
     /**
      * Menyimpan artikel informasi publik baru ke database.
+     *
+     * @group Administrasi
+     * @subgroup Informasi
+     * @authenticated
+     *
+     * @bodyParameter judul string required Judul artikel informasi publik. Contoh: Pengumuman Pemilihan Keuchik 2026.
+     * @bodyParameter konten string required Isi konten artikel.
+     * @bodyParameter kategori string required Kategori artikel. Contoh: Pengumuman, Berita, Kegiatan.
+     * @bodyParameter cover_image string Path/URL gambar sampul artikel (opsional). Contoh: images/cover.jpg.
+     * @bodyParameter is_published boolean Status publikasi artikel (default: false). Contoh: true.
+     *
+     * @responseField message string Pesan hasil operasi.
+     * @responseField data object Data artikel yang berhasil dibuat.
+     * @responseField data.id int ID artikel.
+     * @responseField data.judul string Judul artikel.
+     * @responseField data.slug string Slug unik artikel (otomatis dibuat dari judul).
+     * @responseField data.is_published boolean Status publikasi artikel.
+     *
+     * @response 201 {
+     *   "message": "Informasi berhasil dibuat",
+     *   "data": {
+     *     "id": 1,
+     *     "judul": "Pengumuman Pemilihan Keuchik 2026",
+     *     "slug": "pengumuman-pemilihan-keuchik-2026",
+     *     "konten": "Diumumkan kepada seluruh warga Gampong Udeung...",
+     *     "kategori": "Pengumuman",
+     *     "cover_image": "images/pemilihan.jpg",
+     *     "is_published": true,
+     *     "author_id": 1
+     *   }
+     * }
+     *
+     * @throws \Illuminate\Validation\ValidationException Jika validasi gagal.
      */
     public function store(Request $request)
     {
@@ -93,6 +223,37 @@ class InformasiPublikController extends Controller
 
     /**
      * Memperbarui detail artikel informasi publik tertentu berdasarkan ID.
+     *
+     * @group Administrasi
+     * @subgroup Informasi
+     * @authenticated
+     *
+     * @urlParameter id int ID artikel informasi publik yang akan diperbarui. Contoh: 1.
+     * @bodyParameter judul string Judul artikel (opsional). Contoh: Judul Baru.
+     * @bodyParameter konten string Isi konten artikel (opsional).
+     * @bodyParameter kategori string Kategori artikel (opsional). Contoh: Berita.
+     * @bodyParameter cover_image string Path/URL gambar sampul (opsional). Contoh: images/new_cover.jpg.
+     * @bodyParameter is_published boolean Status publikasi (opsional). Contoh: true.
+     *
+     * @responseField message string Pesan hasil operasi.
+     * @responseField data object Data artikel yang diperbarui.
+     * @responseField data.id int ID artikel.
+     * @responseField data.judul string Judul artikel terbaru.
+     *
+     * @response {
+     *   "message": "Informasi berhasil diupdate",
+     *   "data": {
+     *     "id": 1,
+     *     "judul": "Judul Baru",
+     *     "slug": "judul-baru",
+     *     "konten": "Konten artikel yang diperbarui...",
+     *     "kategori": "Berita",
+     *     "is_published": true
+     *   }
+     * }
+     *
+     * @throws \Illuminate\Validation\ValidationException Jika validasi gagal.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika artikel tidak ditemukan.
      */
     public function update(Request $request, $id)
     {
@@ -127,6 +288,20 @@ class InformasiPublikController extends Controller
 
     /**
      * Menghapus artikel informasi publik tertentu dari database.
+     *
+     * @group Administrasi
+     * @subgroup Informasi
+     * @authenticated
+     *
+     * @urlParameter id int ID artikel informasi publik yang akan dihapus. Contoh: 1.
+     *
+     * @responseField message string Pesan hasil operasi.
+     *
+     * @response {
+     *   "message": "Informasi berhasil dihapus"
+     * }
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika artikel tidak ditemukan.
      */
     public function destroy($id)
     {

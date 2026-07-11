@@ -15,8 +15,19 @@ use Illuminate\Support\Facades\Log;
  */
 class GeminiProvider implements AiProviderInterface
 {
+    /**
+     * API Key untuk autentikasi ke Gemini API.
+     */
     protected string $apiKey;
+
+    /**
+     * URL endpoint lengkap untuk Gemini API.
+     */
     protected string $apiUrl;
+
+    /**
+     * Model Gemini yang digunakan (default: gemini-pro).
+     */
     protected string $model;
 
     /**
@@ -26,11 +37,22 @@ class GeminiProvider implements AiProviderInterface
     {
         $this->apiKey = config('services.gemini.api_key');
         $this->model = config('services.gemini.model', 'gemini-pro');
-        $this->apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent";
+        $baseUrl = config('services.gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta');
+        $this->apiUrl = rtrim($baseUrl, '/') . "/models/{$this->model}:generateContent";
     }
 
     /**
      * Menghasilkan respons AI untuk pesan pengguna dengan dukungan cache semantik dan RAG.
+     *
+     * Fitur:
+     * - Pencarian cache semantik untuk pertanyaan yang pernah dijawab sebelumnya
+     * - Dukungan RAG (Retrieval-Augmented Generation) dengan konteks dari knowledge base
+     * - Logging percakapan ke tabel chatbot_logs
+     *
+     * @param  string  $userMessage  Pesan dari pengguna
+     * @param  string  $chatId  ID chat Telegram untuk logging
+     * @param  string|null  $context  Konteks dokumen dari knowledge base untuk RAG (opsional)
+     * @return string|null  Respons AI yang dihasilkan, atau null jika gagal
      */
     public function generateResponse(string $userMessage, string $chatId, ?string $context = null): ?string
     {
@@ -98,6 +120,13 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Memperbaiki dan menyempurnakan copywriting artikel berita desa.
+     *
+     * Jika teks kosong, akan membuat artikel baru berdasarkan judul.
+     * Jika teks tersedia, akan memperbaiki ejaan, tata bahasa, dan alur keterbacaan.
+     *
+     * @param  string  $text  Teks artikel yang akan diperbaiki (bisa kosong untuk buat baru)
+     * @param  string|null  $title  Judul artikel untuk konteks (wajib jika $text kosong)
+     * @return string|null  Teks artikel yang sudah diperbaiki, atau null jika gagal
      */
     public function fixCopywriting(string $text, ?string $title = null): ?string
     {
@@ -143,6 +172,13 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Menghasilkan meta deskripsi dan kata kunci SEO untuk artikel berita.
+     *
+     * Meta deskripsi dibatasi maksimal 150 karakter untuk optimasi SEO.
+     * Response dikembalikan dalam format JSON yang sudah di-parse.
+     *
+     * @param  string  $title  Judul artikel berita
+     * @param  string  $content  Konten artikel berita (HTML akan di-strip)
+     * @return array|null  Assoc array dengan 'meta_description' dan 'kata_kunci', atau null jika gagal
      */
     public function generateSeoMetadata(string $title, string $content): ?array
     {
@@ -202,11 +238,17 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Memeriksa ketersediaan layanan API Gemini.
+     *
+     * Melakukan request ke endpoint model untuk memverifikasi koneksi dan API key.
+     *
+     * @return bool  true jika API merespons dengan sukses
      */
     public function checkHealth(): bool
     {
         try {
-            $response = Http::get("https://generativelanguage.googleapis.com/v1beta/models/{$this->model}?key={$this->apiKey}");
+            $baseUrl = config('services.gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta');
+            $url = rtrim($baseUrl, '/') . "/models/{$this->model}?key={$this->apiKey}";
+            $response = Http::get($url);
             return $response->successful();
         } catch (\Exception $e) {
             return false;
@@ -215,6 +257,9 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Menyusun system prompt dengan konteks RAG dari dokumen referensi.
+     *
+     * @param  string  $context  Konteks dokumen dari knowledge base
+     * @return string  System prompt lengkap dengan instruksi dan dokumen referensi
      */
     protected function getRAGSystemPrompt(string $context): string
     {
@@ -223,6 +268,11 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Menyusun system prompt default untuk percakapan umum dengan warga.
+     *
+     * Berisi informasi tentang Gampong Udeung, jenis surat, prosedur administrasi,
+     * dan aturan komunikasi untuk asisten virtual.
+     *
+     * @return string  System prompt default untuk chatbot
      */
     protected function getSystemPrompt(): string
     {
@@ -231,6 +281,12 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Menemukan respons cache berdasarkan kecocokan semantik dengan pertanyaan sebelumnya.
+     *
+     * Menggunakan kombinasi pencocokan tepat (exact match) dan Jaccard similarity
+     * untuk menemukan pertanyaan serupa dari log chatbot sebelumnya.
+     *
+     * @param  string  $userMessage  Pesan pengguna yang akan dicocokkan
+     * @return string|null  Respons dari cache jika ditemukan kecocokan (score >= 0.80), atau null
      */
     protected function findSemanticCachedResponse(string $userMessage): ?string
     {
@@ -308,6 +364,11 @@ class GeminiProvider implements AiProviderInterface
 
     /**
      * Melakukan tokenisasi dan filtering stopwords untuk pencocokan semantik.
+     *
+     * Menghapus tanda baca, memecah teks menjadi kata-kata, dan menghapus stopwords Bahasa Indonesia.
+     *
+     * @param  string  $text  Teks yang akan ditokenisasi
+     * @return array  Array kata-kata setelah filtering stopwords
      */
     protected function tokenize(string $text): array
     {

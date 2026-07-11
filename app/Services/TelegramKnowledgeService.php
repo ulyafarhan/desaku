@@ -15,6 +15,8 @@ class TelegramKnowledgeService
 {
     /**
      * Mengambil data pengetahuan aktif dari database dengan cache 24 jam.
+     *
+     * @return \Illuminate\Support\Collection  Koleksi model BotKnowledge yang aktif (is_aktif = true)
      */
     protected function getActiveKnowledges()
     {
@@ -30,7 +32,11 @@ class TelegramKnowledgeService
     /**
      * Mencari jawaban statis (FAQ/greeting) berdasarkan input teks.
      *
-     * Prioritas: database FAQ -> greeting config -> FAQ config.
+     * Prioritas pencarian: database FAQ -> greeting config -> FAQ config.
+     * Mengembalikan null jika tidak ada jawaban yang cocok.
+     *
+     * @param  string  $text  Teks pertanyaan dari pengguna (akan dinormalisasi ke lowercase)
+     * @return string|null  Jawaban statis yang cocok, atau null jika tidak ditemukan
      */
     public function findStaticAnswer(string $text): ?string
     {
@@ -72,8 +78,11 @@ class TelegramKnowledgeService
     /**
      * Mengambil konteks dokumen dari knowledge base (RAG).
      *
-     * Mencari di database KB terlebih dahulu, lalu fallback ke
-     * konfigurasi lokal berdasarkan kata kunci yang cocok.
+     * Mencari di database KB terlebih dahulu, lalu fallback ke konfigurasi lokal
+     * berdasarkan kata kunci yang cocok dengan input pengguna.
+     *
+     * @param  string  $text  Teks pertanyaan pengguna untuk dicocokkan dengan knowledge base
+     * @return string  Konteks dokumen yang relevan (gabungan beberapa blok knowledge base)
      */
     public function retrieveContext(string $text): string
     {
@@ -122,6 +131,10 @@ class TelegramKnowledgeService
 
     /**
      * Memeriksa apakah teks mengandung salah satu dari kata kunci.
+     *
+     * @param  string  $text  Teks yang akan diperiksa (sudah dinormalisasi ke lowercase)
+     * @param  array  $keywords  Array kata kunci yang akan dicocokkan
+     * @return bool  true jika minimal satu kata kunci ditemukan dalam teks
      */
     protected function matchesAnyKeyword(string $text, array $keywords): bool
     {

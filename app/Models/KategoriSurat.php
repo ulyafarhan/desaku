@@ -7,15 +7,42 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 /**
  * Model untuk merepresentasikan template/kategori layanan persuratan gampong.
+ *
+ * Tabel: kategori_surat
+ * Menyimpan definisi jenis-jenis surat yang dapat diajukan warga,
+ * termasuk template view, schema isian form, dan syarat dokumen pendukung.
+ *
+ * @property  string  $id  ULID unik kategori surat
+ * @property  string  $kode_surat  Kode singkat jenis surat (misal: SKTM, DOMISILI)
+ * @property  string  $nama_surat  Nama lengkap jenis surat
+ * @property  string  $template_view  Nama file Blade view template surat
+ * @property  array   $schema_isian  Skema field isian form (JSON)
+ * @property  array   $syarat_dokumen  Daftar syarat dokumen pendukung (JSON)
+ * @property  bool    $is_active  Status aktif/tidaknya layanan surat ini
  */
 class KategoriSurat extends Model
 {
     use HasUlids;
 
+    /**
+     * Nama tabel database yang terhubung dengan model ini.
+     *
+     * @var  string
+     */
     protected $table = 'kategori_surat';
-    
+
+    /**
+     * Nonaktifkan timestamps otomatis.
+     *
+     * @var  bool
+     */
     public $timestamps = false;
 
+    /**
+     * Atribut yang dapat diisi secara massal.
+     *
+     * @var  array<int, string>
+     */
     protected $fillable = [
         'kode_surat',
         'nama_surat',
@@ -25,6 +52,11 @@ class KategoriSurat extends Model
         'is_active',
     ];
 
+    /**
+     * Casting atribut ke tipe data native PHP.
+     *
+     * @return  array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -35,7 +67,9 @@ class KategoriSurat extends Model
     }
 
     /**
-     * Relasi ke seluruh berkas pengajuan surat yang menggunakan kategori ini.
+     * Relasi ke seluruh pengajuan surat yang menggunakan kategori ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function pengajuan()
     {
@@ -44,6 +78,9 @@ class KategoriSurat extends Model
 
     /**
      * Scope query untuk memfilter hanya template surat yang sedang aktif pelayanan.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  Builder Eloquent.
+     * @return  \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
     {

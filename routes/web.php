@@ -25,8 +25,9 @@ Route::get('/profil', [PublicPortalController::class, 'profile'])->name('profile
 Route::get('/informasi', [PublicPortalController::class, 'information'])->name('information.index');
 Route::get('/informasi/{slug}', [PublicPortalController::class, 'informationShow'])->name('information.show');
 Route::get('/verifikasi', [PublicPortalController::class, 'verifyIndex'])->name('verify.index');
-Route::get('/verifikasi/{hash}', [PublicPortalController::class, 'verify'])->name('verify');
+Route::get('/verifikasi/{hash}', [PublicPortalController::class, 'verify'])->where('hash', '.*')->name('verify');
 Route::get('/statistik', [PublicPortalController::class, 'statistik'])->name('statistik');
+Route::post('/aspirasi', [PublicPortalController::class, 'storeAspirasi'])->middleware('throttle:5,1')->name('aspirasi.store');
 
 Route::middleware('guest:penduduk')->group(function () {
     Route::get('/login', [CitizenAuthController::class, 'create'])->name('login');

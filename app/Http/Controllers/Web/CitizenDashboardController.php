@@ -12,11 +12,21 @@ use Inertia\Response;
 
 /**
  * Controller untuk mengelola dasbor personal warga dan keluarga.
+ *
+ * Menyajikan ringkasan statistik pengajuan surat, kelengkapan biodata,
+ * daftar anggota keluarga, dan kategori surat yang tersedia.
  */
 class CitizenDashboardController extends Controller
 {
     /**
      * Memproses dan menyajikan data statistik pengajuan serta kelengkapan profil warga.
+     *
+     * Menghitung persentase kelengkapan biodata, mengambil daftar pengajuan surat
+     * (termasuk milik anggota keluarga jika warga adalah kepala keluarga),
+     * serta merangkum status pengajuan (pending, diproses, selesai).
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang mengandung data warga terautentikasi
+     * @return \Inertia\Response  Halaman dasbor warga dengan data statistik dan pengajuan
      */
     public function __invoke(Request $request): Response
     {

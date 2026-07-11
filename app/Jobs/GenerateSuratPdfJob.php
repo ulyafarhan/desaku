@@ -22,6 +22,8 @@ class GenerateSuratPdfJob implements ShouldQueue
 
     /**
      * Inisialisasi Job dengan objek pengajuan surat.
+     *
+     * @param  \App\Models\PengajuanSurat  $pengajuan  Model pengajuan surat yang akan diproses
      */
     public function __construct(
         public PengajuanSurat $pengajuan
@@ -29,6 +31,17 @@ class GenerateSuratPdfJob implements ShouldQueue
 
     /**
      * Mengeksekusi pembuatan tanda tangan digital dan notifikasi ke warga via Telegram.
+     *
+     * Proses yang dilakukan:
+     * 1. Membuat QR hash jika belum ada
+     * 2. Menghasilkan nomor surat dengan format Romawi
+     * 3. Update status pengajuan ke 'Selesai'
+     * 4. Mencatat tracking perubahan status
+     * 5. Mengirim notifikasi ke warga via Telegram
+     *
+     * @param  \App\Services\PdfGeneratorService  $pdfService  Layanan pembuatan PDF
+     * @param  \App\Services\TelegramService  $telegram  Layanan Telegram untuk notifikasi
+     * @return void
      */
     public function handle(
         PdfGeneratorService $pdfService,
@@ -47,9 +60,30 @@ class GenerateSuratPdfJob implements ShouldQueue
 
             $printUrl = "/warga/pengajuan/{$this->pengajuan->id}/print";
 
+            if (empty($this->pengajuan->nomor_surat)) {
+                $counter = PengajuanSurat::where('kategori_surat_id', $this->pengajuan->kategori_surat_id)
+                    ->whereNotNull('nomor_surat')
+                    ->whereYear('created_at', date('Y'))
+                    ->count() + 1;
+                
+                $romawiBulan = [1=>'I', 2=>'II', 3=>'III', 4=>'IV', 5=>'V', 6=>'VI', 7=>'VII', 8=>'VIII', 9=>'IX', 10=>'X', 11=>'XI', 12=>'XII'];
+                $bulan = $romawiBulan[date('n')];
+
+                $nomorSurat = sprintf(
+                    '%s/%03d/%s/%s',
+                    $this->pengajuan->kategori->kode_surat ?? 'SRT',
+                    $counter,
+                    $bulan,
+                    date('Y')
+                );
+            } else {
+                $nomorSurat = $this->pengajuan->nomor_surat;
+            }
+
             $this->pengajuan->update([
                 'status' => 'Selesai',
-                'file_pdf_url' => $printUrl
+                'file_pdf_url' => $printUrl,
+                'nomor_surat' => $nomorSurat
             ]);
             
             TrackingPengajuanSurat::create([
@@ -84,13 +118,24 @@ class GenerateSuratPdfJob implements ShouldQueue
 
         } catch (\Exception $e) {
             Log::error("Failed to process letter for pengajuan #{$this->pengajuan->id}: " . $e->getMessage());
-            
-            $this->pengajuan->update([
-                'status' => 'Ditolak',
-                'catatan_penolakan' => 'Gagal memproses surat: ' . $e->getMessage(),
-            ]);
 
             throw $e;
         }
+    }
+
+    /**
+     * Dipanggil saat job gagal diproses.
+     *
+     * Update status pengajuan ke 'Ditolak' dan mencatat pesan error sebagai catatan penolakan.
+     *
+     * @param  \Throwable  $e  Exception yang menyebabkan kegagalan
+     * @return void
+     */
+    public function failed(\Throwable $e): void
+    {
+        $this->pengajuan->update([
+            'status' => 'Ditolak',
+            'catatan_penolakan' => 'Gagal memproses surat: ' . $e->getMessage(),
+        ]);
     }
 }

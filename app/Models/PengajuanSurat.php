@@ -7,17 +7,57 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 /**
  * Model untuk merepresentasikan data permohonan pengajuan surat warga.
+ *
+ * Tabel: pengajuan_surat
+ * Primary key: ULID (bukan auto-increment)
+ * Menyimpan seluruh berkas pengajuan surat beserta data isian form,
+ * file syarat, status proses, dan nomor surat resmi yang dihasilkan.
+ *
+ * @property  string  $id  ULID unik pengajuan surat
+ * @property  string  $nomor_registrasi  Nomor registrasi harian otomatis (YYYYMMDD-XXXX)
+ * @property  string  $nik_pemohon  NIK pemohon/warga pengaju
+ * @property  string  $kategori_surat_id  ULID kategori/jenis surat
+ * @property  array   $data_isian  Data isian form pengajuan (JSON)
+ * @property  array   $file_syarat  Daftar file syarat dokumen (JSON)
+ * @property  string  $status  Status pengajuan (Pending, Diproses, Disetujui, Ditolak, Selesai)
+ * @property  string|null  $catatan_penolakan  Alasan penolakan jika status Ditolak
+ * @property  string|null  $qr_hash  Hash QR code verifikasi surat
+ * @property  string|null  $file_pdf_url  URL file PDF surat jadi
+ * @property  string|null  $nomor_surat  Nomor surat resmi yang diterbitkan
+ * @property  string|null  $diverifikasi_oleh  ULID administrator verifikator
+ * @property  \Carbon\Carbon|null  $created_at  Waktu pengajuan dibuat
+ * @property  \Carbon\Carbon|null  $updated_at  Waktu pengajuan diperbarui
  */
 class PengajuanSurat extends Model
 {
     use HasUlids;
 
+    /**
+     * Nama tabel database yang terhubung dengan model ini.
+     *
+     * @var  string
+     */
     protected $table = 'pengajuan_surat';
 
+    /**
+     * Primary key bukan auto-incrementing (ULID string).
+     *
+     * @var  bool
+     */
     public $incrementing = false;
 
+    /**
+     * Tipe primary key adalah string.
+     *
+     * @var  string
+     */
     protected $keyType = 'string';
 
+    /**
+     * Atribut yang dapat diisi secara massal.
+     *
+     * @var  array<int, string>
+     */
     protected $fillable = [
         'nomor_registrasi',
         'nik_pemohon',
@@ -28,28 +68,16 @@ class PengajuanSurat extends Model
         'catatan_penolakan',
         'qr_hash',
         'file_pdf_url',
+        'nomor_surat',
         'diverifikasi_oleh',
     ];
 
+
     /**
-     * Accessor untuk memformat nomor registrasi surat resmi secara dinamis.
+     * Casting atribut ke tipe data native PHP.
+     *
+     * @return  array<string, string>
      */
-    public function getNomorSuratAttribute(): string
-    {
-        $counter = self::where('kategori_surat_id', $this->kategori_surat_id)
-            ->where('id', '<=', $this->id)
-            ->whereYear('created_at', $this->created_at?->year ?? date('Y'))
-            ->count();
-
-        return sprintf(
-            '%s/%03d/GAMPONG-UDEUNG/%s/%s',
-            $this->kategori?->kode_surat ?? 'SRT',
-            $counter,
-            strtoupper($this->created_at?->locale('id')->monthName ?? now()->locale('id')->monthName),
-            $this->created_at?->format('Y') ?? date('Y')
-        );
-    }
-
     protected function casts(): array
     {
         return [
@@ -62,6 +90,8 @@ class PengajuanSurat extends Model
 
     /**
      * Relasi ke data penduduk yang mengajukan surat ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function pemohon()
     {
@@ -70,6 +100,8 @@ class PengajuanSurat extends Model
 
     /**
      * Relasi ke kategori/template surat yang diajukan.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function kategori()
     {
@@ -78,6 +110,8 @@ class PengajuanSurat extends Model
 
     /**
      * Relasi ke administrator yang menolak/menyetujui pengajuan surat ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function verifikator()
     {
@@ -85,7 +119,9 @@ class PengajuanSurat extends Model
     }
 
     /**
-     * Relasi ke kumpulan log riwayat perubahan status (tracking) pengajuan.
+     * Relasi ke kumpulan log riwayat perubahan status (tracking) pengajuan ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function tracking()
     {
@@ -94,17 +130,31 @@ class PengajuanSurat extends Model
 
     /**
      * Scope query untuk menyaring surat yang masih berstatus pending.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  Builder Eloquent.
+     * @return  \Illuminate\Database\Eloquent\Builder
      */
     public function scopePending($query)
     {
         return $query->where('status', 'Pending');
     }
 
+    /**
+     * Scope query untuk menyaring surat yang sedang diproses.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  Builder Eloquent.
+     * @return  \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeDiproses($query)
     {
         return $query->where('status', 'Diproses');
     }
 
+    /**
+     * Boot model — registrasi event listener untuk auto-generate nomor registrasi.
+     *
+     * @return  void
+     */
     protected static function boot()
     {
         parent::boot();
@@ -118,6 +168,11 @@ class PengajuanSurat extends Model
 
     /**
      * Menghasilkan nomor registrasi pengajuan surat harian secara otomatis.
+     *
+     * Format: YYYYMMDD-XXXX (contoh: 20260711-0001)
+     * Nomor urut direset setiap hari.
+     *
+     * @return  string  Nomor registrasi unik.
      */
     public static function generateNomorRegistrasi(): string
     {

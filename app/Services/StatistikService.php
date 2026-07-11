@@ -22,6 +22,9 @@ class StatistikService
      * Mengambil data demografi penduduk secara lengkap.
      *
      * Data di-cache selama 1 jam untuk menghindari perhitungan berulang.
+     *
+     * @return array  Assoc array berisi total_penduduk, total_keluarga, laki_laki, perempuan,
+     *                per_dusun, per_agama, per_pendidikan, per_pekerjaan, per_usia
      */
     public function getDemografi(): array
     {
@@ -45,6 +48,8 @@ class StatistikService
 
     /**
      * Menghitung jumlah kepala keluarga per dusun.
+     *
+     * @return array  Assoc array dengan nama dusun sebagai kunci dan jumlah sebagai nilai
      */
     protected function getPerDusun(): array
     {
@@ -57,6 +62,8 @@ class StatistikService
 
     /**
      * Menghitung jumlah penduduk per agama.
+     *
+     * @return array  Assoc array dengan nama agama sebagai kunci dan jumlah penduduk sebagai nilai
      */
     protected function getPerAgama(): array
     {
@@ -70,6 +77,8 @@ class StatistikService
 
     /**
      * Menghitung jumlah penduduk per tingkat pendidikan.
+     *
+     * @return array  Assoc array dengan tingkat pendidikan sebagai kunci dan jumlah penduduk sebagai nilai
      */
     protected function getPerPendidikan(): array
     {
@@ -83,6 +92,8 @@ class StatistikService
 
     /**
      * Menghitung 10 jenis pekerjaan terbanyak penduduk.
+     *
+     * @return array  Assoc array dengan nama pekerjaan sebagai kunci dan jumlah penduduk sebagai nilai
      */
     protected function getPerPekerjaan(): array
     {
@@ -100,7 +111,9 @@ class StatistikService
      * Menghitung jumlah penduduk per kelompok usia.
      *
      * Mendukung driver database MySQL, SQLite, dan PostgreSQL.
-     * Kelompok: 0-5, 6-12, 13-17, 18-25, 26-40, 41-60, 60+.
+     * Kelompok usia: 0-5, 6-12, 13-17, 18-25, 26-40, 41-60, 60+.
+     *
+     * @return array  Assoc array dengan rentang usia sebagai kunci dan jumlah penduduk sebagai nilai
      */
     protected function getPerKelompokUsia(): array
     {
@@ -137,11 +150,13 @@ class StatistikService
         ];
     }
 
-     /**
+    /**
      * Mengambil statistik layanan administrasi desa.
      *
-     * Mencakup data pengajuan surat dan mutasi penduduk
-     * berdasarkan status, di-cache selama 1 jam.
+     * Mencakup data pengajuan surat dan mutasi penduduk berdasarkan status,
+     * di-cache selama 1 jam.
+     *
+     * @return array  Assoc array berisi pengajuan_surat, mutasi_penduduk, per_jenis_surat
      */
     public function getLayanan(): array
     {
@@ -167,6 +182,8 @@ class StatistikService
 
     /**
      * Menghitung jumlah pengajuan surat per kategori.
+     *
+     * @return array  Assoc array dengan nama kategori surat sebagai kunci dan jumlah pengajuan sebagai nilai
      */
     protected function getPerJenisSurat(): array
     {
@@ -182,6 +199,8 @@ class StatistikService
 
     /**
      * Membersihkan cache data statistik demografi dan layanan.
+     *
+     * @return void
      */
     public function clearCache(): void
     {

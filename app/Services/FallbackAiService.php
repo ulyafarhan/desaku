@@ -16,9 +16,12 @@ class FallbackAiService implements AiProviderInterface
     /**
      * Mengeksekusi aksi AI menggunakan daftar provider yang diurutkan berdasarkan prioritas.
      *
-     * @param callable $callback
-     * @return mixed
-     * @throws \Exception
+     * Metode ini akan mencoba setiap provider secara berurutan berdasarkan prioritas.
+     * Jika provider pertama gagal, akan fallback ke provider berikutnya.
+     * Konfigurasi diambil dari database pengaturan_gampong dengan fallback ke config Laravel.
+     *
+     * @param  callable  $callback  Callback yang menerima AiProviderInterface dan mengembalikan respons
+     * @return mixed  Respons dari provider yang berhasil, atau null jika semua provider gagal
      */
     protected function runWithFallback(callable $callback)
     {
@@ -89,9 +92,9 @@ class FallbackAiService implements AiProviderInterface
             }
         }
 
-        // Jika semua provider gagal, lemparkan exception
+        // Jika semua provider gagal, log exception terakhir dan kembalikan null
         if ($lastException) {
-            throw new \Exception("Semua AI Provider gagal: " . $lastException->getMessage());
+            Log::error("Semua AI Provider gagal. Last error: " . $lastException->getMessage());
         }
 
         return null;
@@ -99,6 +102,11 @@ class FallbackAiService implements AiProviderInterface
 
     /**
      * Menerapkan pengaturan konfigurasi ke konfigurasi runtime Laravel.
+     *
+     * Mengupdate config services.ai.openai atau services.gemini sesuai tipe provider.
+     *
+     * @param  array  $prov  Array konfigurasi provider berisi provider_type, api_key, model, dll
+     * @return void
      */
     protected function applyProviderConfig(array $prov): void
     {
@@ -112,23 +120,34 @@ class FallbackAiService implements AiProviderInterface
             config([
                 'services.gemini.api_key' => $prov['api_key'] ?? '',
                 'services.gemini.model' => $prov['model'] ?? 'gemini-pro',
+                'services.gemini.base_url' => $prov['base_url'] ?? 'https://generativelanguage.googleapis.com/v1beta',
             ]);
         }
     }
 
     /**
      * Menyelesaikan instance provider konkret yang sebenarnya.
+     *
+     * @param  string  $type  Tipe provider ('openai' atau 'gemini')
+     * @return AiProviderInterface  Instance provider yang sesuai
+     * @throws \InvalidArgumentException  Jika tipe provider tidak dikenali
      */
     protected function resolveProviderInstance(string $type): AiProviderInterface
     {
-        if ($type === 'openai') {
-            return new OpenAiProvider();
-        }
-        return new GeminiProvider();
+        return match ($type) {
+            'openai' => new OpenAiProvider(),
+            'gemini' => new GeminiProvider(),
+            default => throw new \InvalidArgumentException("Unknown AI provider type: {$type}"),
+        };
     }
 
     /**
      * Menghasilkan respons untuk pesan pengguna.
+     *
+     * @param  string  $userMessage  Pesan dari pengguna
+     * @param  string  $chatId  ID chat Telegram untuk logging
+     * @param  string|null  $context  Konteks RAG dari knowledge base (opsional)
+     * @return string|null  Respons AI, atau null jika semua provider gagal
      */
     public function generateResponse(string $userMessage, string $chatId, ?string $context = null): ?string
     {
@@ -139,6 +158,10 @@ class FallbackAiService implements AiProviderInterface
 
     /**
      * Memperbaiki dan mengoptimalkan copywriting artikel.
+     *
+     * @param  string  $text  Teks artikel yang akan diperbaiki
+     * @param  string|null  $title  Judul artikel (opsional)
+     * @return string|null  Teks artikel yang sudah diperbaiki, atau null jika semua provider gagal
      */
     public function fixCopywriting(string $text, ?string $title = null): ?string
     {
@@ -149,6 +172,10 @@ class FallbackAiService implements AiProviderInterface
 
     /**
      * Menghasilkan metadata SEO untuk artikel.
+     *
+     * @param  string  $title  Judul artikel
+     * @param  string  $content  Konten artikel
+     * @return array|null  Assoc array dengan 'meta_description' dan 'kata_kunci', atau null jika gagal
      */
     public function generateSeoMetadata(string $title, string $content): ?array
     {
@@ -159,6 +186,8 @@ class FallbackAiService implements AiProviderInterface
 
     /**
      * Memeriksa kesehatan penyedia AI.
+     *
+     * @return bool  true jika minimal satu provider AI merespons dengan sehat
      */
     public function checkHealth(): bool
     {

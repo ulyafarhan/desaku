@@ -1,17 +1,16 @@
 <?php
 
 /**
- * SEEDER — Wilayah, Keluarga, Penduduk & Informasi Publik
+ * SEEDER — Wilayah, Keluarga & Penduduk (Desa Udeung)
  *
- * Mengisi data autentik Gampong Udeung meliputi:
- * 1. Referensi wilayah (Provinsi Aceh → Gampong Udeung)
- * 2. 5 keluarga contoh dengan total 16 penduduk
- * 3. 3 informasi publik (berita & pengumuman)
+ * Mengisi data autentik Gampong Udeung dengan 310 Kartu Keluarga
+ * dan sekitar 1200-1500 penduduk. Data mencakup berbagai status:
+ * - Tetap (aktif)
+ * - Pindah (pindah domisili)
+ * - Meninggal
  *
- * @see \App\Models\ReferensiWilayah
- * @see \App\Models\Keluarga
- * @see \App\Models\Penduduk
- * @see \App\Models\InformasiPublik
+ * Data berdasarkan studi uji kelayakan di:
+ * Desa Udeung, Kecamatan Bandar Baru, Kabupaten Pidie Jaya, Provinsi Aceh
  */
 
 namespace Database\Seeders;
@@ -19,352 +18,401 @@ namespace Database\Seeders;
 use App\Models\Keluarga;
 use App\Models\Penduduk;
 use App\Models\ReferensiWilayah;
-use App\Models\InformasiPublik;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class WilayahPendudukSeeder extends Seeder
 {
-    /**
-     * Jalankan proses seeding data awal.
-     *
-     * Tahapan:
-     * 1. Wilayah     — 6 referensi: 1 provinsi, 1 kabupaten, 1 kecamatan, 3 gampong
-     * 2. Penduduk    — 5 keluarga (KK) dengan total 16 anggota tersebar di 3 dusun
-     * 3. Informasi   — 3 konten publik (2 pengumuman, 1 berita)
-     */
     public function run(): void
     {
-        // 1. Referensi Wilayah
+        $faker = Faker::create('id_ID');
+
+        // 1. Referensi Wilayah — Hierarki Administrasi Indonesia
         $wilayah = [
-            [
-                'kode_wilayah' => '11',
-                'nama_wilayah' => 'Provinsi Aceh',
-                'level' => 'provinsi',
-                'parent_kode' => null,
-            ],
-            [
-                'kode_wilayah' => '11.18',
-                'nama_wilayah' => 'Kab. Pidie Jaya',
-                'level' => 'kabupaten',
-                'parent_kode' => '11',
-            ],
-            [
-                'kode_wilayah' => '11.18.06',
-                'nama_wilayah' => 'Kec. Bandar Baru',
-                'level' => 'kecamatan',
-                'parent_kode' => '11.18',
-            ],
-            [
-                'kode_wilayah' => '11.18.06.2001',
-                'nama_wilayah' => 'Gampong Udeung',
-                'level' => 'desa',
-                'parent_kode' => '11.18.06',
-            ],
-            [
-                'kode_wilayah' => '11.18.06.2002',
-                'nama_wilayah' => 'Gampong Paru',
-                'level' => 'desa',
-                'parent_kode' => '11.18.06',
-            ],
-            [
-                'kode_wilayah' => '11.18.06.2003',
-                'nama_wilayah' => 'Gampong Nyong',
-                'level' => 'desa',
-                'parent_kode' => '11.18.06',
-            ],
+            ['kode_wilayah' => '11', 'nama_wilayah' => 'Prov. Aceh', 'level' => 'provinsi', 'parent_kode' => null],
+            ['kode_wilayah' => '11.18', 'nama_wilayah' => 'Kab. Pidie Jaya', 'level' => 'kabupaten', 'parent_kode' => '11'],
+            ['kode_wilayah' => '11.18.06', 'nama_wilayah' => 'Kec. Bandar Baru', 'level' => 'kecamatan', 'parent_kode' => '11.18'],
+            ['kode_wilayah' => '11.18.06.2001', 'nama_wilayah' => 'Gampong Udeung', 'level' => 'desa', 'parent_kode' => '11.18.06'],
         ];
 
         foreach ($wilayah as $w) {
             ReferensiWilayah::updateOrCreate(['kode_wilayah' => $w['kode_wilayah']], $w);
         }
 
-        // 2. Keluarga & Penduduk (5 Keluarga Realistis)
-        $keluargaData = [
-            [
-                'no_kk' => '1118061010800001',
-                'alamat' => 'Jl. Tgk. Chik di Phoroh No. 12, Gampong Udeung',
-                'dusun' => 'Dusun Phoroh',
-                'rt_rw' => 'RT 01 / RW 01',
-                'anggota' => [
-                    [
-                        'nik' => '1118061005800001',
-                        'nama_lengkap' => 'Teuku Faisal',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Pidie',
-                        'tanggal_lahir' => '1980-05-10',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Wiraswasta',
-                        'pendidikan' => 'S1',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Kepala Keluarga',
-                    ],
-                    [
-                        'nik' => '1118064508820002',
-                        'nama_lengkap' => 'Cut Nyak Fatimah',
-                        'jenis_kelamin' => 'P',
-                        'tempat_lahir' => 'Banda Aceh',
-                        'tanggal_lahir' => '1982-08-05',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Ibu Rumah Tangga',
-                        'pendidikan' => 'SMA',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Istri',
-                    ],
-                    [
-                        'nik' => '1118060101100003',
-                        'nama_lengkap' => 'Muhammad Aulia',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Pidie Jaya',
-                        'tanggal_lahir' => '2010-01-01',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Pelajar/Mahasiswa',
-                        'pendidikan' => 'SMP',
-                        'status_perkawinan' => 'Belum Kawin',
-                        'status_keluarga' => 'Anak',
-                    ],
-                ]
-            ],
-            [
-                'no_kk' => '1118061210820002',
-                'alamat' => 'Jl. Neulop Indah No. 5, Gampong Udeung',
-                'dusun' => 'Dusun Neulop',
-                'rt_rw' => 'RT 02 / RW 01',
-                'anggota' => [
-                    [
-                        'nik' => '1118061507750001',
-                        'nama_lengkap' => 'Zulkifli',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Sigli',
-                        'tanggal_lahir' => '1975-07-15',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'PNS',
-                        'pendidikan' => 'S1',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Kepala Keluarga',
-                    ],
-                    [
-                        'nik' => '1118065010780002',
-                        'nama_lengkap' => 'Mariani',
-                        'jenis_kelamin' => 'P',
-                        'tempat_lahir' => 'Meureudu',
-                        'tanggal_lahir' => '1978-10-10',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'PNS',
-                        'pendidikan' => 'S1',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Istri',
-                    ],
-                    [
-                        'nik' => '1118060205050003',
-                        'nama_lengkap' => 'Nadia Safira',
-                        'jenis_kelamin' => 'P',
-                        'tempat_lahir' => 'Pidie Jaya',
-                        'tanggal_lahir' => '2005-05-02',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Pelajar/Mahasiswa',
-                        'pendidikan' => 'SMA',
-                        'status_perkawinan' => 'Belum Kawin',
-                        'status_keluarga' => 'Anak',
-                    ],
-                ]
-            ],
-            [
-                'no_kk' => '1118061510850003',
-                'alamat' => 'Jl. Garuda Mas No. 22, Gampong Udeung',
-                'dusun' => 'Dusun Garuda',
-                'rt_rw' => 'RT 03 / RW 02',
-                'anggota' => [
-                    [
-                        'nik' => '1118062011700001',
-                        'nama_lengkap' => 'Nurdin',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Pidie Jaya',
-                        'tanggal_lahir' => '1970-11-20',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Petani',
-                        'pendidikan' => 'SD',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Kepala Keluarga',
-                    ],
-                    [
-                        'nik' => '1118066212720002',
-                        'nama_lengkap' => 'Zainab',
-                        'jenis_kelamin' => 'P',
-                        'tempat_lahir' => 'Pidie',
-                        'tanggal_lahir' => '1972-12-22',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Tani',
-                        'pendidikan' => 'SD',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Istri',
-                    ],
-                    [
-                        'nik' => '1118061809020003',
-                        'nama_lengkap' => 'Rahmad Saputra',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Pidie Jaya',
-                        'tanggal_lahir' => '2002-09-18',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Wiraswasta',
-                        'pendidikan' => 'SMA',
-                        'status_perkawinan' => 'Belum Kawin',
-                        'status_keluarga' => 'Anak',
-                    ],
-                ]
-            ],
-            [
-                'no_kk' => '1118062010880004',
-                'alamat' => 'Jl. Bukit Cot No. 45, Gampong Udeung',
-                'dusun' => 'Dusun Cot',
-                'rt_rw' => 'RT 04 / RW 02',
-                'anggota' => [
-                    [
-                        'nik' => '1118060404850001',
-                        'nama_lengkap' => 'Yusuf',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Lhokseumawe',
-                        'tanggal_lahir' => '1985-04-04',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Pedagang',
-                        'pendidikan' => 'SMA',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Kepala Keluarga',
-                    ],
-                    [
-                        'nik' => '1118064802870002',
-                        'nama_lengkap' => 'Sri Yuliana',
-                        'jenis_kelamin' => 'P',
-                        'tempat_lahir' => 'Bireuen',
-                        'tanggal_lahir' => '1987-02-08',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Wiraswasta',
-                        'pendidikan' => 'SMA',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Istri',
-                    ],
-                ]
-            ],
-            [
-                'no_kk' => '1118062510900005',
-                'alamat' => 'Jl. Tgk. Chik di Phoroh No. 19, Gampong Udeung',
-                'dusun' => 'Dusun Phoroh',
-                'rt_rw' => 'RT 01 / RW 01',
-                'anggota' => [
-                    [
-                        'nik' => '1118060909650001',
-                        'nama_lengkap' => 'Iskandar',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Sabang',
-                        'tanggal_lahir' => '1965-09-09',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Wiraswasta',
-                        'pendidikan' => 'SMA',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Kepala Keluarga',
-                    ],
-                    [
-                        'nik' => '1118065505700002',
-                        'nama_lengkap' => 'Siti Aminah',
-                        'jenis_kelamin' => 'P',
-                        'tempat_lahir' => 'Banda Aceh',
-                        'tanggal_lahir' => '1970-05-15',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Ibu Rumah Tangga',
-                        'pendidikan' => 'SMP',
-                        'status_perkawinan' => 'Kawin',
-                        'status_keluarga' => 'Istri',
-                    ],
-                    [
-                        'nik' => '1118062210950003',
-                        'nama_lengkap' => 'Hendra Wijaya',
-                        'jenis_kelamin' => 'L',
-                        'tempat_lahir' => 'Pidie Jaya',
-                        'tanggal_lahir' => '1995-10-22',
-                        'agama' => 'Islam',
-                        'pekerjaan' => 'Wiraswasta',
-                        'pendidikan' => 'S1',
-                        'status_perkawinan' => 'Belum Kawin',
-                        'status_keluarga' => 'Anak',
-                    ],
-                ]
-            ]
+        // 2. Daftar Dusun di Gampong Udeung
+        $dusunList = [
+            'Dusun Tunong',
+            'Dusun Tengah',
+            'Dusun Baroh',
         ];
 
-        foreach ($keluargaData as $data) {
-            $keluarga = Keluarga::updateOrCreate(
-                ['no_kk' => $data['no_kk']],
-                [
-                    'alamat' => $data['alamat'],
-                    'dusun' => $data['dusun'],
-                    'rt_rw' => $data['rt_rw'],
-                ]
-            );
+        // 3. Nama-nama Aceh
+        $namaLakiAceh = [
+            'Tgk. Muhammad', 'Tgk. Ibrahim', 'Tgk. Abdullah', 'Tgk. Ahmad', 'Tgk. Iskandar',
+            'Tgk. Fauzi', 'Tgk. Rizal', 'Tgk. Husni', 'Tgk. Zubir', 'Tgk. Muhazar',
+            'Tgk. Sulaiman', 'Tgk. Yusuf', 'Tgk. Husein', 'Tgk. Bakhtiar', 'Tgk. Nazar',
+            'Tgk. Khairil', 'Tgk. Diman', 'Tgk. Mukhtar', 'Tgk. Syarifuddin', 'Tgk. Tarmizi',
+            'Muhammad', 'Ibrahim', 'Abdullah', 'Ahmad', 'Iskandar',
+            'Fauzi', 'Rizal', 'Husni', 'Zubir', 'Muhazar',
+            'Sulaiman', 'Yusuf', 'Husein', 'Bakhtiar', 'Nazar',
+            'Khairil', 'Diman', 'Mukhtar', 'Syarifuddin', 'Tarmizi',
+            'Tgk. Khairullah', 'Tgk. M. Hasbi', 'Tgk. Jamiluddin', 'Tgk. Abrar',
+            'M. Yunus', 'M. Arifin', 'M. Nafis', 'M. Rizky', 'M. Fauzan',
+        ];
 
-            $kepalaKeluargaNik = null;
+        $namaPerempuanAceh = [
+            'Cut', 'Putri', 'Rabiah', 'Nurbaiti', 'Siti',
+            'Fatimah', 'Aminah', 'Khadijah', 'Zainab', 'Halimah',
+            'Nurul', 'Salma', 'Hanifa', 'Raihan', 'Aisyah',
+            'Maryam', 'Zahra', 'Nisa', 'Adelia', 'Nisa',
+            'Cut Rahma', 'Cut Sari', 'Cut Dewi', 'Cut Ayu', 'Cut Nadia',
+            'Rika', 'Wati', 'Yuli', 'Sri', 'Murni',
+        ];
 
-            foreach ($data['anggota'] as $ang) {
-                Penduduk::updateOrCreate(
-                    ['nik' => $ang['nik']],
-                    [
-                        'no_kk' => $data['no_kk'],
-                        'nama_lengkap' => $ang['nama_lengkap'],
-                        'jenis_kelamin' => $ang['jenis_kelamin'],
-                        'tempat_lahir' => $ang['tempat_lahir'],
-                        'tanggal_lahir' => $ang['tanggal_lahir'],
-                        'agama' => $ang['agama'],
-                        'pekerjaan' => $ang['pekerjaan'],
-                        'pendidikan' => $ang['pendidikan'],
-                        'status_perkawinan' => $ang['status_perkawinan'],
-                        'status_keluarga' => $ang['status_keluarga'],
-                        'status_mutasi' => 'Tetap',
-                    ]
-                );
+        $namaBelakangAceh = [
+            'Abdullah', 'Ahmad', 'Ibrahim', 'Sulaiman', 'Yusuf',
+            'Husein', 'Zubir', 'Muhazar', 'Rizal', 'Fauzi',
+            'Nazar', 'Bakhtiar', 'Iskandar', 'Husni', 'Tarmizi',
+            'Syarifuddin', 'Khairil', 'Diman', 'Mukhtar', 'Usman',
+            'Saputra', 'Maulana', 'Putra', 'Rahman', 'Hasanah',
+            'Lubis', 'Harahap', 'Siregar', 'Simanjuntak', 'Sinaga',
+        ];
 
-                if ($ang['status_keluarga'] === 'Kepala Keluarga') {
-                    $kepalaKeluargaNik = $ang['nik'];
+        // 4. Pekerjaan
+        $pekerjaanList = [
+            'Petani/Pekebun', 'Petani/Pekebun', 'Petani/Pekebun', 'Petani/Pekebun',
+            'Pedagang', 'Pedagang', 'Pedagang',
+            'Wiraswasta', 'Wiraswasta',
+            'Buruh Harian Lepas', 'Buruh Harian Lepas',
+            'Nelayan/Perikanan',
+            'Karyawan Swasta',
+            'PNS', 'Guru',
+            'TNI/Polri',
+            'Mengurus Rumah Tangga', 'Mengurus Rumah Tangga', 'Mengurus Rumah Tangga',
+            'Pelajar/Mahasiswa', 'Pelajar/Mahasiswa',
+            'Belum/Tidak Bekerja',
+            'Tukang Kayu', 'Tukang Batu', 'Sopir',
+        ];
+
+        // 5. Pendidikan
+        $pendidikanList = [
+            'Tidak Sekolah', 'Tidak Sekolah', 'SD', 'SD', 'SMP', 'SMP',
+            'SMA', 'SMA', 'SMA', 'SMA', 'SMA',
+            'SMK', 'D3', 'D3', 'S1', 'S1',
+        ];
+
+        // 6. Alamat
+        $alamatSpesifik = [
+            'Jl. Utama Gampong Udeung', 'Jl. Penghubung Dusun', 'Jl. Samping Meunasah',
+            'Jl. Lapangan Gampong', 'Jl. Kebun Sawit', 'Jl. Persawahan',
+            'Dekat Pasar Udeung', 'Samping Kantor Keuchik', 'Belakang Meunasah',
+            'Jl. Raya Bandar Baru', 'Jl. Menuju Meureudu', 'Dekat Pos Kamling',
+            'Jl. Cot Udeung', 'Jl. Blang Udeung', 'Jl. Krueng Udeung',
+            'Jl. Dayah Udeung', 'Jl. Pante Udeung', 'Jl. Buket Udeung',
+        ];
+
+        // 7. Tempat lahir
+        $tempatLahirList = [
+            'Meureudu', 'Meureudu', 'Meureudu', 'Meureudu',
+            'Sigli', 'Banda Aceh', 'Lhokseumawe',
+            'Langsa', 'Bireuen', 'Bireuen',
+            'Pidie', 'Pidie Jaya', 'Pidie Jaya', 'Pidie Jaya',
+            'Aceh Utara', 'Aceh Timur',
+            'Meulaboh', 'Takengon',
+        ];
+
+        // 8. Generate Data Keluarga dan Penduduk
+        $jumlahKeluarga = 310; // 310 KK realistis untuk gampong
+
+        for ($i = 0; $i < $jumlahKeluarga; $i++) {
+            // Nomor KK (16 digit)
+            $noKk = '111806' . str_pad($i + 1, 4, '0', STR_PAD_LEFT) . $faker->numerify('######');
+
+            // Pilih dusun
+            $dusun = $faker->randomElement($dusunList);
+
+            // Alamat
+            $namaJalan = $faker->randomElement($alamatSpesifik);
+            $nomorRumah = $faker->numberBetween(1, 80);
+            $alamatLengkap = $namaJalan . ' No. ' . $nomorRumah . ', ' . $dusun;
+
+            $keluarga = Keluarga::create([
+                'no_kk' => $noKk,
+                'alamat' => $alamatLengkap,
+                'dusun' => $dusun,
+                'rt_rw' => $dusun,
+            ]);
+
+            // Status mutasi keluarga
+            // 90% Tetap, 7% Pindah, 3% Kepala Keluarga Meninggal
+            $statusMutasiKK = 'Tetap';
+            $probStatus = $faker->numberBetween(1, 100);
+            if ($probStatus <= 3) {
+                $statusMutasiKK = 'Meninggal';
+            } elseif ($probStatus <= 10) {
+                $statusMutasiKK = 'Pindah';
+            }
+
+            // ============================================
+            // KEPALA KELUARGA
+            // ============================================
+            $tahunLahirSuami = $faker->numberBetween(1955, 2000);
+            $bulanLahir = str_pad($faker->numberBetween(1, 12), 2, '0', STR_PAD_LEFT);
+            $hariLahir = str_pad($faker->numberBetween(1, 28), 2, '0', STR_PAD_LEFT);
+
+            $namaDepanSuami = $faker->randomElement($namaLakiAceh);
+            $namaBelakangSuami = $faker->randomElement($namaBelakangAceh);
+            $namaLengkapSuami = $namaDepanSuami . ' ' . $namaBelakangSuami;
+
+            $nikSuami = '111806' . substr($tahunLahirSuami, -2) . $bulanLahir . $hariLahir . $faker->numerify('####');
+
+            $pekerjaanSuami = $faker->randomElement($pekerjaanList);
+            $pendidikanSuami = $faker->randomElement($pendidikanList);
+
+            // Status perkawinan berdasarkan usia
+            $usiaSuami = 2026 - $tahunLahirSuami;
+            if ($usiaSuami < 20) {
+                $statusPerkawinanSuami = 'Belum Kawin';
+            } elseif ($statusMutasiKK === 'Meninggal' && $faker->boolean(40)) {
+                $statusPerkawinanSuami = 'Cerai Mati';
+            } else {
+                $statusPerkawinanSuami = 'Kawin';
+            }
+
+            Penduduk::create([
+                'nik' => $nikSuami,
+                'no_kk' => $noKk,
+                'nama_lengkap' => $namaLengkapSuami,
+                'jenis_kelamin' => 'L',
+                'tempat_lahir' => $faker->randomElement($tempatLahirList),
+                'tanggal_lahir' => $tahunLahirSuami . '-' . $bulanLahir . '-' . $hariLahir,
+                'agama' => 'Islam',
+                'pekerjaan' => $pekerjaanSuami,
+                'pendidikan' => $pendidikanSuami,
+                'status_perkawinan' => $statusPerkawinanSuami,
+                'status_keluarga' => 'Kepala Keluarga',
+                'status_mutasi' => $statusMutasiKK,
+            ]);
+
+            $keluarga->update(['kepala_keluarga_nik' => $nikSuami]);
+
+            // ============================================
+            // ISTRI (85% punya istri di KK)
+            // ============================================
+            $nikIstri = null;
+            $tahunLahirIstri = null;
+
+            if ($faker->boolean(85) && $statusMutasiKK !== 'Meninggal') {
+                $tahunLahirIstri = $tahunLahirSuami + $faker->numberBetween(-3, 5);
+                $bulanLahirIstri = str_pad($faker->numberBetween(1, 12), 2, '0', STR_PAD_LEFT);
+                $hariLahirIstri = str_pad($faker->numberBetween(1, 28), 2, '0', STR_PAD_LEFT);
+
+                $namaDepanIstri = $faker->randomElement($namaPerempuanAceh);
+                $namaBelakangIstri = $faker->randomElement($namaBelakangAceh);
+
+                if (str_starts_with($namaDepanIstri, 'Cut')) {
+                    $namaLengkapIstri = $namaDepanIstri . ' ' . $faker->randomElement($namaPerempuanAceh) . ' ' . $namaBelakangIstri;
+                } else {
+                    $namaLengkapIstri = $namaDepanIstri . ' ' . $namaBelakangIstri;
                 }
+
+                $nikIstri = '111806' . substr($tahunLahirIstri, -2) . $bulanLahirIstri . $hariLahirIstri . $faker->numerify('####');
+
+                // Status mutasi istri mengikuti suami, atau bisa juga sendiri
+                $statusMutasiIstri = $statusMutasiKK;
+                if ($statusMutasiKK === 'Tetap' && $faker->boolean(5)) {
+                    $statusMutasiIstri = 'Pindah'; // Istri pindah duluan (contoh: cerai)
+                }
+
+                Penduduk::create([
+                    'nik' => $nikIstri,
+                    'no_kk' => $noKk,
+                    'nama_lengkap' => $namaLengkapIstri,
+                    'jenis_kelamin' => 'P',
+                    'tempat_lahir' => $faker->randomElement($tempatLahirList),
+                    'tanggal_lahir' => $tahunLahirIstri . '-' . $bulanLahirIstri . '-' . $hariLahirIstri,
+                    'agama' => 'Islam',
+                    'pekerjaan' => 'Mengurus Rumah Tangga',
+                    'pendidikan' => $faker->randomElement(['SMA', 'SMA', 'SMP', 'SD', 'S1']),
+                    'status_perkawinan' => $statusMutasiKK === 'Meninggal' ? 'Cerai Mati' : 'Kawin',
+                    'status_keluarga' => 'Istri',
+                    'status_mutasi' => $statusMutasiIstri,
+                ]);
             }
 
-            if ($kepalaKeluargaNik) {
-                $keluarga->update(['kepala_keluarga_nik' => $kepalaKeluargaNik]);
+            // ============================================
+            // ANAK-ANAK (0-5 anak)
+            // ============================================
+            $jumlahAnak = $faker->numberBetween(0, 5);
+            $tahunLahirAnakBase = $tahunLahirSuami + $faker->numberBetween(2, 5);
+
+            for ($j = 0; $j < $jumlahAnak; $j++) {
+                $jk = $faker->randomElement(['L', 'P']);
+
+                if ($jk === 'L') {
+                    $namaDepanAnak = $faker->randomElement($namaLakiAceh);
+                } else {
+                    $namaDepanAnak = $faker->randomElement($namaPerempuanAceh);
+                }
+                $namaBelakangAnak = $namaBelakangSuami;
+
+                if (str_starts_with($namaDepanAnak, 'Cut')) {
+                    $namaLengkapAnak = $namaDepanAnak . ' ' . $faker->randomElement($namaPerempuanAceh) . ' ' . $namaBelakangAnak;
+                } else {
+                    $namaLengkapAnak = $namaDepanAnak . ' ' . $namaBelakangAnak;
+                }
+
+                $tahunAnak = $tahunLahirAnakBase + ($j * $faker->numberBetween(2, 4));
+                if ($tahunAnak > 2026) break;
+
+                $bulanAnak = str_pad($faker->numberBetween(1, 12), 2, '0', STR_PAD_LEFT);
+                $hariAnak = str_pad($faker->numberBetween(1, 28), 2, '0', STR_PAD_LEFT);
+
+                $nikAnak = '111806' . substr($tahunAnak, -2) . $bulanAnak . $hariAnak . $faker->numerify('####');
+                $usiaAnak = 2026 - $tahunAnak;
+
+                // Pekerjaan dan pendidikan berdasarkan usia
+                if ($usiaAnak < 6) {
+                    $pekerjaanAnak = 'Belum/Tidak Bekerja';
+                    $pendidikanAnak = 'Belum Sekolah';
+                } elseif ($usiaAnak < 12) {
+                    $pekerjaanAnak = 'Pelajar/Mahasiswa';
+                    $pendidikanAnak = 'SD';
+                } elseif ($usiaAnak < 15) {
+                    $pekerjaanAnak = 'Pelajar/Mahasiswa';
+                    $pendidikanAnak = 'SMP';
+                } elseif ($usiaAnak < 18) {
+                    $pekerjaanAnak = 'Pelajar/Mahasiswa';
+                    $pendidikanAnak = 'SMA';
+                } elseif ($usiaAnak < 22) {
+                    $pekerjaanAnak = 'Pelajar/Mahasiswa';
+                    $pendidikanAnak = $faker->randomElement(['SMA', 'SMK', 'D3', 'S1']);
+                } else {
+                    $pekerjaanAnak = $faker->randomElement($pekerjaanList);
+                    $pendidikanAnak = $faker->randomElement(['SMA', 'SMK', 'D3', 'S1']);
+                }
+
+                $statusPerkawinanAnak = ($usiaAnak < 20) ? 'Belum Kawin' : $faker->randomElement(['Belum Kawin', 'Kawin', 'Kawin']);
+
+                // Status mutasi anak
+                $statusMutasiAnak = $statusMutasiKK;
+                if ($statusMutasiKK === 'Tetap') {
+                    // Anak muda lebih mungkin pindah (kuliah/kerja)
+                    if ($usiaAnak >= 18 && $faker->boolean(10)) {
+                        $statusMutasiAnak = 'Pindah';
+                    }
+                    // Anak kecil bisa meninggal (sangat kecil kemungkinannya)
+                    if ($usiaAnak < 5 && $faker->boolean(1)) {
+                        $statusMutasiAnak = 'Meninggal';
+                    }
+                }
+
+                Penduduk::create([
+                    'nik' => $nikAnak,
+                    'no_kk' => $noKk,
+                    'nama_lengkap' => $namaLengkapAnak,
+                    'jenis_kelamin' => $jk,
+                    'tempat_lahir' => $faker->randomElement(['Pidie Jaya', 'Pidie Jaya', 'Meureudu', 'Banda Aceh']),
+                    'tanggal_lahir' => $tahunAnak . '-' . $bulanAnak . '-' . $hariAnak,
+                    'agama' => 'Islam',
+                    'pekerjaan' => $pekerjaanAnak,
+                    'pendidikan' => $pendidikanAnak,
+                    'status_perkawinan' => $statusPerkawinanAnak,
+                    'status_keluarga' => 'Anak',
+                    'status_mutasi' => $statusMutasiAnak,
+                ]);
             }
-        }
 
-        // 3. Informasi Publik (Berita & Pengumuman Nyata)
-        $informasi = [
-            [
-                'kategori' => 'Pengumuman',
-                'judul' => 'Rapat Koordinasi Pembangunan Saluran Irigasi Dusun Phoroh',
-                'slug' => 'rapat-koordinasi-pembangunan-saluran-irigasi-dusun-phoroh',
-                'konten' => 'Sehubungan dengan program pengembangan sektor pertanian gampong, Keuchik Gampong Udeung mengundang seluruh pemilik lahan dan warga di lingkungan Dusun Phoroh untuk menghadiri rapat koordinasi terkait rencana pembangunan saluran irigasi baru. Rapat akan dilaksanakan pada hari Minggu ini pukul 09.00 WIB bertempat di Kantor Keuchik.',
-                'is_published' => true,
-                'created_at' => Carbon::now()->subDays(2),
-            ],
-            [
-                'kategori' => 'Pengumuman',
-                'judul' => 'Penyaluran Bantuan Langsung Tunai (BLT) Tahap II Gampong Udeung',
-                'slug' => 'penyaluran-blt-tahap-ii-gampong-udeung',
-                'konten' => 'Pemerintah Gampong Udeung mengumumkan bahwa penyaluran Bantuan Langsung Tunai (BLT) Dana Desa untuk Tahap II akan diselenggarakan pada hari Kamis mendatang. Penyaluran dimulai pukul 09.00 WIB hingga selesai di Aula Kantor Keuchik. Warga penerima manfaat diwajibkan membawa Kartu Keluarga (KK) dan KTP asli serta mematuhi nomor antrean yang telah dibagikan.',
-                'is_published' => true,
-                'created_at' => Carbon::now()->subDays(4),
-            ],
-            [
-                'kategori' => 'Berita',
-                'judul' => 'Kegiatan Gotong Royong Kebersihan Lingkungan Menyambut Hari Kemerdekaan',
-                'slug' => 'kegiatan-gotong-royong-kebersihan-lingkungan-menyambut-hari-kemerdekaan',
-                'konten' => 'Dalam rangka menyambut hari kemerdekaan, warga Gampong Udeung bersama unsur perangkat desa melaksanakan aksi gotong royong massal. Fokus kebersihan difokuskan pada pembersihan parit saluran pembuangan utama gampong, pemangkasan rumput di pinggir jalan utama, serta pemasangan bendera merah putih di sepanjang perbatasan wilayah dusun.',
-                'is_published' => true,
-                'created_at' => Carbon::now()->subDays(7),
-            ],
-        ];
+            // ============================================
+            // ORANG TUA / MERTUA (35% chance)
+            // ============================================
+            if ($faker->boolean(35)) {
+                $tahunLahirOrtu = $faker->numberBetween(1935, 1965);
+                $bulanOrtu = str_pad($faker->numberBetween(1, 12), 2, '0', STR_PAD_LEFT);
+                $hariOrtu = str_pad($faker->numberBetween(1, 28), 2, '0', STR_PAD_LEFT);
 
-        foreach ($informasi as $inf) {
-            InformasiPublik::updateOrCreate(
-                ['slug' => $inf['slug']],
-                $inf
-            );
+                $namaDepanOrtu = $faker->randomElement($faker->boolean(50) ? $namaLakiAceh : $namaPerempuanAceh);
+                $namaBelakangOrtu = $faker->randomElement($namaBelakangAceh);
+
+                if (str_starts_with($namaDepanOrtu, 'Cut')) {
+                    $namaLengkapOrtu = $namaDepanOrtu . ' ' . $faker->randomElement($namaPerempuanAceh) . ' ' . $namaBelakangOrtu;
+                } else {
+                    $namaLengkapOrtu = $namaDepanOrtu . ' ' . $namaBelakangOrtu;
+                }
+
+                $nikOrtu = '111806' . substr($tahunLahirOrtu, -2) . $bulanOrtu . $hariOrtu . $faker->numerify('####');
+                $jenisKelaminOrtu = $faker->boolean(50) ? 'L' : 'P';
+
+                // Status mutasi orang tua
+                $statusMutasiOrtu = 'Tetap';
+                $usiaOrtu = 2026 - $tahunLahirOrtu;
+                if ($usiaOrtu > 70 && $faker->boolean(20)) {
+                    $statusMutasiOrtu = 'Meninggal';
+                } elseif ($faker->boolean(8)) {
+                    $statusMutasiOrtu = 'Pindah';
+                }
+
+                // Status perkawinan orang tua
+                if ($statusMutasiOrtu === 'Meninggal') {
+                    $statusPerkawinanOrtu = $faker->boolean(60) ? 'Cerai Mati' : 'Kawin';
+                } else {
+                    $statusPerkawinanOrtu = $faker->randomElement(['Kawin', 'Cerai Hidup', 'Cerai Mati']);
+                }
+
+                Penduduk::create([
+                    'nik' => $nikOrtu,
+                    'no_kk' => $noKk,
+                    'nama_lengkap' => $namaLengkapOrtu,
+                    'jenis_kelamin' => $jenisKelaminOrtu,
+                    'tempat_lahir' => $faker->randomElement($tempatLahirList),
+                    'tanggal_lahir' => $tahunLahirOrtu . '-' . $bulanOrtu . '-' . $hariOrtu,
+                    'agama' => 'Islam',
+                    'pekerjaan' => $usiaOrtu > 65 ? 'Belum/Tidak Bekerja' : $faker->randomElement($pekerjaanList),
+                    'pendidikan' => $faker->randomElement(['Tidak Sekolah', 'Tidak Sekolah', 'SD', 'SMP']),
+                    'status_perkawinan' => $statusPerkawinanOrtu,
+                    'status_keluarga' => $jenisKelaminOrtu === 'L' ? 'Ayah' : 'Ibu',
+                    'status_mutasi' => $statusMutasiOrtu,
+                ]);
+            }
+
+            // ============================================
+            // SAUDARA KANDUNG (20% chance)
+            // ============================================
+            if ($faker->boolean(20) && $statusMutasiKK === 'Tetap') {
+                $tahunLahirSodara = $faker->numberBetween(1960, 2005);
+                $bulanSodara = str_pad($faker->numberBetween(1, 12), 2, '0', STR_PAD_LEFT);
+                $hariSodara = str_pad($faker->numberBetween(1, 28), 2, '0', STR_PAD_LEFT);
+
+                $jkSodara = $faker->randomElement(['L', 'P']);
+                if ($jkSodara === 'L') {
+                    $namaSodara = $faker->randomElement($namaLakiAceh) . ' ' . $namaBelakangSuami;
+                } else {
+                    $namaSodara = $faker->randomElement($namaPerempuanAceh) . ' ' . $namaBelakangSuami;
+                }
+
+                $nikSodara = '111806' . substr($tahunLahirSodara, -2) . $bulanSodara . $hariSodara . $faker->numerify('####');
+                $usiaSodara = 2026 - $tahunLahirSodara;
+
+                $statusMutasiSodara = 'Tetap';
+                if ($usiaSodara >= 18 && $faker->boolean(12)) {
+                    $statusMutasiSodara = 'Pindah';
+                }
+
+                Penduduk::create([
+                    'nik' => $nikSodara,
+                    'no_kk' => $noKk,
+                    'nama_lengkap' => $namaSodara,
+                    'jenis_kelamin' => $jkSodara,
+                    'tempat_lahir' => $faker->randomElement($tempatLahirList),
+                    'tanggal_lahir' => $tahunLahirSodara . '-' . $bulanSodara . '-' . $hariSodara,
+                    'agama' => 'Islam',
+                    'pekerjaan' => $faker->randomElement($pekerjaanList),
+                    'pendidikan' => $faker->randomElement($pendidikanList),
+                    'status_perkawinan' => $usiaSodara < 20 ? 'Belum Kawin' : $faker->randomElement(['Kawin', 'Belum Kawin']),
+                    'status_keluarga' => 'Saudara',
+                    'status_mutasi' => $statusMutasiSodara,
+                ]);
+            }
         }
     }
 }

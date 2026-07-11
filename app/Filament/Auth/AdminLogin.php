@@ -5,6 +5,7 @@ namespace App\Filament\Auth;
 use Filament\Auth\Pages\Login;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -16,6 +17,15 @@ use Illuminate\Validation\ValidationException;
  */
 class AdminLogin extends Login
 {
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getEmailFormComponent(),
+                $this->getPasswordFormComponent(),
+            ]);
+    }
+
     /**
      * Menimpa komponen input email bawaan Filament menjadi input username.
      *

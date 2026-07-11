@@ -17,8 +17,18 @@ class PdfGeneratorService
     /**
      * Menghasilkan PDF surat untuk pengajuan yang telah disetujui.
      *
-     * Membuat QR hash, QR code, nomor surat, merender template Blade,
-     * dan menyimpan hasil PDF ke storage.
+     * Proses yang dilakukan:
+     * 1. Membuat QR hash dari data pengajuan
+     * 2. Menghasilkan QR code dalam format SVG
+     * 3. Memastikan logo gampong tersedia
+     * 4. Menghasilkan nomor surat resmi
+     * 5. Merender template Blade ke HTML
+     * 6. Mengkonversi HTML ke PDF dengan DomPDF
+     * 7. Menyimpan PDF ke storage publik
+     *
+     * @param  \App\Models\PengajuanSurat  $pengajuan  Model pengajuan surat yang akan diproses
+     * @return string  URL publik file PDF yang berhasil dibuat
+     * @throws \Exception  Jika terjadi kesalahan saat pembuatan PDF
      */
     public function generateSuratPdf(PengajuanSurat $pengajuan): string
     {
@@ -29,13 +39,15 @@ class PdfGeneratorService
 
         $this->ensureLogoDownloaded();
 
+        $nomorSurat = $this->generateNomorSurat($pengajuan);
+
         $data = [
             'pengajuan' => $pengajuan,
             'pemohon' => $pengajuan->pemohon,
             'kategori' => $pengajuan->kategori,
             'data_isian' => $pengajuan->data_isian,
             'qr_code_path' => $qrCodePath,
-            'nomor_surat' => $this->generateNomorSurat($pengajuan),
+            'nomor_surat' => $nomorSurat,
             'tanggal_surat' => now()->locale('id')->isoFormat('D MMMM YYYY'),
         ];
 
@@ -49,13 +61,21 @@ class PdfGeneratorService
         Storage::disk('public')->put($pdfPath, $pdf->output());
 
         $pdfUrl = Storage::disk('public')->url($pdfPath);
-        $pengajuan->update(['file_pdf_url' => $pdfUrl]);
+        $pengajuan->update([
+            'file_pdf_url' => $pdfUrl,
+            'nomor_surat' => $nomorSurat,
+        ]);
 
         return $pdfUrl;
     }
 
     /**
      * Menghasilkan hash SHA-256 dari data pengajuan untuk QR code.
+     *
+     * Format hash: nomor_registrasi|nik_pemohon|kode_surat|timestamp
+     *
+     * @param  \App\Models\PengajuanSurat  $pengajuan  Model pengajuan surat
+     * @return string  Hash SHA-256 untuk digunakan sebagai identifikasi unik surat
      */
     protected function generateQrHash(PengajuanSurat $pengajuan): string
     {
@@ -71,6 +91,11 @@ class PdfGeneratorService
 
     /**
      * Membuat gambar QR code dalam format SVG berdasarkan hash.
+     *
+     * QR code mengarah ke URL verifikasi: {app.url}/verifikasi/{hash}
+     *
+     * @param  string  $hash  Hash SHA-256 dari data pengajuan
+     * @return string  Path lokal file QR code SVG yang baru dibuat
      */
     protected function generateQrCode(string $hash): string
     {
@@ -91,7 +116,10 @@ class PdfGeneratorService
     /**
      * Memastikan logo gampong tersedia di direktori publik.
      *
-     * Mengunduh logo dari Wikimedia jika belum ada di storage lokal.
+     * Mengunduh logo dari Wikimedia Commons jika belum ada di storage lokal.
+     * Logo disimpan di public/images/logo-gampong.png.
+     *
+     * @return void
      */
     protected function ensureLogoDownloaded(): void
     {
@@ -122,8 +150,11 @@ class PdfGeneratorService
     /**
      * Menghasilkan nomor surat resmi berdasarkan format desa.
      *
-     * Format: {kode_surat}/{counter}/GAMPONG-UDEUNG/{bulan}/{tahun}.
-     * Counter dihitung dari jumlah pengajuan tahun berjalan per kategori.
+     * Format nomor surat: {kode_surat}/{counter}/GAMPONG-UDEUNG/{bulan}/{tahun}
+     * Counter dihitung dari jumlah pengajuan tahun berjalan per kategori surat.
+     *
+     * @param  \App\Models\PengajuanSurat  $pengajuan  Model pengajuan surat
+     * @return string  Nomor surat resmi dalam format yang ditentukan
      */
     protected function generateNomorSurat(PengajuanSurat $pengajuan): string
     {

@@ -35,7 +35,7 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->enum('user_type', ['admin', 'warga']);
+            $table->enum('user_type', ['admin', 'warga', 'public']);
             $table->string('user_id', 50)->nullable();
             $table->string('tindakan', 50);
             $table->string('nama_tabel', 50);

@@ -148,6 +148,10 @@
             .perf-sub {
                 font-size: 0.75rem;
                 color: #888;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 140px;
             }
             .perf-percentage {
                 font-size: 1.25rem;

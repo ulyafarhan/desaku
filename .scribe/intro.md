@@ -1,68 +1,41 @@
-# Introduction
+# Pendahuluan
 
-API Documentation untuk Sistem Informasi Gampong (SIG) Udeung - Gampong Udeung, Kec. Bandar Baru, Kab. Pidie Jaya, Provinsi Aceh
+Dokumentasi ini menyediakan semua informasi yang Anda butuhkan untuk bekerja dengan API SIG-Udeung.
 
-<aside>
-    <strong>Base URL</strong>: <code>http://localhost</code>
-</aside>
+**Base URL:** `{base_url}/api/v1`
 
-    Dokumentasi ini menyediakan semua informasi yang Anda butuhkan untuk bekerja dengan API SIG-Udeung.
+## Tentang SIG-Udeung
 
-    ## Base URL
-    ```
-    https://your-domain.com/api/v1
-    ```
+SIG-Udeung (Sistem Informasi Gampong Udeung) adalah platform digital administrasi desa untuk Gampong Udeung, Kecamatan Bandar Baru, Kabupaten Pidie Jaya, Provinsi Aceh.
 
-    ## Authentication
-    API ini menggunakan Laravel Sanctum untuk autentikasi. Sebagian besar endpoint memerlukan token autentikasi.
+## Endpoint Overview
 
-    ### Untuk Warga
-    Login menggunakan NIK (16 digit):
-    ```bash
-    POST /auth/login/warga
-    {
-      "nik": "1234567890123456"
-    }
-    ```
-
-    ### Untuk Admin
-    Login menggunakan username dan password:
-    ```bash
-    POST /auth/login/admin
-    {
-      "username": "operator",
-      "password": "password123"
-    }
-    ```
-
-    Setelah login berhasil, Anda akan menerima token yang harus disertakan di header setiap request:
-    ```
-    Authorization: Bearer {token}
-    ```
-
-    ## Response Format
-    Semua response menggunakan format JSON dengan struktur standar:
-
-    **Success Response:**
-    ```json
-    {
-      "message": "Success message",
-      "data": { ... }
-    }
-    ```
-
-    **Error Response:**
-    ```json
-    {
-      "message": "Error message",
-      "errors": {
-        "field": ["Error detail"]
-      }
-    }
-    ```
-
-    ## Rate Limiting
-    API ini menggunakan rate limiting standar Laravel (60 requests per menit per IP).
-
-    <aside>Kode contoh untuk bekerja dengan API tersedia di area gelap di sebelah kanan (atau sebagai bagian dari konten di mobile).</aside>
-
+| Metode | Endpoint | Autentikasi | Deskripsi |
+|--------|----------|-------------|-----------|
+| POST | `/auth/login/warga` | Tidak | Login warga dengan NIK |
+| POST | `/auth/login/admin` | Tidak | Login administrator |
+| POST | `/auth/logout` | Ya | Logout pengguna |
+| GET | `/auth/profile` | Ya | Ambil profil pengguna |
+| POST | `/auth/bind-telegram` | Ya | Hubungkan akun Telegram |
+| GET | `/informasi` | Tidak | Daftar informasi publik |
+| GET | `/informasi/{slug}` | Tidak | Detail informasi |
+| GET | `/statistik/demografi` | Tidak | Statistik demografi |
+| GET | `/statistik/layanan` | Tidak | Statistik layanan |
+| GET | `/verifikasi/{hash}` | Tidak | Verifikasi dokumen |
+| POST | `/telegram/webhook` | Tidak | Webhook Telegram |
+| GET | `/surat/kategori` | Ya | Daftar kategori surat |
+| POST | `/surat/pengajuan` | Ya | Ajukan surat |
+| GET | `/surat/pengajuan` | Ya | Riwayat pengajuan |
+| POST | `/mutasi` | Ya | Ajukan mutasi |
+| GET | `/mutasi` | Ya | Riwayat mutasi |
+| GET | `/admin/surat/pengajuan` | Admin | Kelola pengajuan surat |
+| POST | `/admin/surat/pengajuan/{id}/approve` | Admin | Setujui pengajuan |
+| POST | `/admin/surat/pengajuan/{id}/reject` | Admin | Tolak pengajuan |
+| GET | `/admin/mutasi` | Admin | Kelola mutasi |
+| POST | `/admin/mutasi/{id}/approve` | Admin | Setujui mutasi |
+| POST | `/admin/mutasi/{id}/reject` | Admin | Tolak mutasi |
+| GET | `/admin/informasi` | Admin | Kelola informasi |
+| POST | `/admin/informasi` | Admin | Buat informasi baru |
+| PUT | `/admin/informasi/{id}` | Admin | Perbarui informasi |
+| DELETE | `/admin/informasi/{id}` | Admin | Hapus informasi |
+| POST | `/admin/statistik/clear-cache` | Admin | Hapus cache statistik |

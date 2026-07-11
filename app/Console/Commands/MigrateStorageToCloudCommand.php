@@ -20,15 +20,11 @@ class MigrateStorageToCloudCommand extends Command
 {
     /**
      * Nama dan tanda tangan perintah yang akan didaftarkan ke Artisan.
-     *
-     * @var string
      */
     protected $signature = 'storage:migrate-to-cloud';
 
     /**
      * Deskripsi singkat perintah yang ditampilkan saat menjalankan `php artisan list`.
-     *
-     * @var string
      */
     protected $description = 'Migrate all local storage uploaded files to cloud storage (S3/R2)';
 
@@ -41,7 +37,7 @@ class MigrateStorageToCloudCommand extends Command
      * 3. Jika path masih berupa file lokal (bukan URL http), panggil method migrateFile() untuk memindahkannya ke S3.
      * 4. Catat jumlah file yang berhasil dipindahkan, dilewati, dan gagal.
      *
-     * @return int Kode keluaran Artisan (SUCCESS / FAILURE).
+     * @return int  Command::SUCCESS atau Command::FAILURE
      */
     public function handle(): int
     {

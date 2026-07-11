@@ -157,7 +157,7 @@ const getFileUrl = (path) => {
                     </div>
                 </div>
             </div>
-            <div class="editorial-card empty-card text-center py-10">
+            <div v-if="!recentPengajuan.length" class="editorial-card empty-card text-center py-10">
                 <svg class="mx-auto size-12 text-secondary mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 <p class="body-md text-secondary font-medium">Belum ada pengajuan surat.</p>
                 <button @click="emit('set-active-tab', 'pengajuan')" class="btn-secondary mt-4">Ajukan sekarang</button>

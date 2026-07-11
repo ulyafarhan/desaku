@@ -10,11 +10,21 @@ use Inertia\Response;
 
 /**
  * Controller untuk mengelola data profil personal warga.
+ *
+ * Menyediakan layanan tampilan dan pembaruan biodata warga
+ * termasuk berkas penunjang seperti foto KTP, KK, dan foto profil.
  */
 class CitizenProfileController extends Controller
 {
     /**
      * Menampilkan detail profil warga dan tingkat kelengkapan datanya.
+     *
+     * Mengambil data warga beserta relasi keluarga, menghitung persentase
+     * kelengkapan field biodata yang wajib diisi, dan menampilkannya
+     * di halaman profil.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang mengandung data warga terautentikasi
+     * @return \Inertia\Response  Halaman profil warga dengan data biodata dan persentase kelengkapan
      */
     public function show(Request $request): Response
     {
@@ -33,6 +43,13 @@ class CitizenProfileController extends Controller
 
     /**
      * Memperbarui biodata warga beserta berkas penunjang (KTP, KK, Foto Profil).
+     *
+     * Memvalidasi input, memproses unggahan file jika ada,
+     * menyimpan berkas ke storage publik, dan memperbarui data warga.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang berisi field biodata dan file berkas
+     * @return \Illuminate\Http\RedirectResponse  Redirect kembali dengan pesan sukses
+     * @throws \Illuminate\Validation\ValidationException  Jika validasi input gagal
      */
     public function update(Request $request): RedirectResponse
     {
@@ -42,8 +59,8 @@ class CitizenProfileController extends Controller
             'status_perkawinan' => ['nullable', 'string', 'max:20'],
             'telegram_chat_id' => ['nullable', 'string', 'max:50'],
             'foto_profil' => ['nullable', 'image', 'max:2048'],
-            'foto_ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
-            'foto_kk' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'foto_ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,webp', 'max:2048'],
+            'foto_kk' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,webp', 'max:2048'],
         ]);
 
         $warga = $request->user('penduduk');

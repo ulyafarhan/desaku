@@ -7,16 +7,27 @@ use App\Models\InformasiPublik;
 use App\Models\KategoriSurat;
 use App\Models\PengajuanSurat;
 use App\Services\StatistikService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
  * Controller untuk mengelola halaman publik dan layanan portal umum.
+ *
+ * Menangani tampilan beranda, profil gampong, informasi publik,
+ * verifikasi surat, statistik, dan aspirasi masyarakat.
  */
 class PublicPortalController extends Controller
 {
     /**
      * Menyajikan halaman beranda publik dengan statistik gampong dan berita terbaru.
+     *
+     * Menampilkan ringkasan data demografi, layanan publik yang tersedia,
+     * berita/pengumuman terbaru, dan daftar kategori surat yang aktif.
+     *
+     * @param  \App\Services\StatistikService  $statistik  Service untuk mengambil data statistik gampong
+     * @return \Inertia\Response  Halaman beranda publik
      */
     public function home(StatistikService $statistik): Response
     {
@@ -39,6 +50,11 @@ class PublicPortalController extends Controller
 
     /**
      * Menyajikan halaman profil gampong dan daftar perangkat desa.
+     *
+     * Mengambil data nama dan foto perangkat desa (Keuchik, Sekretaris Desa,
+     * Operator Layanan) dari pengaturan frontend dan gampong.
+     *
+     * @return \Inertia\Response  Halaman profil gampong
      */
     public function profile(): Response
     {
@@ -79,6 +95,11 @@ class PublicPortalController extends Controller
 
     /**
      * Menyajikan halaman indeks kumpulan informasi publik/berita/pengumuman gampong.
+ *
+     * Menampilkan daftar informasi publik yang sudah dipublikasikan dengan
+     * mendukung filter berdasarkan kategori dan pencarian berdasarkan judul/konten.
+     *
+     * @return \Inertia\Response  Halaman indeks informasi publik dengan data terpaginasi
      */
     public function information(): Response
     {
@@ -112,6 +133,10 @@ class PublicPortalController extends Controller
 
     /**
      * Menyajikan detail dari suatu berita/pengumuman publik berdasarkan slug.
+     *
+     * @param  string  $slug  Slug unik dari informasi publik yang ingin ditampilkan
+     * @return \Inertia\Response  Halaman detail informasi publik
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException  Jika informasi dengan slug tidak ditemukan
      */
     public function informationShow(string $slug): Response
     {
@@ -126,6 +151,10 @@ class PublicPortalController extends Controller
 
     /**
      * Menyajikan halaman beranda verifikasi keabsahan surat lewat QR Code.
+     *
+     * Menampilkan form kosong untuk memulai proses verifikasi dokumen surat.
+     *
+     * @return \Inertia\Response  Halaman verifikasi surat
      */
     public function verifyIndex(): Response
     {
@@ -136,12 +165,22 @@ class PublicPortalController extends Controller
 
     /**
      * Memproses verifikasi detail data surat berdasarkan hash tanda tangan elektronik.
+     *
+     * Mencari pengajuan surat berdasarkan qr_hash, nomor registrasi, atau nomor surat.
+     * Mengembalikan data validitas beserta detail surat jika ditemukan dan statusnya Selesai.
+     *
+     * @param  string  $hash  Hash QR code, nomor registrasi, atau nomor surat yang akan diverifikasi
+     * @return \Inertia\Response  Halaman verifikasi dengan hasil pencarian surat
      */
     public function verify(string $hash): Response
     {
         $pengajuan = PengajuanSurat::query()
             ->with(['kategori:id,nama_surat', 'pemohon:nik,nama_lengkap', 'verifikator:id,username'])
-            ->where('qr_hash', $hash)
+            ->where(function ($query) use ($hash) {
+                $query->where('qr_hash', $hash)
+                      ->orWhere('nomor_registrasi', $hash)
+                      ->orWhere('nomor_surat', $hash);
+            })
             ->first();
 
         return Inertia::render('Public/Verify', [
@@ -165,6 +204,12 @@ class PublicPortalController extends Controller
 
     /**
      * Menyajikan halaman visualisasi data demografi dan statistik layanan gampong.
+     *
+     * Menampilkan grafik dan ringkasan data demografi serta statistik
+     * penggunaan layanan publik di gampong.
+     *
+     * @param  \App\Services\StatistikService  $statistik  Service untuk mengambil data statistik gampong
+     * @return \Inertia\Response  Halaman statistik gampong
      */
     public function statistik(StatistikService $statistik): Response
     {
@@ -172,5 +217,30 @@ class PublicPortalController extends Controller
             'demografi' => $statistik->getDemografi(),
             'layanan' => $statistik->getLayanan(),
         ]);
+    }
+
+    /**
+     * Menyimpan aspirasi dari pengunjung portal publik.
+     *
+     * Menerima pesan aspirasi dari pengunjung yang tidak terautentikasi,
+     * mencatatnya ke dalam audit log, dan mengembalikan pesan sukses.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang berisi field 'pesan'
+     * @return \Illuminate\Http\RedirectResponse  Redirect kembali dengan pesan sukses
+     * @throws \Illuminate\Validation\ValidationException  Jika pesan tidak valid atau melebihi batas karakter
+     */
+    public function storeAspirasi(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'pesan' => 'required|string|max:1000',
+        ]);
+
+        \App\Models\AuditLog::log('public', request()->ip(), 'aspirasi', 'aspirasi', null, null, [
+            'pesan' => $request->pesan,
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return back()->with('success', 'Aspirasi terkirim. Terima kasih!');
     }
 }

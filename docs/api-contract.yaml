@@ -1,12 +1,24 @@
 openapi: 3.0.3
 info:
-  title: API Desaku - Layanan Mandiri Digital Gampong
-  description: Dokumentasi resmi API Desaku V1 dalam Bahasa Indonesia. Mencakup modul Autentikasi, Informasi Publik, Statistik Demografi, Verifikasi Dokumen, Layanan Surat Mandiri, Mutasi Penduduk, dan Administrasi Gampong.
+  title: API SIG-Udeung - Sistem Informasi Gampong Udeung
+  description: |
+    Dokumentasi resmi API SIG-Udeung V1 dalam Bahasa Indonesia.
+    Mencakup modul Autentikasi, Informasi Publik, Statistik Demografi,
+    Verifikasi Dokumen, Layanan Surat Mandiri, Mutasi Penduduk,
+    dan Administrasi Gampong.
+
+    Total endpoint: 29 (8 publik, 2 terotentikasi, 9 warga, 10 admin)
   version: 1.0.0
+
 servers:
   - url: /api/v1
     description: Server Lokal / Relatif
+
 paths:
+  # ============================================
+  # PUBLIC ROUTES (8 endpoint)
+  # ============================================
+
   /auth/login/warga:
     post:
       summary: Login Warga
@@ -51,6 +63,8 @@ paths:
                     example: "1|abcdef..."
         '422':
           description: Validasi gagal (NIK/No KK tidak terdaftar atau tidak aktif)
+        '429':
+          description: Terlalu banyak percobaan login (rate limit 5/1 menit)
 
   /auth/login/admin:
     post:
@@ -79,56 +93,8 @@ paths:
           description: Login berhasil
         '422':
           description: Username atau password salah
-
-  /auth/logout:
-    post:
-      summary: Logout Pengguna
-      description: Menghapus token akses saat ini (memerlukan token Bearer).
-      tags:
-        - Autentikasi
-      security:
-        - SanctumAuth: []
-      responses:
-        '200':
-          description: Logout berhasil
-
-  /auth/profile:
-    get:
-      summary: Profil Pengguna
-      description: Mengambil data detail profil pengguna yang saat ini sedang login.
-      tags:
-        - Autentikasi
-      security:
-        - SanctumAuth: []
-      responses:
-        '200':
-          description: Data profil berhasil diambil
-
-  /auth/bind-telegram:
-    post:
-      summary: Hubungkan Telegram
-      description: Menghubungkan akun warga dengan Telegram Chat ID untuk menerima notifikasi status pengajuan surat atau mutasi.
-      tags:
-        - Autentikasi
-      security:
-        - SanctumAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - telegram_chat_id
-              properties:
-                telegram_chat_id:
-                  type: string
-                  example: "123456789"
-      responses:
-        '200':
-          description: Telegram berhasil terhubung
-        '403':
-          description: Hanya warga yang dapat menghubungkan Telegram
+        '429':
+          description: Terlalu banyak percobaan login (rate limit 5/1 menit)
 
   /informasi:
     get:
@@ -281,6 +247,64 @@ paths:
         '200':
           description: Webhook berhasil diterima
 
+  # ============================================
+  # PROTECTED ROUTES - Shared Auth (2 endpoint)
+  # ============================================
+
+  /auth/logout:
+    post:
+      summary: Logout Pengguna
+      description: Menghapus token akses saat ini (memerlukan token Bearer).
+      tags:
+        - Autentikasi
+      security:
+        - SanctumAuth: []
+      responses:
+        '200':
+          description: Logout berhasil
+
+  /auth/profile:
+    get:
+      summary: Profil Pengguna
+      description: Mengambil data detail profil pengguna yang saat ini sedang login.
+      tags:
+        - Autentikasi
+      security:
+        - SanctumAuth: []
+      responses:
+        '200':
+          description: Data profil berhasil diambil
+
+  # ============================================
+  # PROTECTED ROUTES - Warga (9 endpoint)
+  # ============================================
+
+  /auth/bind-telegram:
+    post:
+      summary: Hubungkan Telegram
+      description: Menghubungkan akun warga dengan Telegram Chat ID untuk menerima notifikasi status pengajuan surat atau mutasi.
+      tags:
+        - Autentikasi
+      security:
+        - SanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - telegram_chat_id
+              properties:
+                telegram_chat_id:
+                  type: string
+                  example: "123456789"
+      responses:
+        '200':
+          description: Telegram berhasil terhubung
+        '403':
+          description: Hanya warga yang dapat menghubungkan Telegram
+
   /surat/kategori:
     get:
       summary: Daftar Kategori Surat
@@ -424,6 +448,10 @@ paths:
       responses:
         '201':
           description: Pengajuan mutasi berhasil dibuat
+
+  # ============================================
+  # PROTECTED ROUTES - Admin Only (10 endpoint)
+  # ============================================
 
   /admin/surat/pengajuan:
     get:
@@ -675,5 +703,8 @@ components:
     SanctumAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
-      description: Gunakan token akses pribadi Bearer token.
+      bearerFormat: Token
+      description: |
+        Token autentikasi Bearer dari Laravel Sanctum.
+        Diperoleh dari endpoint /auth/login/warga atau /auth/login/admin.
+        Sertakan header: Authorization: Bearer {token}

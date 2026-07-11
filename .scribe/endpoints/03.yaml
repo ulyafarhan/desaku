@@ -1,0 +1,54 @@
+name: 'Integrasi Telegram'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/telegram/webhook
+    metadata:
+      custom: []
+      groupName: 'Integrasi Telegram'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Endpoint utama penerima payload webhook Telegram.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "ok": true
+          }
+        headers: []
+        description: ''
+    responseFields:
+      ok:
+        custom: []
+        name: ok
+        description: 'Status penerimaan webhook.'
+        required: false
+        example: null
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth: []
+    controller: null
+    method: null
+    route: null

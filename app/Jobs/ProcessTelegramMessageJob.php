@@ -18,12 +18,15 @@ class ProcessTelegramMessageJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var int Jumlah maksimum percobaan jika pemrosesan gagal.
+     * Jumlah maksimum percobaan jika pemrosesan gagal.
      */
     public int $tries = 2;
 
     /**
      * Inisialisasi Job dengan ID Chat Telegram pengirim dan isi teks pesan.
+     *
+     * @param  string  $chatId  ID chat Telegram pengirim pesan
+     * @param  string  $text  Isi teks pesan yang diterima
      */
     public function __construct(
         public string $chatId,
@@ -32,6 +35,17 @@ class ProcessTelegramMessageJob implements ShouldQueue
 
     /**
      * Mengeksekusi penanganan pesan masuk menggunakan kecerdasan buatan (AI) dan membalas pengirim.
+     *
+     * Alur proses:
+     * 1. Mengambil konteks dari knowledge base berdasarkan pesan
+     * 2. Menghasilkan respons AI dengan konteks RAG
+     * 3. Mengcache respons untuk pertanyaan serupa
+     * 4. Mengirim balasan ke pengirim via Telegram
+     *
+     * @param  \App\Services\Contracts\AiProviderInterface  $ai  Provider AI untuk menghasilkan respons
+     * @param  \App\Services\TelegramService  $telegram  Layanan Telegram untuk mengirim balasan
+     * @param  \App\Services\TelegramKnowledgeService  $knowledge  Layanan knowledge base untuk RAG
+     * @return void
      */
     public function handle(
         AiProviderInterface $ai, 

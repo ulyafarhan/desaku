@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * Controller untuk menangani Webhook API Telegram (Bot virtual SIG-Udeung).
+ *
+ * @group Integrasi Telegram
  */
 class TelegramWebhookController extends Controller
 {
@@ -25,6 +27,20 @@ class TelegramWebhookController extends Controller
 
     /**
      * Endpoint utama penerima payload webhook Telegram.
+     *
+     * @unauthenticated
+     *
+     * @bodyParameter message object Data pesan dari Telegram yang berisi chat id dan teks.
+     * @bodyParameter message.chat object Informasi chat pengguna.
+     * @bodyParameter message.chat.id int ID chat Telegram pengguna.
+     * @bodyParameter message.text string Teks pesan dari pengguna.
+     * @bodyParameter callback_query object Data callback query dari tombol inline (opsional).
+     *
+     * @responseField ok boolean Status penerimaan webhook.
+     *
+     * @response {
+     *   "ok": true
+     * }
      */
     public function handle(Request $request)
     {
@@ -46,8 +62,13 @@ class TelegramWebhookController extends Controller
     /**
      * Memproses pesan teks dari pengguna Telegram.
      *
-     * Menangani perintah /start, /bind, menjawab dari basis pengetahuan statis,
-     * cache, dan AI dengan pembatasan kuota harian.
+     * Menangani perintah /start untuk pesan selamat datang, perintah /bind untuk
+     * menghubungkan akun Telegram dengan NIK warga, pencarian jawaban dari basis
+     * pengetahuan statis, caching respons, dan pemrosesan AI dengan pembatasan
+     * kuota harian maksimal 10 pertanyaan per pengguna per hari.
+     *
+     * @param  array  $message  Array data pesan dari Telegram yang berisi chat id dan teks pesan
+     * @return void
      */
     protected function handleMessage(array $message)
     {
@@ -120,6 +141,13 @@ class TelegramWebhookController extends Controller
 
     /**
      * Memproses callback query dari tombol inline Telegram.
+     *
+     * Metode ini menangani callback query yang dikirim oleh pengguna ketika
+     * menekan tombol inline pada pesan bot. Saat ini hanya mengirimkan
+     * konfirmasi callback yang diterima.
+     *
+     * @param  array  $callbackQuery  Array data callback query dari Telegram yang berisi chat id dan data callback
+     * @return void
      */
     protected function handleCallbackQuery(array $callbackQuery)
     {

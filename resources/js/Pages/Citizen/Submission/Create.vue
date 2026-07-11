@@ -256,7 +256,7 @@ const getInitials = (name) => {
                                 <FormInput
                                     :id="field.field"
                                     v-model="form.data_isian[field.field]"
-                                    :type="field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'"
+                                    :type="field.type === 'number' ? (field.label.includes('Rp') ? 'currency' : 'number') : field.type === 'date' ? 'date' : 'text'"
                                     :label="field.label"
                                     :required="field.required"
                                     :error="form.errors[`data_isian.${field.field}`]"
@@ -308,7 +308,7 @@ const getInitials = (name) => {
                             <div v-else class="upload-dropzone">
                                 <svg class="size-8 text-secondary mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                 <span class="label-sm text-neutral font-medium">Seret atau Pilih Berkas {{ document }}</span>
-                                <p class="body-sm text-secondary mt-0.5">Format: JPG, PNG, PDF (Maks. 2MB)</p>
+                                <p class="body-sm text-secondary mt-0.5">Format: JPG, PNG, PDF, WebP (Maks. 2MB)</p>
                                 <label class="btn-secondary mt-3 cursor-pointer inline-block">
                                     Pilih File
                                     <input type="file" @change="(e) => handleFileSelect(e, document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))" class="hidden" accept="image/*,application/pdf" />

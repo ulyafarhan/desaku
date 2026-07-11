@@ -184,10 +184,14 @@
         <p><strong>Keuchik Gampong {{ \App\Models\PengaturanGampong::get('nama_gampong', 'Udeung') }}</strong></p>
         
         @php
+            $ttdPath = public_path('images/signature.png');
             $stempelPath = public_path('images/stempel.png');
         @endphp
+        @if(file_exists($ttdPath))
+            <img src="{{ $ttdPath }}" style="position: absolute; left: -60px; top: 10px; width: 500px; height: auto; transform: rotate(-5deg);" alt="Tanda Tangan">
+        @endif
         @if(file_exists($stempelPath))
-            <img src="{{ $stempelPath }}" style="position: absolute; left: -45px; top: 15px; width: 130px; height: auto; opacity: 0.85;" alt="Stempel">
+            <img src="{{ $stempelPath }}" style="position: absolute; left: -65px; top: -15px; width: 190px; height: auto; opacity: 0.85;" alt="Stempel">
         @endif
 
         <br><br><br>

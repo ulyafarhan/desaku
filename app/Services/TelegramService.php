@@ -39,6 +39,11 @@ class TelegramService
      * Mengirim pesan teks ke chat Telegram.
      *
      * Mendukung parse mode HTML dan inline keyboard.
+     *
+     * @param  string  $chatId  ID chat tujuan di Telegram (bisa berupa user ID atau group ID)
+     * @param  string  $message  Isi pesan yang akan dikirim, mendukung format HTML
+     * @param  array|null  $keyboard  Array inline keyboard opsional untuk disertakan dalam pesan
+     * @return bool  true jika pengiriman berhasil, false jika gagal atau token tidak terkonfigurasi
      */
     public function sendMessage(string $chatId, string $message, ?array $keyboard = null): bool
     {
@@ -48,7 +53,11 @@ class TelegramService
                 return false;
             }
 
-            $message = $this->convertMarkdownToHtml($message);
+            $message = str_replace('\n', "\n", $message);
+
+            if ($message === strip_tags($message)) {
+                $message = $this->convertMarkdownToHtml($message);
+            }
 
             $payload = [
                 'chat_id' => $chatId,
@@ -76,6 +85,11 @@ class TelegramService
 
     /**
      * Mengirim foto ke chat Telegram dengan caption.
+     *
+     * @param  string  $chatId  ID chat tujuan di Telegram
+     * @param  string  $photoUrl  URL gambar yang akan dikirim sebagai foto
+     * @param  string  $caption  Teks caption yang menyertai foto
+     * @return bool  true jika pengiriman berhasil, false jika gagal
      */
     public function sendPhoto(string $chatId, string $photoUrl, string $caption): bool
     {
@@ -110,6 +124,11 @@ class TelegramService
      * Mengirim dokumen/file ke chat Telegram.
      *
      * Menggunakan multipart form-data untuk upload file.
+     *
+     * @param  string  $chatId  ID chat tujuan di Telegram
+     * @param  string  $filePath  Path lokal file yang akan dikirim (harus dalam format yang didukung Telegram)
+     * @param  string  $caption  Teks caption opsional yang menyertai dokumen (default: string kosong)
+     * @return bool  true jika pengiriman berhasil, false jika gagal
      */
     public function sendDocument(string $chatId, string $filePath, string $caption = ''): bool
     {
@@ -140,7 +159,11 @@ class TelegramService
     /**
      * Mengirim pesan ke banyak chat secara bertahap.
      *
-     * Memberi jeda 50ms antar pengiriman untuk menghindari rate limit.
+     * Memberi jeda 50ms antar pengiriman untuk menghindari rate limit Telegram.
+     *
+     * @param  array  $chatIds  Array berisi ID-ID chat Telegram tujuan broadcast
+     * @param  string  $message  Isi pesan yang akan dikirim ke semua chat
+     * @return array  Assoc array dengan kunci 'success' (jumlah berhasil) dan 'failed' (jumlah gagal)
      */
     public function broadcast(array $chatIds, string $message): array
     {
@@ -164,6 +187,14 @@ class TelegramService
 
     /**
      * Mengirim notifikasi perubahan status pengajuan surat ke warga.
+     *
+     * Mencari data penduduk berdasarkan NIK dan mengirim pesan status ke chat Telegram warga.
+     *
+     * @param  string  $nik  NIK pemohon untuk mencari data penduduk
+     * @param  string  $status  Status baru pengajuan (Pending, Diproses, Disetujui, Ditolak, Selesai)
+     * @param  string  $nomorRegistrasi  Nomor registrasi pengajuan surat
+     * @param  string|null  $catatan  Catatan tambahan opsional untuk disertakan dalam notifikasi
+     * @return void
      */
     public function notifyPengajuanStatus(string $nik, string $status, string $nomorRegistrasi, ?string $catatan = null): void
     {
@@ -194,6 +225,11 @@ class TelegramService
 
     /**
      * Mengirim notifikasi perubahan status mutasi kependudukan ke warga.
+     *
+     * @param  string  $nik  NIK penduduk yang mengajukan mutasi
+     * @param  string  $jenisMutasi  Jenis mutasi yang dilakukan (Kelahiran, Kematian, Kedatangan, Kepindahan)
+     * @param  string  $status  Status verifikasi mutasi (Disetujui, Ditolak)
+     * @return void
      */
     public function notifyMutasiStatus(string $nik, string $jenisMutasi, string $status): void
     {
@@ -214,6 +250,11 @@ class TelegramService
 
     /**
      * Meng-escape karakter HTML untuk keamanan output.
+     *
+     * Menggunakan htmlspecialchars dengan flag ENT_QUOTES dan ENT_SUBSTITUTE untuk mencegah XSS.
+     *
+     * @param  string  $value  Nilai string yang akan di-escape
+     * @return string  String yang sudah aman dari karakter HTML berbahaya
      */
     protected function escapeHtml(string $value): string
     {
@@ -222,6 +263,9 @@ class TelegramService
 
     /**
      * Mengatur webhook Telegram ke URL yang ditentukan.
+     *
+     * @param  string  $url  URL endpoint yang akan didaftarkan sebagai webhook Telegram
+     * @return bool  true jika webhook berhasil diatur, false jika gagal
      */
     public function setWebhook(string $url): bool
     {
@@ -240,6 +284,8 @@ class TelegramService
 
     /**
      * Mendapatkan informasi bot dari API Telegram.
+     *
+     * @return array|null  Array berisi informasi bot (first_name, username, id) atau null jika gagal
      */
     public function getMe(): ?array
     {
@@ -259,7 +305,10 @@ class TelegramService
     /**
      * Mengonversi sintaks Markdown sederhana ke HTML untuk Telegram.
      *
-     * Menangani heading, bold, italic, dan list item.
+     * Menangani heading (#, ##, ###), bold (**), italic (*), dan list item (*, -).
+     *
+     * @param  string  $text  Teks dalam format Markdown yang akan dikonversi
+     * @return string  Teks dalam format HTML yang kompatibel dengan Telegram
      */
     protected function convertMarkdownToHtml(string $text): string
     {

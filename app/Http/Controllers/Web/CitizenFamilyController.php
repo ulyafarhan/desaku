@@ -11,11 +11,21 @@ use Inertia\Response;
 
 /**
  * Controller untuk mengelola data anggota keluarga (Kartu Keluarga).
+ *
+ * Menyediakan layanan untuk menampilkan daftar anggota keluarga
+ * dan memperbarui informasi profil anggota tertentu oleh Kepala Keluarga.
  */
 class CitizenFamilyController extends Controller
 {
     /**
      * Menampilkan daftar anggota keluarga yang terdaftar dalam KK yang sama.
+     *
+     * Mengambil semua penduduk aktif yang memiliki nomor KK yang sama,
+     * diurutkan berdasarkan status keluarga (Kepala Keluarga, Istri, Anak, lainnya).
+     * Menentukan apakah pengguna saat ini adalah kepala keluarga.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang mengandung data warga terautentikasi
+     * @return \Inertia\Response  Halaman daftar anggota keluarga
      */
     public function index(Request $request): Response
     {
@@ -54,6 +64,16 @@ class CitizenFamilyController extends Controller
 
     /**
      * Memperbarui informasi profil anggota keluarga tertentu (Hanya boleh diakses Kepala Keluarga).
+     *
+     * Memeriksa apakah pengguna adalah kepala keluarga, memvalidasi NIK anggota
+     * dalam KK yang sama, lalu memperbarui field yang diizinkan
+     * (pendidikan, pekerjaan, status perkawinan).
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang berisi field yang akan diperbarui
+     * @param  string  $nik  NIK anggota keluarga yang akan diperbarui datanya
+     * @return \Illuminate\Http\RedirectResponse  Redirect kembali dengan pesan sukses
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpNotFoundException  Jika anggota dengan NIK tidak ditemukan dalam KK
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException  Jika pengguna bukan kepala keluarga
      */
     public function update(Request $request, string $nik): RedirectResponse
     {

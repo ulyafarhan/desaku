@@ -15,22 +15,21 @@ class ProcessBroadcastQueue extends Command
 {
     /**
      * Nama dan tanda tangan perintah Artisan.
-     *
-     * @var string
      */
     protected $signature = 'telegram:process-broadcast';
 
     /**
      * Deskripsi singkat perintah Artisan.
-     *
-     * @var string
      */
     protected $description = 'Process pending Telegram broadcast queue';
 
     /**
      * Eksekusi utama perintah untuk memicu pengiriman pesan siaran terjadwal.
      *
-     * @return int
+     * Mengambil semua broadcast yang statusnya 'Ready' dari database,
+     * lalu mendispatch ke queue untuk diproses secara asinkronus.
+     *
+     * @return int  Command::SUCCESS
      */
     public function handle(): int
     {

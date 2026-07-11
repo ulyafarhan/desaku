@@ -1,0 +1,454 @@
+name: 'Statistik & Verifikasi'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/statistik/demografi
+    metadata:
+      custom: []
+      groupName: 'Statistik & Verifikasi'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mengambil rangkuman data demografi kependudukan gampong.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "total_penduduk": 2500,
+              "laki_laki": 1250,
+              "perempuan": 1250,
+              "kelompok_usia": [
+                { "kelompok": "0-14", "jumlah": 600 },
+                { "kelompok": "15-64", "jumlah": 1700 },
+                { "kelompok": "65+", "jumlah": 200 }
+              ]
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      data:
+        custom: []
+        name: data
+        description: 'Data statistik demografi kependudukan.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.total_penduduk:
+        custom: []
+        name: data.total_penduduk
+        description: 'Total jumlah penduduk.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.laki_laki:
+        custom: []
+        name: data.laki_laki
+        description: 'Jumlah penduduk laki-laki.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.perempuan:
+        custom: []
+        name: data.perempuan
+        description: 'Jumlah penduduk perempuan.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.kelompok_usia:
+        custom: []
+        name: data.kelompok_usia
+        description: 'Distribusi penduduk berdasarkan kelompok usia.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/statistik/layanan
+    metadata:
+      custom: []
+      groupName: 'Statistik & Verifikasi'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mengambil rangkuman data statistik layanan administrasi persuratan.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "total_pengajuan": 150,
+              "menunggu": 10,
+              "disetujui": 50,
+              "ditolak": 5,
+              "selesai": 85
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      data:
+        custom: []
+        name: data
+        description: 'Data statistik layanan persuratan.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.total_pengajuan:
+        custom: []
+        name: data.total_pengajuan
+        description: 'Total seluruh pengajuan surat.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.menunggu:
+        custom: []
+        name: data.menunggu
+        description: 'Jumlah pengajuan dengan status Pending.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.disetujui:
+        custom: []
+        name: data.disetujui
+        description: 'Jumlah pengajuan dengan status Disetujui.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.ditolak:
+        custom: []
+        name: data.ditolak
+        description: 'Jumlah pengajuan dengan status Ditolak.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.selesai:
+        custom: []
+        name: data.selesai
+        description: 'Jumlah pengajuan dengan status Selesai.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/verifikasi/{hash}'
+    metadata:
+      custom: []
+      groupName: 'Statistik & Verifikasi'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Memverifikasi tanda tangan digital surat berdasarkan hash QR Code.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      hash:
+        custom: []
+        name: hash
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      hash: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "valid": true,
+            "message": "Dokumen valid",
+            "data": {
+              "nomor_registrasi": "REG/2026/0001",
+              "jenis_surat": "Surat Keterangan Domisili",
+              "nama_pemohon": "Ahmad Fauzi",
+              "nik_pemohon": "1118060512900001",
+              "tanggal_terbit": "10-07-2026",
+              "diverifikasi_oleh": "admin_desa"
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "valid": false,
+            "message": "Dokumen tidak ditemukan atau tidak valid"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "valid": false,
+            "message": "Dokumen belum selesai diproses"
+          }
+        headers: []
+        description: ''
+    responseFields:
+      valid:
+        custom: []
+        name: valid
+        description: 'Status validitas dokumen.'
+        required: false
+        example: null
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil verifikasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Detail dokumen (hanya jika valid).'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.nomor_registrasi:
+        custom: []
+        name: data.nomor_registrasi
+        description: 'Nomor registrasi pengajuan surat.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.jenis_surat:
+        custom: []
+        name: data.jenis_surat
+        description: 'Nama jenis surat.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.nama_pemohon:
+        custom: []
+        name: data.nama_pemohon
+        description: 'Nama lengkap pemohon surat.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.nik_pemohon:
+        custom: []
+        name: data.nik_pemohon
+        description: 'NIK pemohon surat.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.tanggal_terbit:
+        custom: []
+        name: data.tanggal_terbit
+        description: 'Tanggal terbit surat (format: d-m-Y).'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.diverifikasi_oleh:
+        custom: []
+        name: data.diverifikasi_oleh
+        description: 'Username admin yang memverifikasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/admin/statistik/clear-cache
+    metadata:
+      custom: []
+      groupName: 'Statistik & Verifikasi'
+      groupDescription: ''
+      subgroup: Admin
+      subgroupDescription: ''
+      title: 'Membersihkan cache penyimpanan data statistik.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Cache statistik berhasil dibersihkan"
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null

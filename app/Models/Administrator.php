@@ -11,22 +11,45 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * Model untuk merepresentasikan Administrator (perangkat desa) dalam sistem SIG-Udeung.
+ * Model untuk merepresentasikan data Administrator (perangkat desa) dalam sistem desa.
+ *
+ * Tabel: administrators
+ *
+ * @property  string  $id  ULID unik administrator
+ * @property  string  $username  Username untuk login ke panel admin
+ * @property  string  $password  Hashed password autentikasi
+ * @property  string  $role  Peran administrator (keuchik, sekdes, operator)
+ * @property  \Carbon\Carbon|null  $created_at  Waktu pembuatan akun
  */
 class Administrator extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, Notifiable, HasUlids;
 
+    /**
+     * Atribut yang dapat diisi secara massal.
+     *
+     * @var  array<int, string>
+     */
     protected $fillable = [
         'username',
         'password',
         'role',
     ];
 
+    /**
+     * Atribut yang disembunyikan saat serialisasi JSON.
+     *
+     * @var  array<int, string>
+     */
     protected $hidden = [
         'password',
     ];
 
+    /**
+     * Casting atribut ke tipe data native PHP.
+     *
+     * @return  array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -35,7 +58,9 @@ class Administrator extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Relasi ke data pengajuan surat yang diverifikasi oleh administrator ini.
+     * Relasi ke seluruh pengajuan surat yang diverifikasi oleh administrator ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function pengajuanSurat()
     {
@@ -43,7 +68,9 @@ class Administrator extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Relasi ke data mutasi penduduk yang diverifikasi oleh administrator ini.
+     * Relasi ke seluruh laporan mutasi penduduk yang diverifikasi oleh administrator ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function mutasiPenduduk()
     {
@@ -51,7 +78,9 @@ class Administrator extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Relasi ke data artikel informasi publik yang ditulis oleh administrator ini.
+     * Relasi ke seluruh artikel informasi publik yang ditulis oleh administrator ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function informasiPublik()
     {
@@ -59,7 +88,9 @@ class Administrator extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Relasi ke antrean pesan siaran Telegram yang dibuat oleh administrator ini.
+     * Relasi ke seluruh antrean pesan siaran Telegram yang dibuat oleh administrator ini.
+     *
+     * @return  \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function telegramBroadcasts()
     {
@@ -68,12 +99,20 @@ class Administrator extends Authenticatable implements FilamentUser
 
     /**
      * Menentukan hak akses administrator untuk masuk ke panel admin Filament.
+     *
+     * @param  \Filament\Panel  $panel  Panel Filament yang sedang diakses.
+     * @return  bool  True jika role termasuk keuchik/sekdes/operator.
      */
     public function canAccessPanel(Panel $panel): bool
     {
         return in_array($this->role, ['keuchik', 'sekdes', 'operator'], true);
     }
 
+    /**
+     * Accessor untuk nama tampilan administrator.
+     *
+     * @return  string  Username sebagai nama tampilan.
+     */
     public function getNameAttribute(): string
     {
         return $this->username;

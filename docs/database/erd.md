@@ -32,6 +32,9 @@ erDiagram
         varchar_30 status_keluarga
         varchar_20 status_mutasi
         varchar_50 telegram_chat_id UK
+        varchar_255 foto_profil
+        varchar_255 foto_ktp
+        varchar_255 foto_kk
         timestamp created_at
         timestamp updated_at
     }
@@ -93,6 +96,7 @@ erDiagram
         text catatan_penolakan
         varchar_64 qr_hash UK
         varchar_255 file_pdf_url
+        varchar_50 nomor_surat
         ulid diverifikasi_oleh FK
         timestamp created_at
         timestamp updated_at
@@ -115,6 +119,8 @@ erDiagram
         text konten
         varchar_50 kategori
         varchar_255 cover_image
+        text meta_description
+        text kata_kunci
         boolean is_published
         ulid author_id FK
         timestamp created_at
@@ -201,121 +207,230 @@ erDiagram
 
 ## 2. Struktur Detail Tabel
 
-### 2.1. Tabel `users` & `administrators`
+### 2.1. Tabel `administrators`
+
 Menangani hak akses dan peran di tingkat administrasi desa (Keuchik, Sekdes, Operator).
-* **`administrators`**:
-  * `id`: `ULID PRIMARY KEY` -> Identifier unik administrator.
-  * `username`: `VARCHAR(50) UNIQUE` -> Username login unik.
-  * `password_hash`: `VARCHAR(255)` -> Hash kata sandi menggunakan bcrypt.
-  * `role`: `VARCHAR(20)` -> Peran administratif (Keuchik, Sekdes, Operator).
-  * `created_at`: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`.
+
+- **`id`**: `ULID PRIMARY KEY` - Identifier unik administrator.
+- **`username`**: `VARCHAR(50) UNIQUE` - Username login unik.
+- **`password`**: `VARCHAR(255)` - Hash kata sandi menggunakan bcrypt.
+- **`role`**: `VARCHAR(20)` - Peran administratif (keuchik, sekdes, operator).
+- **`created_at`**: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`.
 
 ### 2.2. Tabel `keluarga`
+
 Menyimpan data identitas Kartu Keluarga (KK).
-* `no_kk`: `VARCHAR(16) PRIMARY KEY` -> Nomor KK 16 digit.
-* `alamat`: `TEXT` -> Alamat fisik rumah tangga.
-* `dusun`: `VARCHAR(50)` -> Nama dusun wilayah gampong.
-* `rt_rw`: `VARCHAR(10)` -> RT/RW.
-* `kepala_keluarga_nik`: `VARCHAR(16) FOREIGN KEY REFERENCES penduduk(nik) ON DELETE RESTRICT` -> NIK Kepala Keluarga.
+
+- **`no_kk`**: `VARCHAR(16) PRIMARY KEY` - Nomor KK 16 digit.
+- **`alamat`**: `TEXT` - Alamat fisik rumah tangga.
+- **`dusun`**: `VARCHAR(50)` - Nama dusun wilayah gampong.
+- **`rt_rw`**: `VARCHAR(10)` - RT/RW.
+- **`kepala_keluarga_nik`**: `VARCHAR(16) FOREIGN KEY REFERENCES penduduk(nik) ON DELETE RESTRICT` - NIK Kepala Keluarga.
 
 ### 2.3. Tabel `penduduk`
+
 Basis data kependudukan dinamis.
-* `nik`: `VARCHAR(16) PRIMARY KEY` -> NIK 16 digit.
-* `no_kk`: `VARCHAR(16) FOREIGN KEY REFERENCES keluarga(no_kk) ON DELETE RESTRICT` -> Relasi ke Kartu Keluarga.
-* `nama_lengkap`: `VARCHAR(100)` -> Nama lengkap sesuai KTP.
-* `tempat_lahir`: `VARCHAR(50)`.
-* `tanggal_lahir`: `DATE`.
-* `jenis_kelamin`: `CHAR(1)` -> L (Laki-laki) atau P (Perempuan).
-* `agama`: `VARCHAR(20)`.
-* `pendidikan`: `VARCHAR(50)`.
-* `pekerjaan`: `VARCHAR(50)`.
-* `status_perkawinan`: `VARCHAR(20)`.
-* `status_keluarga`: `VARCHAR(30)` -> Hubungan dalam keluarga (Kepala Keluarga, Istri, Anak, dll).
-* `status_mutasi`: `VARCHAR(20) DEFAULT 'Tetap'` -> Status kependudukan (Tetap, Meninggal, Pindah, dll).
-* `telegram_chat_id`: `VARCHAR(50) UNIQUE NULL` -> Chat ID Telegram terhubung untuk bot gateway.
+
+- **`nik`**: `VARCHAR(16) PRIMARY KEY` - NIK 16 digit.
+- **`no_kk`**: `VARCHAR(16) FOREIGN KEY REFERENCES keluarga(no_kk) ON DELETE RESTRICT` - Relasi ke Kartu Keluarga.
+- **`nama_lengkap`**: `VARCHAR(100)` - Nama lengkap sesuai KTP.
+- **`tempat_lahir`**: `VARCHAR(50)` - Tempat lahir.
+- **`tanggal_lahir`**: `DATE` - Tanggal lahir.
+- **`jenis_kelamin`**: `CHAR(1)` - L (Laki-laki) atau P (Perempuan).
+- **`agama`**: `VARCHAR(20)` - Agama.
+- **`pendidikan`**: `VARCHAR(50)` - Pendidikan terakhir.
+- **`pekerjaan`**: `VARCHAR(50)` - Pekerjaan.
+- **`status_perkawinan`**: `VARCHAR(20)` - Status perkawinan.
+- **`status_keluarga`**: `VARCHAR(30)` - Hubungan dalam keluarga (Kepala Keluarga, Istri, Anak, dll).
+- **`status_mutasi`**: `VARCHAR(20) DEFAULT 'Tetap'` - Status kependudukan (Tetap, Meninggal, Pindah, dll).
+- **`telegram_chat_id`**: `VARCHAR(50) UNIQUE NULL` - Chat ID Telegram terhubung untuk bot gateway.
+- **`foto_profil`**: `VARCHAR(255) NULL` - URL/path foto profil warga.
+- **`foto_ktp`**: `VARCHAR(255) NULL` - URL/path foto KTP warga.
+- **`foto_kk`**: `VARCHAR(255) NULL` - URL/path foto Kartu Keluarga warga.
 
 ### 2.4. Tabel `mutasi_penduduk`
+
 Riwayat perubahan demografi kependudukan.
-* `id`: `ULID PRIMARY KEY`.
-* `nik`: `VARCHAR(16) FOREIGN KEY REFERENCES penduduk(nik) ON DELETE CASCADE`.
-* `jenis_mutasi`: `VARCHAR(20)` -> Kelahiran, Kematian, Kedatangan, Kepindahan.
-* `tanggal_mutasi`: `DATE`.
-* `keterangan`: `TEXT`.
-* `dokumen_bukti`: `VARCHAR(255)` -> Path file bukti surat mutasi.
-* `status_verifikasi`: `VARCHAR(20) DEFAULT 'Pending'` -> Pending, Disetujui, Ditolak.
-* `diverifikasi_oleh`: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`nik`**: `VARCHAR(16) FOREIGN KEY REFERENCES penduduk(nik) ON DELETE CASCADE`.
+- **`jenis_mutasi`**: `VARCHAR(20)` - Kelahiran, Kematian, Kedatangan, Kepindahan.
+- **`tanggal_mutasi`**: `DATE` - Tanggal kejadian mutasi.
+- **`keterangan`**: `TEXT` - Keterangan detail mutasi.
+- **`dokumen_bukti`**: `VARCHAR(255)` - Path file bukti surat mutasi.
+- **`status_verifikasi`**: `VARCHAR(20) DEFAULT 'Pending'` - Pending, Disetujui, Ditolak.
+- **`diverifikasi_oleh`**: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
 
 ### 2.5. Tabel `kategori_surat`
+
 Skema surat administratif dinamis.
-* `id`: `ULID PRIMARY KEY`.
-* `kode_surat`: `VARCHAR(20) UNIQUE` -> Contoh: SKTM, SKU, Domisili.
-* `nama_surat`: `VARCHAR(100)`.
-* `template_view`: `VARCHAR(100)` -> Nama view file blade PDF.
-* `schema_isian`: `JSON` -> Struktur skema dinamis form Vue.
-* `syarat_dokumen`: `JSON` -> Berkas prasyarat wajib yang harus diunggah.
-* `is_active`: `BOOLEAN DEFAULT TRUE`.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`kode_surat`**: `VARCHAR(20) UNIQUE` - Contoh: SKTM, SKU, Domisili.
+- **`nama_surat`**: `VARCHAR(100)` - Nama jenis surat.
+- **`template_view`**: `VARCHAR(100)` - Nama view file blade PDF.
+- **`schema_isian`**: `JSON` - Struktur skema dinamis form.
+- **`syarat_dokumen`**: `JSON` - Berkas prasyarat wajib yang harus diunggah.
+- **`is_active`**: `BOOLEAN DEFAULT TRUE`.
 
 ### 2.6. Tabel `pengajuan_surat`
+
 Pencatatan pengajuan surat mandiri oleh warga.
-* `id`: `ULID PRIMARY KEY`.
-* `nomor_registrasi`: `VARCHAR(30) UNIQUE` -> Nomor register surat formal.
-* `nik_pemohon`: `VARCHAR(16) FOREIGN KEY REFERENCES penduduk(nik) ON DELETE CASCADE`.
-* `kategori_surat_id`: `ULID FOREIGN KEY REFERENCES kategori_surat(id) ON DELETE RESTRICT`.
-* `data_isian`: `JSON` -> Data variabel yang diisi warga sesuai skema.
-* `file_syarat`: `JSON` -> Path file dokumen prasyarat terunggah.
-* `status`: `VARCHAR(20) DEFAULT 'Pending'` -> Pending, Approved, Rejected.
-* `catatan_penolakan`: `TEXT NULL` -> Catatan dari operator jika ditolak.
-* `qr_hash`: `VARCHAR(64) UNIQUE NULL` -> Hash dokumen SHA-256 untuk TTE.
-* `file_pdf_url`: `VARCHAR(255) NULL` -> URL file dokumen PDF final.
-* `diverifikasi_oleh`: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`nomor_registrasi`**: `VARCHAR(30) UNIQUE` - Nomor register surat formal (auto-generated: YYYYMMDD-XXXX).
+- **`nik_pemohon`**: `VARCHAR(16) FOREIGN KEY REFERENCES penduduk(nik) ON DELETE CASCADE`.
+- **`kategori_surat_id`**: `ULID FOREIGN KEY REFERENCES kategori_surat(id) ON DELETE RESTRICT`.
+- **`data_isian`**: `JSON` - Data variabel yang diisi warga sesuai skema.
+- **`file_syarat`**: `JSON` - Path file dokumen prasyarat terunggah.
+- **`status`**: `VARCHAR(20) DEFAULT 'Pending'` - Pending, Diproses, Approved, Rejected.
+- **`catatan_penolakan`**: `TEXT NULL` - Catatan dari operator jika ditolak.
+- **`qr_hash`**: `VARCHAR(64) UNIQUE NULL` - Hash dokumen SHA-256 untuk TTE.
+- **`file_pdf_url`**: `VARCHAR(255) NULL` - URL file dokumen PDF final.
+- **`nomor_surat`**: `VARCHAR(50) NULL` - Nomor surat resmi yang diterbitkan.
+- **`diverifikasi_oleh`**: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
 
 ### 2.7. Tabel `tracking_pengajuan_surat`
+
 Log status persetujuan surat berantai.
-* `id`: `ULID PRIMARY KEY`.
-* `pengajuan_surat_id`: `ULID FOREIGN KEY REFERENCES pengajuan_surat(id) ON DELETE CASCADE`.
-* `status_sebelumnya`: `VARCHAR(20)`.
-* `status_baru`: `VARCHAR(20)`.
-* `keterangan_update`: `TEXT`.
-* `diupdate_oleh`: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`pengajuan_surat_id`**: `ULID FOREIGN KEY REFERENCES pengajuan_surat(id) ON DELETE CASCADE`.
+- **`status_sebelumnya`**: `VARCHAR(20)`.
+- **`status_baru`**: `VARCHAR(20)`.
+- **`keterangan_update`**: `TEXT`.
+- **`diupdate_oleh`**: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
 
 ### 2.8. Tabel `informasi_publik`
+
 Berita dan siaran pers desa.
-* `id`: `ULID PRIMARY KEY`.
-* `judul`: `VARCHAR(255)`.
-* `slug`: `VARCHAR(255) UNIQUE` -> URL friendly slug.
-* `konten`: `TEXT` -> Konten teks utama (HTML format).
-* `kategori`: `VARCHAR(50)`.
-* `cover_image`: `VARCHAR(255) NULL`.
-* `is_published`: `BOOLEAN DEFAULT FALSE`.
-* `author_id`: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
 
-### 2.9. Tabel `pengaturan_frontend`
+- **`id`**: `ULID PRIMARY KEY`.
+- **`judul`**: `VARCHAR(255)`.
+- **`slug`**: `VARCHAR(255) UNIQUE` - URL friendly slug (auto-generated dari judul).
+- **`konten`**: `TEXT` - Konten teks utama (HTML format).
+- **`kategori`**: `VARCHAR(50)` - Kategori artikel (Berita, Agenda, Pengumuman).
+- **`cover_image`**: `VARCHAR(255) NULL`.
+- **`meta_description`**: `TEXT NULL` - Deskripsi meta untuk SEO.
+- **`kata_kunci`**: `TEXT NULL` - Kata kunci untuk SEO.
+- **`is_published`**: `BOOLEAN DEFAULT FALSE`.
+- **`author_id`**: `ULID NULL FOREIGN KEY REFERENCES administrators(id)`.
+
+### 2.9. Tabel `pengaturan_gampong`
+
+Konfigurasi global sistem desa (key-value).
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`kunci`**: `VARCHAR(50) UNIQUE` - Kunci pengaturan.
+- **`nilai`**: `TEXT` - Nilai pengaturan.
+- **`tipe_data`**: `VARCHAR(20)` - Jenis data (string, integer, boolean, json).
+- **`deskripsi`**: `VARCHAR(255)` - Keterangan kegunaan.
+
+### 2.10. Tabel `pengaturan_frontend`
+
 Penyimpanan konten statis yang dapat diedit secara dinamis untuk landing page publik.
-* `kunci`: `VARCHAR(50) PRIMARY KEY` -> Kunci pengaturan unik (misal: `medsos_instagram`).
-* `nilai`: `TEXT NULL` -> Nilai dari pengaturan yang diisi oleh admin.
-* `tipe_data`: `VARCHAR(20) DEFAULT 'string'` -> Jenis data (string, dll).
-* `deskripsi`: `VARCHAR(255) NULL` -> Keterangan kegunaan kunci konfigurasi.
 
-### 2.10. Tabel `traffic_logs`
+- **`kunci`**: `VARCHAR(50) PRIMARY KEY` - Kunci pengaturan unik.
+- **`nilai`**: `TEXT NULL` - Nilai dari pengaturan.
+- **`tipe_data`**: `VARCHAR(20) DEFAULT 'string'` - Jenis data.
+- **`deskripsi`**: `VARCHAR(255) NULL` - Keterangan kegunaan.
+
+### 2.11. Tabel `referensi_wilayah`
+
+Master data referensi wilayah administrasi negara.
+
+- **`kode_wilayah`**: `VARCHAR(15) PRIMARY KEY` - Kode wilayah unik.
+- **`nama_wilayah`**: `VARCHAR(100)` - Nama wilayah.
+- **`level`**: `VARCHAR(20)` - Level wilayah (provinsi, kabupaten, kecamatan, gampong).
+- **`parent_kode`**: `VARCHAR(15) FOREIGN KEY` - Kode wilayah induk.
+
+### 2.12. Tabel `bot_knowledges`
+
+Basis pengetahuan (FAQ & RAG Context) untuk Telegram chatbot.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`kunci`**: `VARCHAR(50) UNIQUE`.
+- **`tipe`**: `VARCHAR(20)` - Tipe pengetahuan (faq, perintah, info).
+- **`pertanyaan_atau_topik`**: `VARCHAR(255)`.
+- **`kata_kunci`**: `JSON` - Daftar kata kunci pencocokan.
+- **`jawaban_atau_konten`**: `TEXT`.
+- **`is_aktif`**: `BOOLEAN DEFAULT TRUE`.
+
+### 2.13. Tabel `chatbot_logs`
+
+Log riwayat interaksi percakapan warga dengan chatbot Telegram.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`telegram_chat_id`**: `VARCHAR(50)`.
+- **`pesan_masuk`**: `TEXT`.
+- **`balasan_ai`**: `TEXT`.
+- **`tokens_used`**: `INTEGER`.
+- **`created_at`**: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`.
+
+### 2.14. Tabel `telegram_broadcast_queue`
+
+Antrean pengiriman pesan massal (broadcast) Telegram.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`pesan`**: `TEXT`.
+- **`kategori_target`**: `VARCHAR(50)`.
+- **`status`**: `VARCHAR(20)` - Queued, Sending, Sent, Failed.
+- **`jadwal_kirim`**: `TIMESTAMP`.
+- **`waktu_selesai`**: `TIMESTAMP`.
+- **`created_by`**: `ULID FOREIGN KEY REFERENCES administrators(id)`.
+
+### 2.15. Tabel `audit_logs`
+
+Log riwayat audit aktivitas pengguna/sistem.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`user_type`**: `VARCHAR(20)` - Tipe pengguna (admin, warga, system).
+- **`user_id`**: `VARCHAR(50)`.
+- **`tindakan`**: `VARCHAR(50)` - Jenis tindakan (create, update, delete).
+- **`nama_tabel`**: `VARCHAR(50)`.
+- **`record_id`**: `VARCHAR(50)`.
+- **`data_lama`**: `JSON NULL`.
+- **`data_baru`**: `JSON NULL`.
+- **`ip_address`**: `VARCHAR(45)`.
+- **`user_agent`**: `TEXT`.
+- **`created_at`**: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`.
+
+### 2.16. Tabel `traffic_logs`
+
 Pencatatan statistik kunjungan publik secara otomatis.
-* `id`: `ULID PRIMARY KEY` -> ID kunjungan unik.
-* `ip_address`: `VARCHAR(45) NULL` -> Alamat IP penjelajah.
-* `user_agent`: `TEXT NULL` -> Informasi platform/browser penjelajah.
-* `path`: `VARCHAR(255) NULL` -> Alamat URI yang dikunjungi.
-* `method`: `VARCHAR(10) NULL` -> HTTP request method (GET, POST, dll).
-* `referer`: `VARCHAR(255) NULL` -> URL asal lalu lintas.
-* `is_bot`: `BOOLEAN DEFAULT FALSE` -> Menandai apakah kunjungan berasal dari search engine/bot.
-* `created_at`: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP` -> Waktu kunjungan.
+
+- **`id`**: `ULID PRIMARY KEY`.
+- **`ip_address`**: `VARCHAR(45) NULL`.
+- **`user_agent`**: `TEXT NULL`.
+- **`path`**: `VARCHAR(255) NULL`.
+- **`method`**: `VARCHAR(10) NULL`.
+- **`referer`**: `VARCHAR(255) NULL`.
+- **`is_bot`**: `BOOLEAN DEFAULT FALSE`.
+- **`created_at`**: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`.
 
 ---
 
 ## 3. Aturan Relasi Terikat & Integritas
 
-1. **One-to-Many (`keluarga` ke `penduduk`)**:
-   * Satu keluarga (`keluarga`) memiliki satu atau banyak anggota keluarga (`penduduk`).
-   * Penghapusan data keluarga dibatasi (`ON DELETE RESTRICT`) jika masih ada penduduk yang terikat pada `no_kk` tersebut.
-2. **One-to-One (`penduduk` ke `keluarga` sebagai kepala keluarga)**:
-   * Setiap keluarga memiliki satu kepala keluarga yang diidentifikasi oleh `kepala_keluarga_nik`.
-3. **Cascading Delete pada Transaksi**:
-   * Jika data `penduduk` dihapus, seluruh data transaksi terkait seperti `mutasi_penduduk` dan `pengajuan_surat` akan dihapus secara otomatis (`ON DELETE CASCADE`) untuk mencegah residu data tak terikat.
+### 3.1. One-to-Many (`keluarga` ke `penduduk`)
 
+- Satu keluarga (`keluarga`) memiliki satu atau banyak anggota keluarga (`penduduk`).
+- Penghapusan data keluarga dibatasi (`ON DELETE RESTRICT`) jika masih ada penduduk yang terikat pada `no_kk` tersebut.
+
+### 3.2. One-to-One (`penduduk` ke `keluarga` sebagai kepala keluarga)
+
+- Setiap keluarga memiliki satu kepala keluarga yang diidentifikasi oleh `kepala_keluarga_nik`.
+
+### 3.3. Cascading Delete pada Transaksi
+
+- Jika data `penduduk` dihapus, seluruh data transaksi terkait seperti `mutasi_penduduk` dan `pengajuan_surat` akan dihapus secara otomatis (`ON DELETE CASCADE`) untuk mencegah residu data tak terikat.
+- Log `tracking_pengajuan_surat` akan ikut terhapus jika pengajuan surat terkait dihapus.
+
+### 3.4. RestRICT pada Referensi
+
+- `kategori_surat` menggunakan `ON DELETE RESTRICT` pada `pengajuan_surat` untuk mencegah penghapusan kategori yang masih memiliki pengajuan aktif.
+- `keluarga` menggunakan `ON DELETE RESTRICT` pada `penduduk` untuk mencegah penghapusan KK yang masih memiliki anggota.
+
+### 3.5. Self-Referencing (`referensi_wilayah`)
+
+- Tabel `referensi_wilayah` menggunakan relasi self-referencing untuk membangun hierarki wilayah (provinsi -> kabupaten -> kecamatan -> gampong).

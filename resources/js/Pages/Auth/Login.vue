@@ -11,10 +11,18 @@ import {
     Landmark, 
     HelpCircle,
     ArrowLeft,
-    AlertCircle
+    AlertCircle,
+    TestTube
 } from '@lucide/vue';
 
 defineOptions({ layout: PublicLayout });
+
+const props = defineProps({
+    testCredentials: {
+        type: Object,
+        default: null,
+    },
+});
 
 const form = useForm({
     nik: '',
@@ -192,6 +200,27 @@ const handleNumberInput = (e, field) => {
                             Masuk Ke Portal
                         </AppButton>
                     </form>
+                    
+                    <div v-if="testCredentials" class="mt-6 p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 relative">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <div class="flex items-center gap-1.5">
+                                <TestTube class="size-3.5 text-emerald-700" />
+                                <h4 class="text-[11px] font-bold text-emerald-800">Akses Demo Portal</h4>
+                            </div>
+                            <span class="text-[9px] font-bold px-2 py-1 rounded-full bg-white text-emerald-700 border border-emerald-200">Preview</span>
+                        </div>
+                        <p class="text-[10px] text-emerald-700 mb-2">Gunakan data demo berikut untuk mencoba alur masuk portal warga.</p>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                            <button type="button" @click="form.nik = testCredentials.nik; form.no_kk = testCredentials.no_kk" class="text-left bg-white p-2 border border-emerald-200 rounded hover:border-emerald-400 transition cursor-pointer">
+                                <span class="block text-[9px] text-emerald-600 font-sans uppercase mb-0.5">NIK Demo</span>
+                                {{ testCredentials.nik }}
+                            </button>
+                            <button type="button" @click="form.nik = testCredentials.nik; form.no_kk = testCredentials.no_kk" class="text-left bg-white p-2 border border-emerald-200 rounded hover:border-emerald-400 transition cursor-pointer">
+                                <span class="block text-[9px] text-emerald-600 font-sans uppercase mb-0.5">Nomor KK Demo</span>
+                                {{ testCredentials.no_kk }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mt-8 pt-6 border-t border-slate-100 flex items-start gap-2.5 text-[11px] text-slate-450">

@@ -14,20 +14,23 @@ class SetupTelegramWebhook extends Command
 {
     /**
      * Nama dan tanda tangan perintah Artisan.
-     *
-     * @var string
      */
     protected $signature = 'telegram:setup-webhook';
 
     /**
      * Deskripsi singkat perintah Artisan.
-     *
-     * @var string
      */
     protected $description = 'Setup Telegram webhook untuk bot';
 
     /**
      * Eksekusi utama perintah untuk mendaftarkan URL Webhook Telegram.
+     *
+     * Membaca URL webhook dari config services.telegram.webhook_url,
+     * kemudian mendaftarkannya ke Telegram API. Jika berhasil,
+     * menampilkan informasi bot (nama dan username).
+     *
+     * @param  \App\Services\TelegramService  $telegram  Layanan bot API Telegram
+     * @return int  Command::SUCCESS atau Command::FAILURE
      */
     public function handle(TelegramService $telegram): int
     {

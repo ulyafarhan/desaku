@@ -1,4 +1,4 @@
-name: Endpoints
+name: Autentikasi
 description: ''
 endpoints:
   -
@@ -8,11 +8,11 @@ endpoints:
     uri: api/v1/auth/login/warga
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Autentikasi
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Memproses login warga menggunakan NIK dan Nomor Kartu Keluarga via API.'
       description: ''
       authenticated: false
       deprecated: false
@@ -29,7 +29,7 @@ endpoints:
         name: nik
         description: 'Kolom value harus berukuran 16 karakter.'
         required: true
-        example: bngzmiyvdljnikhw
+        example: vwgshlzaedjxauui
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -40,18 +40,67 @@ endpoints:
         name: no_kk
         description: 'Kolom value harus berukuran 16 karakter.'
         required: true
-        example: aykcmyuwpwlvqwrs
+        example: zxgnxorrobcytoxm
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      nik: bngzmiyvdljnikhw
-      no_kk: aykcmyuwpwlvqwrs
+      nik: vwgshlzaedjxauui
+      no_kk: zxgnxorrobcytoxm
     fileParameters: []
-    responses: []
-    responseFields: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Login berhasil",
+            "user": {
+              "nik": "1118060512900001",
+              "nama_lengkap": "Ahmad Fauzi",
+              "no_kk": "1118060512900002",
+              "status_mutasi": "Tetap"
+            },
+            "token": "1|abcdefghijklmnopqrstuvwxyz123456"
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      user:
+        custom: []
+        name: user
+        description: 'Data profil warga yang berhasil login.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      token:
+        custom: []
+        name: token
+        description: 'Token autentikasi Bearer.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
     auth: []
     controller: null
     method: null
@@ -63,11 +112,11 @@ endpoints:
     uri: api/v1/auth/login/admin
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Autentikasi
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Memproses login administrator menggunakan Username dan Password via API.'
       description: ''
       authenticated: false
       deprecated: false
@@ -95,7 +144,7 @@ endpoints:
         name: password
         description: ''
         required: true
-        example: '|]|{+-'
+        example: ';]KXrp'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -103,268 +152,58 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       username: architecto
-      password: '|]|{+-'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/informasi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      password: ';]KXrp'
     fileParameters: []
     responses:
       -
         custom: []
         status: 200
-        content: '{"current_page":1,"data":[{"id":"01kv62adbqhhshhda1dpeasstt","judul":"Penyuluhan Pertanian Optimalisasi Lahan Jagung Terintegrasi Bagian #11","slug":"penyuluhan-pertanian-optimalisasi-lahan-jagung-terintegrasi-bagian-11","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Penyuluhan Pertanian Optimalisasi Lahan Jagung Terintegrasi Bagian #11<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Sosialisasi","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-06-14T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adbvzhg2w97pdj0zetca","judul":"Musyawarah Rencana Pembangunan Gampong (Musrenbang) Udeung Bagian #12","slug":"musyawarah-rencana-pembangunan-gampong-musrenbang-udeung-bagian-12","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Musyawarah Rencana Pembangunan Gampong (Musrenbang) Udeung Bagian #12<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Kegiatan","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-06-11T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adff5qenjddkmzmshz5r","judul":"Peresmian Jembatan Gantung Garuda Penghubung Gampong Udeung - Ara Bagian #37","slug":"peresmian-jembatan-gantung-garuda-penghubung-gampong-udeung-ara-bagian-37","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Peresmian Jembatan Gantung Garuda Penghubung Gampong Udeung - Ara Bagian #37<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Sosialisasi","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-06-09T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adcwcfxq2wzk0tx1t2f2","judul":"Jadwal Gotong Royong Massal Kebersihan Lingkungan Masjid Gampong Bagian #19","slug":"jadwal-gotong-royong-massal-kebersihan-lingkungan-masjid-gampong-bagian-19","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Jadwal Gotong Royong Massal Kebersihan Lingkungan Masjid Gampong Bagian #19<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Pengumuman","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-06-09T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adg22z0kq728v08sma3v","judul":"Musyawarah Rencana Pembangunan Gampong (Musrenbang) Udeung Bagian #42","slug":"musyawarah-rencana-pembangunan-gampong-musrenbang-udeung-bagian-42","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Musyawarah Rencana Pembangunan Gampong (Musrenbang) Udeung Bagian #42<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Kegiatan","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-06-04T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adejzx0wec0cf1xeg1v6","judul":"Peringatan Maulid Nabi Muhammad SAW di Masjid Jami Gampong Bagian #30","slug":"peringatan-maulid-nabi-muhammad-saw-di-masjid-jami-gampong-bagian-30","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Peringatan Maulid Nabi Muhammad SAW di Masjid Jami Gampong Bagian #30<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Sosialisasi","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-05-31T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62addbjbgy440ja885e5gm","judul":"Peresmian Jembatan Gantung Garuda Penghubung Gampong Udeung - Ara Bagian #22","slug":"peresmian-jembatan-gantung-garuda-penghubung-gampong-udeung-ara-bagian-22","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Peresmian Jembatan Gantung Garuda Penghubung Gampong Udeung - Ara Bagian #22<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Kegiatan","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-05-28T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adfb5tef58nw7v90qprf","judul":"SD Negeri Neulop Mate Buka Pendaftaran Siswa Baru Tahun Pelajaran 2026\/2027 Bagian #36","slug":"sd-negeri-neulop-mate-buka-pendaftaran-siswa-baru-tahun-pelajaran-20262027-bagian-36","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>SD Negeri Neulop Mate Buka Pendaftaran Siswa Baru Tahun Pelajaran 2026\/2027 Bagian #36<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Berita","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-05-27T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62ada5h0f6gnfavcmfaet7","judul":"Rapat Koordinasi Evaluasi Quick Wins Kampung Bebas Narkoba Bagian #1","slug":"rapat-koordinasi-evaluasi-quick-wins-kampung-bebas-narkoba-bagian-1","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Rapat Koordinasi Evaluasi Quick Wins Kampung Bebas Narkoba Bagian #1<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Berita","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-05-26T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}},{"id":"01kv62adeqj6t3b7eay05aakax","judul":"Rapat Koordinasi Evaluasi Quick Wins Kampung Bebas Narkoba Bagian #31","slug":"rapat-koordinasi-evaluasi-quick-wins-kampung-bebas-narkoba-bagian-31","konten":"<p>Ini adalah isi informasi \/ konten resmi dari Gampong Udeung mengenai <strong>Rapat Koordinasi Evaluasi Quick Wins Kampung Bebas Narkoba Bagian #31<\/strong>. Kegiatan ini dihadiri oleh perangkat desa, tokoh masyarakat, pemuda, dan warga setempat. Diharapkan dengan adanya program ini dapat meningkatkan kesejahteraan, keamanan, dan keterbukaan informasi publik bagi seluruh masyarakat.<\/p><p>Mari bersama-sama kita dukung kemajuan Gampong Udeung menuju desa mandiri digital bebas narkoba!<\/p>","kategori":"Kegiatan","cover_image":"https:\/\/images.unsplash.com\/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop","meta_description":null,"kata_kunci":null,"is_published":true,"author_id":"01kv62a14xkbaa2gt34g6g2cv9","created_at":"2026-05-26T16:37:31.000000Z","author":{"id":"01kv62a14xkbaa2gt34g6g2cv9","username":"keuchik","role":"keuchik","created_at":"2026-06-15T16:37:18.000000Z","updated_at":"2026-06-15T16:37:18.000000Z"}}],"first_page_url":"http:\/\/localhost\/api\/v1\/informasi?page=1","from":1,"last_page":6,"last_page_url":"http:\/\/localhost\/api\/v1\/informasi?page=6","links":[{"url":null,"label":"pagination.previous","page":null,"active":false},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=1","label":"1","page":1,"active":true},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=2","label":"2","page":2,"active":false},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=3","label":"3","page":3,"active":false},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=4","label":"4","page":4,"active":false},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=5","label":"5","page":5,"active":false},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=6","label":"6","page":6,"active":false},{"url":"http:\/\/localhost\/api\/v1\/informasi?page=2","label":"pagination.next","page":2,"active":false}],"next_page_url":"http:\/\/localhost\/api\/v1\/informasi?page=2","path":"http:\/\/localhost\/api\/v1\/informasi","per_page":10,"prev_page_url":null,"to":10,"total":55}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/v1/informasi/{slug}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      slug:
-        custom: []
-        name: slug
-        description: 'The slug of the informasi.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      slug: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 404
         content: |-
           {
-              "message": "No query results for model [App\\Models\\InformasiPublik]."
+            "message": "Login berhasil",
+            "user": {
+              "id": 1,
+              "username": "admin_desa",
+              "nama_lengkap": "Administrator Desa"
+            },
+            "token": "2|abcdefghijklmnopqrstuvwxyz123456"
           }
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/statistik/demografi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 200
-        content: '{"data":{"total_penduduk":156,"total_keluarga":55,"laki_laki":80,"perempuan":76,"per_dusun":{"Dusun Neulop":15,"Dusun Cot":10,"Dusun Phoroh":17,"Dusun Garuda":13},"per_agama":{"Islam":156},"per_pendidikan":{"SMA":24,"D3":32,"S1":37,"SMP":28,"Tidak\/Belum Sekolah":13,"SD":22},"per_pekerjaan":{"Pedagang":26,"IRT":24,"Pensiunan":23,"Petani":22,"Buruh Harian":18,"Pelajar\/Mahasiswa":17,"PNS":13,"Wiraswasta":13},"per_usia":{"0-5":14,"6-12":13,"13-17":11,"18-25":17,"26-40":34,"41-60":67,"60+":0}}}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/statistik/layanan
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 200
-        content: '{"data":{"pengajuan_surat":{"total":55,"pending":13,"diproses":7,"selesai":17,"ditolak":13},"mutasi_penduduk":{"total":55,"pending":19,"disetujui":16,"ditolak":20},"per_jenis_surat":{"Surat Keterangan Domisili":3,"Surat Keterangan Tidak Mampu":3,"Surat Keterangan Usaha":2,"Surat Pengantar KTP":1,"Surat Keterangan Kelahiran":1,"Surat Keterangan Dummy #6":1,"Surat Keterangan Dummy #8":2,"Surat Keterangan Dummy #9":1,"Surat Keterangan Dummy #12":1,"Surat Keterangan Dummy #13":1,"Surat Keterangan Dummy #14":2,"Surat Keterangan Dummy #15":4,"Surat Keterangan Dummy #19":1,"Surat Keterangan Dummy #20":2,"Surat Keterangan Dummy #21":1,"Surat Keterangan Dummy #22":1,"Surat Keterangan Dummy #23":1,"Surat Keterangan Dummy #24":1,"Surat Keterangan Dummy #25":1,"Surat Keterangan Dummy #26":2,"Surat Keterangan Dummy #27":2,"Surat Keterangan Dummy #28":1,"Surat Keterangan Dummy #29":1,"Surat Keterangan Dummy #30":1,"Surat Keterangan Dummy #33":2,"Surat Keterangan Dummy #35":2,"Surat Keterangan Dummy #37":1,"Surat Keterangan Dummy #39":1,"Surat Keterangan Dummy #41":2,"Surat Keterangan Dummy #42":1,"Surat Keterangan Dummy #43":4,"Surat Keterangan Dummy #44":2,"Surat Keterangan Dummy #46":1,"Surat Keterangan Dummy #47":1,"Surat Keterangan Dummy #48":1}}}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/v1/verifikasi/{hash}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      hash:
-        custom: []
-        name: hash
+        headers: []
         description: ''
-        required: true
-        example: architecto
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
-    cleanUrlParameters:
-      hash: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
+      user:
         custom: []
-        status: 404
-        content: '{"valid":false,"message":"Dokumen tidak ditemukan atau tidak valid"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/v1/telegram/webhook
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
+        name: user
+        description: 'Data profil admin yang berhasil login.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      token:
+        custom: []
+        name: token
+        description: 'Token autentikasi Bearer.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
     auth: []
     controller: null
     method: null
@@ -376,46 +215,16 @@ endpoints:
     uri: api/v1/auth/logout
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Autentikasi
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Memproses keluar log (logout) dengan menghapus token akses saat ini.'
       description: ''
-      authenticated: false
+      authenticated: true
       deprecated: false
     headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/auth/profile
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -428,15 +237,93 @@ endpoints:
     responses:
       -
         custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
+        status: 200
+        content: |-
+          {
+            "message": "Logout berhasil"
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/auth/profile
+    metadata:
+      custom: []
+      groupName: Autentikasi
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mengambil detail informasi profil pengguna yang sedang login.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "user": {
+              "nik": "1118060512900001",
+              "nama_lengkap": "Ahmad Fauzi",
+              "no_kk": "1118060512900002",
+              "status_mutasi": "Tetap",
+              "keluarga": {
+                "no_kk": "1118060512900002",
+                "nama_kepala_keluarga": "Ahmad Fauzi"
+              }
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      user:
+        custom: []
+        name: user
+        description: 'Data profil pengguna yang sedang login.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
     controller: null
     method: null
     route: null
@@ -447,15 +334,16 @@ endpoints:
     uri: api/v1/auth/bind-telegram
     metadata:
       custom: []
-      groupName: Endpoints
+      groupName: Autentikasi
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Menghubungkan ID chat Telegram dengan akun warga.'
       description: ''
-      authenticated: false
+      authenticated: true
       deprecated: false
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -477,967 +365,41 @@ endpoints:
     cleanBodyParameters:
       telegram_chat_id: architecto
     fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/surat/kategori
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
     responses:
       -
         custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/v1/surat/kategori/{id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the kategori.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
+        status: 200
+        content: |-
+          {
+            "message": "Telegram berhasil terhubung"
+          }
+        headers: []
+        description: ''
       -
         custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/v1/surat/pengajuan
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      kategori_surat_id:
-        custom: []
-        name: kategori_surat_id
-        description: 'Must match an existing stored value.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      data_isian:
-        custom: []
-        name: data_isian
+        status: 403
+        content: |-
+          {
+            "message": "Hanya warga yang dapat bind Telegram"
+          }
+        headers: []
         description: ''
-        required: true
-        example: []
-        type: object
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      file_syarat:
+    responseFields:
+      message:
         custom: []
-        name: file_syarat
-        description: ''
-        required: true
-        example: []
-        type: object
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      kategori_surat_id: architecto
-      data_isian: []
-      file_syarat: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/surat/pengajuan
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/v1/surat/pengajuan/{id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the pengajuan.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/v1/mutasi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      nik:
-        custom: []
-        name: nik
-        description: 'Must match an existing stored value.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      jenis_mutasi:
-        custom: []
-        name: jenis_mutasi
-        description: ''
-        required: true
-        example: Kematian
-        type: string
-        enumValues:
-          - Kelahiran
-          - Kematian
-          - Kedatangan
-          - Kepindahan
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      tanggal_mutasi:
-        custom: []
-        name: tanggal_mutasi
-        description: 'Kolom value bukan tanggal yang valid.'
-        required: true
-        example: '2026-06-15T17:52:41'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      keterangan:
-        custom: []
-        name: keterangan
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      dokumen_bukti:
-        custom: []
-        name: dokumen_bukti
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      nik: architecto
-      jenis_mutasi: Kematian
-      tanggal_mutasi: '2026-06-15T17:52:41'
-      keterangan: architecto
-      dokumen_bukti: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/mutasi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/admin/surat/pengajuan
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/v1/admin/surat/pengajuan/{id}/approve'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the pengajuan.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/v1/admin/surat/pengajuan/{id}/reject'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the pengajuan.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      catatan_penolakan:
-        custom: []
-        name: catatan_penolakan
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      catatan_penolakan: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/admin/mutasi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/v1/admin/mutasi/{id}/approve'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the mutasi.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/v1/admin/mutasi/{id}/reject'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the mutasi.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/v1/admin/informasi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/v1/admin/informasi
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      judul:
-        custom: []
-        name: judul
-        description: 'Kolom value tidak boleh berukuran lebih besar dari 255 karakter.'
-        required: true
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      konten:
-        custom: []
-        name: konten
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      kategori:
-        custom: []
-        name: kategori
-        description: 'Kolom value tidak boleh berukuran lebih besar dari 50 karakter.'
-        required: true
-        example: 'n'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      cover_image:
-        custom: []
-        name: cover_image
-        description: ''
+        name: message
+        description: 'Pesan hasil operasi.'
         required: false
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      is_published:
-        custom: []
-        name: is_published
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      judul: b
-      konten: architecto
-      kategori: 'n'
-      cover_image: architecto
-      is_published: true
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - PUT
-    uri: 'api/v1/admin/informasi/{id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the informasi.'
-        required: true
-        example: architecto
+        example: null
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      judul:
-        custom: []
-        name: judul
-        description: 'Kolom value tidak boleh berukuran lebih besar dari 255 karakter.'
-        required: false
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      konten:
-        custom: []
-        name: konten
-        description: ''
-        required: false
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      kategori:
-        custom: []
-        name: kategori
-        description: 'Kolom value tidak boleh berukuran lebih besar dari 50 karakter.'
-        required: false
-        example: 'n'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      cover_image:
-        custom: []
-        name: cover_image
-        description: ''
-        required: false
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-      is_published:
-        custom: []
-        name: is_published
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      judul: b
-      konten: architecto
-      kategori: 'n'
-      cover_image: architecto
-      is_published: true
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - DELETE
-    uri: 'api/v1/admin/informasi/{id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the informasi.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/v1/admin/statistik/clear-cache
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      deprecated: false
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
     controller: null
     method: null
     route: null

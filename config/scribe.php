@@ -30,7 +30,7 @@ return [
     | Akan muncul di tab/judul browser.
     |
     */
-    'title' => 'SIG-Udeung API Documentation',
+    'title' => 'SIG-Udeung — Dokumentasi API',
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     | dokumentasi, koleksi Postman, dan spesifikasi OpenAPI.
     |
     */
-    'description' => 'API Documentation untuk Sistem Informasi Gampong (SIG) Udeung - Gampong Udeung, Kec. Bandar Baru, Kab. Pidie Jaya, Provinsi Aceh',
+    'description' => 'Dokumentasi API resmi Sistem Informasi Gampong Udeung (SIG-Udeung). API ini menyediakan layanan administrasi desa digital berbasis REST untuk warga, admin, dan integrasi Bot Telegram.',
 
     /*
     |--------------------------------------------------------------------------
@@ -59,61 +59,122 @@ return [
 
             ## Base URL
             ```
-            https://your-domain.com/api/v1
+            {base_url}/api/v1
             ```
 
-            ## Authentication
-            API ini menggunakan Laravel Sanctum untuk autentikasi. Sebagian besar endpoint memerlukan token autentikasi.
+            ## Autentikasi
+            API ini menggunakan **Laravel Sanctum** untuk autentikasi berbasis token (Bearer Token). Sebagian besar endpoint memerlukan token autentikasi.
 
-            ### Untuk Warga
-            Login menggunakan NIK (16 digit):
-            ```bash
-            POST /auth/login/warga
+            ### Login Warga
+            Gunakan NIK (16 digit) dan Nomor Kartu Keluarga (16 digit):
+            ```http
+            POST /api/v1/auth/login/warga
+            Content-Type: application/json
+
             {
-              "nik": "1234567890123456"
+              "nik": "1118060512900001",
+              "no_kk": "1118060001000001"
             }
             ```
 
-            ### Untuk Admin
-            Login menggunakan username dan password:
-            ```bash
-            POST /auth/login/admin
+            ### Login Administrator
+            Gunakan username dan password administrator:
+            ```http
+            POST /api/v1/auth/login/admin
+            Content-Type: application/json
+
             {
               "username": "operator",
-              "password": "password123"
+              "password": "password"
             }
             ```
 
-            Setelah login berhasil, Anda akan menerima token yang harus disertakan di header setiap request:
-            ```
+            ### Menggunakan Token
+            Setelah login berhasil, sertakan token di header setiap request yang memerlukan autentikasi:
+            ```http
             Authorization: Bearer {token}
             ```
 
-            ## Response Format
+            ## Format Response
             Semua response menggunakan format JSON dengan struktur standar:
 
-            **Success Response:**
+            **Response Berhasil:**
             ```json
             {
-              "message": "Success message",
+              "message": "Berhasil",
               "data": { ... }
             }
             ```
 
-            **Error Response:**
+            **Response Gagal:**
             ```json
             {
-              "message": "Error message",
+              "message": "Validasi gagal",
               "errors": {
-                "field": ["Error detail"]
+                "field": ["Pesan error"]
               }
             }
             ```
 
-            ## Rate Limiting
-            API ini menggunakan rate limiting standar Laravel (60 requests per menit per IP).
+            **Response Error Server:**
+            ```json
+            {
+              "message": "Terjadi kesalahan internal server"
+            }
+            ```
 
-            <aside>Kode contoh untuk bekerja dengan API tersedia di area gelap di sebelah kanan (atau sebagai bagian dari konten di mobile).</aside>
+            ## Rate Limiting
+            - Login: **5 request per menit** per IP
+            - Telegram Webhook: **60 request per menit**
+            - Endpoint lainnya: **60 request per menit** per IP
+
+            ## Cara Menggunakan API
+
+            ### Menggunakan cURL
+            ```bash
+            # Login sebagai warga
+            curl -X POST https://your-domain.com/api/v1/auth/login/warga \
+              -H "Content-Type: application/json" \
+              -d '{"nik":"1118060512900001","no_kk":"1118060001000001"}'
+
+            # Akses endpoint terproteksi
+            curl https://your-domain.com/api/v1/surat/kategori \
+              -H "Authorization: Bearer {token}"
+            ```
+
+            ### Menggunakan PHP (Laravel HTTP Client)
+            ```php
+            // Login
+            $response = Http::post('https://your-domain.com/api/v1/auth/login/warga', [
+                'nik' => '1118060512900001',
+                'no_kk' => '1118060001000001',
+            ]);
+            $token = $response['data']['token'];
+
+            // Gunakan token
+            $kategori = Http::withToken($token)
+                ->get('https://your-domain.com/api/v1/surat/kategori')
+                ->json();
+            ```
+
+            ### Menggunakan JavaScript (Fetch API)
+            ```javascript
+            // Login
+            const loginRes = await fetch('/api/v1/auth/login/warga', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nik: '1118060512900001', no_kk: '1118060001000001' })
+            });
+            const { data: { token } } = await loginRes.json();
+
+            // Gunakan token
+            const response = await fetch('/api/v1/surat/kategori', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const kategori = await response.json();
+            ```
+
+            <aside>Kode contoh untuk bekerja dengan API tersedia di panel sebelah kanan setiap endpoint.</aside>
         INTRO,
 
     /*
@@ -280,7 +341,7 @@ return [
         // Aktifkan jika API Anda harus diautentikasi secara default.
         // Jika true, Anda bisa menggunakan @unauthenticated atau @authenticated
         // pada endpoint tertentu untuk mengubah statusnya dari default.
-        'default' => false,
+        'default' => true,
 
         // Di mana nilai auth dikirim dalam request?
         // Opsi: AuthIn::BEARER (header Authorization: Bearer), AuthIn::HEADER, AuthIn::QUERY, dll.
@@ -315,6 +376,7 @@ return [
     */
     'example_languages' => [
         'bash',
+        'php',
         'javascript',
     ],
 
@@ -375,13 +437,21 @@ return [
     */
     'groups' => [
         // Grup default untuk endpoint yang tidak memiliki anotasi @group
-        'default' => 'Endpoints',
+        'default' => 'Lainnya',
 
         // Daftar grup, subgrup, dan endpoint dalam urutan yang diinginkan.
         // Secara default, Scribe mengurutkan grup secara alfabetis dan
         // endpoint sesuai urutan definisi route.
         // Catatan: tidak berfungsi untuk tipe dokumentasi `external`
-        'order' => [],
+        'order' => [
+            'Autentikasi',
+            'Informasi Publik',
+            'Layanan Warga',
+            'Administrasi',
+            'Statistik & Verifikasi',
+            'Integrasi Telegram',
+            'Lainnya',
+        ],
     ],
 
     /*
@@ -413,7 +483,7 @@ return [
     | Catatan: tidak berfungsi untuk tipe dokumentasi `external`
     |
     */
-    'last_updated' => 'Last updated: {date:F j, Y}',
+    'last_updated' => 'Terakhir diperbarui: {date:F j, Y}',
 
     /*
     |--------------------------------------------------------------------------
@@ -427,7 +497,7 @@ return [
     'examples' => [
         // Seed untuk Faker — gunakan angka yang sama untuk menghasilkan
         // nilai contoh yang konsisten di setiap proses generating
-        'faker_seed' => 1234,
+        'faker_seed' => 2026,
 
         // Sumber model contoh untuk response API.
         // Scribe akan mencoba factory model terlebih dahulu, lalu mengambil
@@ -478,9 +548,7 @@ return [
         'responses' => configureStrategy(
             Defaults::RESPONSES_STRATEGIES,
             Strategies\Responses\ResponseCalls::withSettings(
-                // Hanya panggil endpoint GET untuk menghasilkan response contoh
-                only: ['GET *'],
-                // Nonaktifkan mode debug untuk menghindari stack trace error di response
+                only: [],
                 config: [
                     'app.debug' => false,
                 ]

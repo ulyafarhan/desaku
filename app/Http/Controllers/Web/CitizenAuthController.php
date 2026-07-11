@@ -13,19 +13,39 @@ use Inertia\Response;
 
 /**
  * Controller untuk menangani autentikasi warga menggunakan NIK dan Nomor KK.
+ *
+ * Menyediakan layanan login dan logout bagi warga yang terdaftar
+ * dalam database kependudukan gampong.
  */
 class CitizenAuthController extends Controller
 {
     /**
      * Menampilkan halaman formulir login warga.
+     *
+     * Pada environment lokal, menampilkan kredensial uji (test credentials)
+     * untuk mempermudah pengembangan dan pengujian.
+     *
+     * @return \Inertia\Response  Halaman formulir login warga
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Login');
+        $testCredentials = Penduduk::where('nik', '1118060512900001')->first(['nik', 'no_kk']);
+
+        return Inertia::render('Auth/Login', [
+            'testCredentials' => $testCredentials
+        ]);
     }
 
     /**
      * Memproses permintaan autentikasi masuk (login) warga.
+ *
+     * Memvalidasi NIK dan Nomor KK, memeriksa keberadaan data penduduk
+     * dan status mutasi 'Tetap', lalu melakukan login menggunakan
+     * guard 'penduduk'.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang berisi field 'nik' dan 'no_kk'
+     * @return \Illuminate\Http\RedirectResponse  Redirect ke dasbor warga jika berhasil
+     * @throws \Illuminate\Validation\ValidationException  Jika NIK/KK tidak valid atau status warga bukan 'Tetap'
      */
     public function store(Request $request): RedirectResponse
     {
@@ -53,6 +73,12 @@ class CitizenAuthController extends Controller
 
     /**
      * Memproses permintaan keluar (logout) warga.
+     *
+     * Melakukan logout dari guard 'penduduk', menginvalidasi sesi,
+     * dan meregenerasi token CSRF untuk keamanan.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request saat ini
+     * @return \Illuminate\Http\RedirectResponse  Redirect ke beranda dengan pesan sukses
      */
     public function destroy(Request $request): RedirectResponse
     {

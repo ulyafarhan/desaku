@@ -3,14 +3,18 @@
 namespace App\Filament\Widgets;
 
 use Filament\Widgets\Widget;
+use Livewire\Attributes\Lazy;
+use Livewire\Attributes\Isolate;
 
+#[Lazy]
+#[Isolate]
 class ServerPerformanceWidget extends Widget
 {
     protected string $view = 'filament.widgets.server-performance';
 
     protected static ?int $sort = 2;
 
-    protected int|string|array $columnSpan = 'half';
+    protected int|string|array $columnSpan = 'full';
 
     protected ?string $pollingInterval = '10s';
 

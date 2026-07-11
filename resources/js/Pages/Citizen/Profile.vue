@@ -298,7 +298,7 @@ const getInitials = (name) => {
                         <div class="upload-dropzone justify-between text-center">
                             <div class="w-full">
                                 <span class="overline-label mb-1 block">Foto KTP</span>
-                                <p class="body-sm text-secondary mb-3">JPG, PNG, PDF (Maks. 2MB)</p>
+                                <p class="body-sm text-secondary mb-3">JPG, PNG, PDF, WebP (Maks. 2MB)</p>
                                 
                                 <div v-if="warga.foto_ktp && !ktpFileName" class="attachment-info-pilled">
                                     <svg class="size-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -320,7 +320,7 @@ const getInitials = (name) => {
                         <div class="upload-dropzone justify-between text-center">
                             <div class="w-full">
                                 <span class="overline-label mb-1 block">Foto Kartu Keluarga</span>
-                                <p class="body-sm text-secondary mb-3">JPG, PNG, PDF (Maks. 2MB)</p>
+                                <p class="body-sm text-secondary mb-3">JPG, PNG, PDF, WebP (Maks. 2MB)</p>
                                 
                                 <div v-if="warga.foto_kk && !kkFileName" class="attachment-info-pilled">
                                     <svg class="size-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>

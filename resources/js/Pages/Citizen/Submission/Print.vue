@@ -82,7 +82,7 @@ const formatCurrency = (val) => {
                     {{ pengajuan.kategori?.nama_surat || 'SURAT KETERANGAN DOMISILI' }}
                 </h3>
                 <p class="text-[12pt] mt-1">
-                    Nomor : {{ pengajuan.nomor_surat || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 2026' }}
+                    Nomor : {{ pengajuan.nomor_surat || '........ / ........ / ........ / ' + new Date().getFullYear() }}
                 </p>
             </div>
 
@@ -98,30 +98,30 @@ const formatCurrency = (val) => {
                     <tr>
                         <td class="label">Nama</td>
                         <td class="separator">:</td>
-                        <td class="val">{{ pengajuan.pemohon?.nama_lengkap || 'Muhammad Ulya Farhan' }}</td>
+                        <td class="val">{{ pengajuan.pemohon?.nama_lengkap || '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label">NIK</td>
                         <td class="separator">:</td>
-                        <td class="val">{{ pengajuan.pemohon?.nik || '3275041312050005' }}</td>
+                        <td class="val">{{ pengajuan.pemohon?.nik || '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Tempat/Tgl. Lahir</td>
                         <td class="separator">:</td>
                         <td class="val">
-                            {{ pengajuan.pemohon?.tempat_lahir || 'Bekasi' }}, 
-                            {{ formatDate(pengajuan.pemohon?.tanggal_lahir) || '13 Desember 2005' }}
+                            {{ pengajuan.pemohon?.tempat_lahir || '-' }}, 
+                            {{ formatDate(pengajuan.pemohon?.tanggal_lahir) || '-' }}
                         </td>
                     </tr>
                     <tr>
                         <td class="label">Agama</td>
                         <td class="separator">:</td>
-                        <td class="val">{{ pengajuan.pemohon?.agama || 'Islam' }}</td>
+                        <td class="val">{{ pengajuan.pemohon?.agama || '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Pekerjaan</td>
                         <td class="separator">:</td>
-                        <td class="val">{{ pengajuan.pemohon?.pekerjaan || 'Mahasiswa' }}</td>
+                        <td class="val">{{ pengajuan.pemohon?.pekerjaan || '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label">Alamat</td>
@@ -154,8 +154,14 @@ const formatCurrency = (val) => {
                     
                     <div class="relative h-24 mt-1">
                         <img 
+                            :src="'/images/signature.png'" 
+                            class="ttd-img absolute left-[-5px] top-[10px] w-[1024px] z-40 pointer-events-none" 
+                            style="transform: rotate(-10deg);"
+                            alt="Tanda Tangan"
+                        >
+                        <img 
                             :src="'/images/stempel.png'" 
-                            class="stempel-img absolute -left-8 top-1 w-[120px] z-50 pointer-events-none" 
+                            class="stempel-img absolute left-[-60px] top-[-30px] w-[190px] z-50 pointer-events-none" 
                             alt="Stempel"
                         >
                     </div>
@@ -215,6 +221,7 @@ const formatCurrency = (val) => {
     height: 85px;
 }
 
+.ttd-img,
 .stempel-img {
     mix-blend-mode: multiply;
     opacity: 0.9;

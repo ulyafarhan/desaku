@@ -12,7 +12,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Mendaftarkan binding service container.
      *
-     * Menginisialisasi AiProviderInterface sesuai dengan konfigurasi aktif (Gemini/OpenAI).
+     * Menginisialisasi AiProviderInterface sebagai singleton dengan FallbackAiService
+     * yang mendukung multi-provider dengan logika prioritas dan fallback.
+     *
+     * @return void
      */
     public function register(): void
     {
@@ -22,8 +25,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Menjalakan inisialisasi boot aplikasi.
      *
-     * Mendaftarkan event listeners untuk membersihkan cache statistik,
-     * serta mengisi konfigurasi AI dan penyimpanan dari database pengaturan gampong.
+     * Fungsi yang dilakukan:
+     * 1. Mendaftarkan event listeners untuk membersihkan cache statistik saat data berubah
+     * 2. Mengisi konfigurasi AI dari database pengaturan_gampong (provider, API keys, model)
+     * 3. Mengatur konfigurasi filesystem/storage dari database pengaturan_gampong
+     *
+     * @return void
      */
     public function boot(): void
     {

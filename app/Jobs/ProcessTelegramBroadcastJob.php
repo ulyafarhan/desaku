@@ -21,6 +21,8 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
 
     /**
      * Inisialisasi Job dengan objek antrean broadcast.
+     *
+     * @param  \App\Models\TelegramBroadcastQueue  $broadcast  Model antrean broadcast yang akan diproses
      */
     public function __construct(
         public TelegramBroadcastQueue $broadcast
@@ -28,6 +30,15 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
 
     /**
      * Mengeksekusi pengiriman pesan broadcast berdasarkan target kategori warga.
+     *
+     * Proses:
+     * 1. Update status broadcast ke 'Processing'
+     * 2. Mendapatkan daftar chat ID berdasarkan kategori target
+     * 3. Mengirim pesan broadcast ke semua chat ID
+     * 4. Update status broadcast ke 'Completed' atau 'Failed'
+     *
+     * @param  \App\Services\TelegramService  $telegram  Layanan bot API Telegram
+     * @return void
      */
     public function handle(TelegramService $telegram): void
     {
@@ -67,6 +78,16 @@ class ProcessTelegramBroadcastJob implements ShouldQueue
 
     /**
      * Mendapatkan daftar chat ID Telegram berdasarkan kategori target.
+     *
+     * Kategori yang didukung:
+     * - 'semua': Semua warga yang memiliki chat ID
+     * - 'aktif': Warga dengan status mutasi 'Tetap'
+     * - 'laki-laki': Warga berjenis kelamin Laki-laki
+     * - 'perempuan': Warga berjenis kelamin Perempuan
+     * - 'dusun:{nama}': Warga dari dusun tertentu
+     *
+     * @param  string  $kategori  Kategori target broadcast
+     * @return array  Array berisi chat ID Telegram yang sesuai kategori
      */
     protected function getTargetChatIds(string $kategori): array
     {

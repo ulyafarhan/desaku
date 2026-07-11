@@ -20,14 +20,14 @@ class SendNewsTelegramNotificationJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var int Jumlah maksimum percobaan ulang jika pengiriman gagal.
+     * Jumlah maksimum percobaan ulang jika pengiriman gagal.
      */
     public int $tries = 3;
 
     /**
      * Inisialisasi Job dengan ID informasi publik.
      *
-     * @param string $informasiId ID dari berita/pengumuman (format ULID).
+     * @param  string  $informasiId  ID dari berita/pengumuman (format ULID)
      */
     public function __construct(
         public string $informasiId
@@ -36,7 +36,11 @@ class SendNewsTelegramNotificationJob implements ShouldQueue
     /**
      * Mengeksekusi pengiriman pesan siaran ke grup Telegram terkait.
      *
-     * @param TelegramService $telegram Layanan bot API Telegram.
+     * Jika berita memiliki cover image, akan dikirim sebagai foto dengan caption.
+     * Jika foto gagal dikirim, fallback ke pesan teks biasa.
+     *
+     * @param  \App\Services\TelegramService  $telegram  Layanan bot API Telegram
+     * @return void
      */
     public function handle(TelegramService $telegram): void
     {

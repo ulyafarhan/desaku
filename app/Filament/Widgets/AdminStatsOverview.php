@@ -13,6 +13,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 /**
  * Widget dasbor untuk menampilkan ikhtisar statistik cepat (warga, surat, mutasi, berita).
  */
+use Livewire\Attributes\Lazy;
+use Livewire\Attributes\Isolate;
+
+#[Lazy]
+#[Isolate]
 class AdminStatsOverview extends StatsOverviewWidget
 {
     protected ?string $pollingInterval = '15s';

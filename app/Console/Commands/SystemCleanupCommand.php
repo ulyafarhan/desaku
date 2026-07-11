@@ -16,20 +16,24 @@ class SystemCleanupCommand extends Command
 {
     /**
      * Nama dan tanda tangan perintah Artisan.
-     *
-     * @var string
      */
     protected $signature = 'system:cleanup';
 
     /**
      * Deskripsi singkat perintah Artisan.
-     *
-     * @var string
      */
     protected $description = 'Perform periodic system maintenance and data cleanup';
 
     /**
      * Eksekusi utama perintah untuk pembersihan dan pemeliharaan data sistem.
+     *
+     * Pembersihan yang dilakukan:
+     * 1. Hapus chatbot_logs lebih dari 30 hari
+     * 2. Hapus audit_logs lebih dari 90 hari
+     * 3. Prune expired personal access tokens (Sanctum)
+     * 4. Prune failed queue jobs lebih dari 72 jam
+     *
+     * @return int  Command::SUCCESS atau Command::FAILURE
      */
     public function handle(): int
     {

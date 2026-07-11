@@ -14,11 +14,22 @@ use Inertia\Response;
 
 /**
  * Controller untuk mengelola siklus hidup pengajuan surat oleh warga.
+ *
+ * Menangani pembuatan pengajuan baru, penyimpanan data beserta lampiran,
+ * tampilan detail tracking, dan cetak surat yang telah selesai diproses.
  */
 class CitizenSubmissionController extends Controller
 {
     /**
      * Menampilkan form pembuatan pengajuan surat berdasarkan kategori tertentu.
+     *
+     * Mengambil data warga pemohon, data anggota keluarga (jika kepala keluarga),
+     * dan data kategori surat untuk ditampilkan di form pengajuan.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang mengandung data warga terautentikasi
+     * @param  \App\Models\KategoriSurat  $kategori  Model kategori surat berdasarkan route parameter
+     * @return \Inertia\Response  Halaman form pembuatan pengajuan surat
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException  Jika kategori surat tidak aktif
      */
     public function create(Request $request, KategoriSurat $kategori): Response
     {
@@ -84,6 +95,16 @@ class CitizenSubmissionController extends Controller
 
     /**
      * Memproses penyimpanan berkas pengajuan surat baru beserta lampiran dokumennya.
+     *
+     * Memvalidasi input, memeriksa otorisasi pemohon (perorangan atau anggota keluarga),
+     * memvalidasi field wajib berdasarkan schema kategori surat, mengunggah berkas syarat,
+     * membuat record pengajuan dan tracking status dalam satu transaksi database.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang berisi data isian, file syarat, dan kategori surat
+     * @return \Illuminate\Http\RedirectResponse  Redirect ke halaman detail pengajuan yang baru dibuat
+     * @throws \Illuminate\Validation\ValidationException  Jika validasi input gagal
+     * @throws \Exception  Jika dokumen syarat wajib tidak diunggah
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException  Jika pengguna tidak berwenang mengajukan untuk pemohon
      */
     public function store(Request $request): RedirectResponse
     {
@@ -126,7 +147,7 @@ class CitizenSubmissionController extends Controller
 
                 if ($request->hasFile("file_syarat.$key")) {
                     $request->validate([
-                        "file_syarat.$key" => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+                        "file_syarat.$key" => ['file', 'mimes:jpg,jpeg,png,pdf,webp', 'max:2048'],
                     ]);
                     $file = $request->file("file_syarat.$key");
                     $path = $file->store('submissions/documents', 'public');
@@ -173,6 +194,15 @@ class CitizenSubmissionController extends Controller
 
     /**
      * Menampilkan detail tracking dan status pengajuan surat warga.
+     *
+     * Memeriksa otorisasi pengguna (pemohon langsung atau kepala keluarga
+     * dari anggota yang mengajukan), lalu menampilkan detail pengajuan
+     * beserta riwayat tracking status.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang mengandung data warga terautentikasi
+     * @param  \App\Models\PengajuanSurat  $pengajuan  Model pengajuan surat berdasarkan route parameter
+     * @return \Inertia\Response  Halaman detail pengajuan surat dengan data tracking
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException  Jika pengguna tidak berwenang melihat pengajuan
      */
     public function show(Request $request, PengajuanSurat $pengajuan): Response
     {
@@ -195,6 +225,17 @@ class CitizenSubmissionController extends Controller
 
     /**
      * Menampilkan halaman cetak hasil surat yang telah disetujui (selesai).
+     *
+     * Memeriksa otorisasi pengguna dan status pengajuan (harus 'Selesai'),
+     * mengambil data pengajuan beserta kategori dan pemohon, menghasilkan
+     * QR Code verifikasi, serta mengambil pengaturan gampong untuk
+     * keperluan cetak surat resmi.
+     *
+     * @param  \Illuminate\Http\Request  $request  Request yang mengandung data warga terautentikasi
+     * @param  \App\Models\PengajuanSurat  $pengajuan  Model pengajuan surat berdasarkan route parameter
+     * @return \Inertia\Response  Halaman cetak surat dengan data pengajuan, QR Code, dan pengaturan gampong
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException  Jika pengguna tidak berwenang melihat pengajuan
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException  Jika status pengajuan bukan 'Selesai'
      */
     public function print(Request $request, PengajuanSurat $pengajuan): Response
     {

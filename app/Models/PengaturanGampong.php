@@ -6,16 +6,42 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 /**
- * Model untuk merepresentasikan konfigurasi/pengaturan sistem (keuchik, visi-misi, kunci API, dsb).
+ * Model untuk merepresentasikan konfigurasi/pengaturan sistem gampong.
+ *
+ * Tabel: pengaturan_gampong
+ * Menyimpan pasangan kunci-nilai untuk pengaturan internal sistem
+ * (nama desa, visi-misi, kunci API, konfigurasi Telegram, dsb.).
+ *
+ * @property  string  $id  ULID unik pengaturan
+ * @property  string  $kunci  Kunci unik pengaturan
+ * @property  string  $nilai  Nilai pengaturan (string)
+ * @property  string  $tipe_data  Tipe data nilai (string, integer, boolean, json)
+ * @property  string|null  $deskripsi  Deskripsi fungsi pengaturan
+ * @property  \Carbon\Carbon|null  $updated_at  Waktu pembaruan pengaturan terakhir
  */
 class PengaturanGampong extends Model
 {
     use HasUlids;
 
+    /**
+     * Nama tabel database yang terhubung dengan model ini.
+     *
+     * @var  string
+     */
     protected $table = 'pengaturan_gampong';
-    
+
+    /**
+     * Nonaktifkan timestamps otomatis (updated_at di-set manual).
+     *
+     * @var  bool
+     */
     public $timestamps = false;
 
+    /**
+     * Atribut yang dapat diisi secara massal.
+     *
+     * @var  array<int, string>
+     */
     protected $fillable = [
         'kunci',
         'nilai',
@@ -23,6 +49,11 @@ class PengaturanGampong extends Model
         'deskripsi',
     ];
 
+    /**
+     * Casting atribut ke tipe data native PHP.
+     *
+     * @return  array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -31,7 +62,11 @@ class PengaturanGampong extends Model
     }
 
     /**
-     * Mengambil nilai pengaturan berdasarkan kunci beserta casting tipe datanya.
+     * Mengambil nilai pengaturan gampong berdasarkan kunci beserta casting tipe datanya.
+     *
+     * @param  string       $key     Kunci pengaturan yang dicari.
+     * @param  mixed        $default Nilai default jika kunci tidak ditemukan.
+     * @return  mixed       Nilai pengaturan dengan tipe data yang sesuai.
      */
     public static function get(string $key, $default = null)
     {
@@ -50,7 +85,15 @@ class PengaturanGampong extends Model
     }
 
     /**
-     * Menyimpan atau memperbarui nilai pengaturan sistem.
+     * Menyimpan atau memperbarui nilai pengaturan gampong.
+     *
+     * Jika kunci sudah ada, nilainya diperbarui. Jika belum ada, record baru dibuat.
+     * Nilai array akan di-encode otomatis ke JSON. Nilai null dikonversi ke string kosong.
+     *
+     * @param  string  $key    Kunci pengaturan.
+     * @param  mixed   $value  Nilai pengaturan.
+     * @param  string  $type   Tipe data nilai (default: string).
+     * @return  void
      */
     public static function set(string $key, $value, string $type = 'string'): void
     {

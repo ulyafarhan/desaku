@@ -76,6 +76,10 @@ class PengajuanSuratResource extends Resource
                     TextInput::make('nomor_registrasi')
                         ->label('No. Registrasi')
                         ->disabled(),
+                    TextInput::make('nomor_surat')
+                        ->label('No. Surat')
+                        ->disabled()
+                        ->placeholder('Dibuat otomatis setelah disetujui'),
                     Select::make('nik_pemohon')
                         ->relationship('pemohon', 'nama_lengkap')
                         ->label('Pemohon')
@@ -170,6 +174,11 @@ class PengajuanSuratResource extends Resource
                     ->weight('bold')
                     ->copyable()
                     ->copyMessage('Disalin!'),
+                TextColumn::make('nomor_surat')
+                    ->label('No. Surat')
+                    ->sortable()
+                    ->searchable()
+                    ->placeholder('-'),
                 TextColumn::make('pemohon.nama_lengkap')
                     ->label('Pemohon'),
                 TextColumn::make('kategori.nama_surat')

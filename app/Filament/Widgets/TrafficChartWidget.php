@@ -5,14 +5,18 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\ChartWidget;
 use App\Models\TrafficLog;
 use Carbon\Carbon;
+use Livewire\Attributes\Lazy;
+use Livewire\Attributes\Isolate;
 
+#[Lazy]
+#[Isolate]
 class TrafficChartWidget extends ChartWidget
 {
     protected ?string $heading = 'Statistik Pengunjung (7 Hari Terakhir)';
 
     protected static ?int $sort = 3;
 
-    protected int|string|array $columnSpan = 'half';
+    protected int|string|array $columnSpan = 'full';
 
     protected ?string $pollingInterval = '30s';
 

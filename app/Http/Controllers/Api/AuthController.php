@@ -12,11 +12,35 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Controller untuk menangani API Autentikasi (warga & admin) berbasis Token.
+ *
+ * @group Autentikasi
  */
 class AuthController extends Controller
 {
     /**
-     * Memproses login warga menggunakan NIK & No KK via API.
+     * Memproses login warga menggunakan NIK dan Nomor Kartu Keluarga via API.
+     *
+     * @unauthenticated
+     *
+     * @bodyParameter nik string required NIK warga (16 digit). Contoh: 1118060512900001.
+     * @bodyParameter no_kk string required Nomor Kartu Keluarga (16 digit). Contoh: 1118060512900002.
+     *
+     * @responseField message string Pesan hasil operasi.
+     * @responseField user object Data profil warga yang berhasil login.
+     * @responseField token string Token autentikasi Bearer.
+     *
+     * @response {
+     *   "message": "Login berhasil",
+     *   "user": {
+     *     "nik": "1118060512900001",
+     *     "nama_lengkap": "Ahmad Fauzi",
+     *     "no_kk": "1118060512900002",
+     *     "status_mutasi": "Tetap"
+     *   },
+     *   "token": "1|abcdefghijklmnopqrstuvwxyz123456"
+     * }
+     *
+     * @throws \Illuminate\Validation\ValidationException Jika validasi gagal atau kredensial tidak valid.
      */
     public function loginWarga(Request $request)
     {
@@ -47,7 +71,28 @@ class AuthController extends Controller
     }
 
     /**
-     * Memproses login administrator menggunakan Username & Password via API.
+     * Memproses login administrator menggunakan Username dan Password via API.
+     *
+     * @unauthenticated
+     *
+     * @bodyParameter username string required Username administrator. Contoh: admin_desa.
+     * @bodyParameter password string required Password administrator. Contoh: secretpassword.
+     *
+     * @responseField message string Pesan hasil operasi.
+     * @responseField user object Data profil admin yang berhasil login.
+     * @responseField token string Token autentikasi Bearer.
+     *
+     * @response {
+     *   "message": "Login berhasil",
+     *   "user": {
+     *     "id": 1,
+     *     "username": "admin_desa",
+     *     "nama_lengkap": "Administrator Desa"
+     *   },
+     *   "token": "2|abcdefghijklmnopqrstuvwxyz123456"
+     * }
+     *
+     * @throws \Illuminate\Validation\ValidationException Jika validasi gagal atau kredensial tidak valid.
      */
     public function loginAdmin(Request $request)
     {
@@ -77,6 +122,14 @@ class AuthController extends Controller
 
     /**
      * Memproses keluar log (logout) dengan menghapus token akses saat ini.
+     *
+     * @authenticated
+     *
+     * @responseField message string Pesan hasil operasi.
+     *
+     * @response {
+     *   "message": "Logout berhasil"
+     * }
      */
     public function logout(Request $request)
     {
@@ -89,6 +142,23 @@ class AuthController extends Controller
 
     /**
      * Mengambil detail informasi profil pengguna yang sedang login.
+     *
+     * @authenticated
+     *
+     * @responseField user object Data profil pengguna yang sedang login.
+     *
+     * @response {
+     *   "user": {
+     *     "nik": "1118060512900001",
+     *     "nama_lengkap": "Ahmad Fauzi",
+     *     "no_kk": "1118060512900002",
+     *     "status_mutasi": "Tetap",
+     *     "keluarga": {
+     *       "no_kk": "1118060512900002",
+     *       "nama_kepala_keluarga": "Ahmad Fauzi"
+     *     }
+     *   }
+     * }
      */
     public function profile(Request $request)
     {
@@ -105,6 +175,22 @@ class AuthController extends Controller
 
     /**
      * Menghubungkan ID chat Telegram dengan akun warga.
+     *
+     * @authenticated
+     *
+     * @bodyParameter telegram_chat_id string required ID chat Telegram unik. Contoh: 123456789.
+     *
+     * @responseField message string Pesan hasil operasi.
+     *
+     * @response {
+     *   "message": "Telegram berhasil terhubung"
+     * }
+     *
+     * @response 403 {
+     *   "message": "Hanya warga yang dapat bind Telegram"
+     * }
+     *
+     * @throws \Illuminate\Validation\ValidationException Jika chat ID sudah terpakai.
      */
     public function bindTelegram(Request $request)
     {
