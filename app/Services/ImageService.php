@@ -22,6 +22,10 @@ class ImageService
             return null;
         }
 
+        if (!function_exists('imagewebp') || !(gd_info()['WebP Support'] ?? false)) {
+            return $sourcePath;
+        }
+
         $info = getimagesize($sourcePath);
         if (!$info) {
             return null;
@@ -86,6 +90,6 @@ class ImageService
             return $destPath;
         }
 
-        return null;
+        return $sourcePath;
     }
 }

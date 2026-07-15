@@ -20,3 +20,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('system:cleanup')->daily()->at('02:00');
+
+Schedule::command('queue:work --stop-when-empty --tries=3 --max-time=55')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->runInBackground();

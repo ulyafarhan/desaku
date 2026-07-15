@@ -36,7 +36,7 @@ class GeminiProvider implements AiProviderInterface
     public function __construct()
     {
         $this->apiKey = config('services.gemini.api_key');
-        $this->model = config('services.gemini.model', 'gemini-pro');
+        $this->model = config('services.gemini.model', 'gemini-flash-lite-latest');
         $baseUrl = config('services.gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta');
         $this->apiUrl = rtrim($baseUrl, '/') . "/models/{$this->model}:generateContent";
     }
@@ -90,7 +90,7 @@ class GeminiProvider implements AiProviderInterface
                 ],
             ];
 
-            $response = Http::withHeaders([
+            $response = Http::timeout(30)->connectTimeout(10)->withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl . '?key=' . $this->apiKey, $payload);
 
@@ -131,6 +131,11 @@ class GeminiProvider implements AiProviderInterface
     public function fixCopywriting(string $text, ?string $title = null): ?string
     {
         try {
+            if (empty($this->apiKey)) {
+                Log::warning('Gemini API Key is not configured for fixCopywriting.');
+                return null;
+            }
+
             $trimmedText = trim(strip_tags($text));
             if (empty($trimmedText)) {
                 $prompt = "Buatlah satu artikel berita atau pengumuman desa yang lengkap, natural, mengalir dengan baik, informatif, dan sangat bagus berdasarkan judul berikut: \"" . ($title ?? 'Informasi Desa') . "\". Gunakan bahasa Indonesia yang baik, benar, formal namun tetap ramah dibaca oleh warga gampong/desa. Format artikel menggunakan tag HTML standar (seperti tag p, strong, em, ul, li, br, dll). Jangan berikan penjelasan atau pengantar tambahan apapun, balas HANYA dengan kode HTML artikel tersebut secara langsung.";
@@ -152,7 +157,7 @@ class GeminiProvider implements AiProviderInterface
                 ],
             ];
 
-            $response = Http::withHeaders([
+            $response = Http::timeout(30)->connectTimeout(10)->withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl . '?key=' . $this->apiKey, $payload);
 
@@ -183,6 +188,11 @@ class GeminiProvider implements AiProviderInterface
     public function generateSeoMetadata(string $title, string $content): ?array
     {
         try {
+            if (empty($this->apiKey)) {
+                Log::warning('Gemini API Key is not configured for generateSeoMetadata.');
+                return null;
+            }
+
             $prompt = "Tolong buatkan meta deskripsi (sangat penting: HARUS kurang dari 150 karakter terhitung spasi, jangan sampai melebihi 150 karakter, padat, profesional, ramah SEO, merangkum isi berita, tanpa emoji) dan kata kunci SEO (5-7 kata kunci dipisahkan dengan koma) berdasarkan judul dan konten berita desa berikut. Balas HANYA dengan format JSON valid seperti ini tanpa markdown/formatting tambahan: {\"meta_description\": \"...\", \"kata_kunci\": \"...\"}\n\nJudul: {$title}\nKonten: " . strip_tags($content);
 
             $payload = [
@@ -199,7 +209,7 @@ class GeminiProvider implements AiProviderInterface
                 ],
             ];
 
-            $response = Http::withHeaders([
+            $response = Http::timeout(30)->connectTimeout(10)->withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl . '?key=' . $this->apiKey, $payload);
 
@@ -248,7 +258,7 @@ class GeminiProvider implements AiProviderInterface
         try {
             $baseUrl = config('services.gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta');
             $url = rtrim($baseUrl, '/') . "/models/{$this->model}?key={$this->apiKey}";
-            $response = Http::get($url);
+            $response = Http::timeout(10)->connectTimeout(5)->get($url);
             return $response->successful();
         } catch (\Exception $e) {
             return false;

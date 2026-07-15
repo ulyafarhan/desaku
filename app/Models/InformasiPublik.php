@@ -91,7 +91,9 @@ class InformasiPublik extends Model
         if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::url($value);
+        // Build URL manually to avoid triggering Flysystem/FinfoMimeTypeDetector
+        // which crashes when PHP fileinfo extension is not installed.
+        return rtrim(config('app.url'), '/') . '/storage/' . ltrim($value, '/');
     }
 
     /**
@@ -136,14 +138,13 @@ class InformasiPublik extends Model
             }
         });
 
-        static::created(function ($model) {
-            if ($model->is_published) {
+        static::saved(function ($model) {
+            if ($model->wasRecentlyCreated && $model->is_published) {
                 SendNewsTelegramNotificationJob::dispatch($model->id);
+                return;
             }
-        });
 
-        static::updated(function ($model) {
-            if ($model->is_published && !$model->getOriginal('is_published')) {
+            if (!$model->wasRecentlyCreated && $model->is_published && !$model->getOriginal('is_published')) {
                 SendNewsTelegramNotificationJob::dispatch($model->id);
             }
         });

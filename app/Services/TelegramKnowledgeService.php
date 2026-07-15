@@ -21,9 +21,10 @@ class TelegramKnowledgeService
     protected function getActiveKnowledges()
     {
         try {
-            return Cache::remember('telegram_bot_knowledges', 86400, function () {
-                return BotKnowledge::where('is_aktif', true)->get();
+            $cached = Cache::remember('telegram_bot_knowledges', 86400, function () {
+                return BotKnowledge::where('is_aktif', true)->get()->toArray();
             });
+            return collect($cached);
         } catch (\Exception $e) {
             return collect();
         }
@@ -49,12 +50,12 @@ class TelegramKnowledgeService
         $databaseFaq = $this->getActiveKnowledges()
             ->where('tipe', 'faq')
             ->first(function ($faq) use ($normalizedText) {
-                $keywords = $faq->kata_kunci ?? [];
+                $keywords = $faq['kata_kunci'] ?? [];
                 return $this->matchesAnyKeyword($normalizedText, $keywords);
             });
 
         if ($databaseFaq) {
-            return $databaseFaq->jawaban_atau_konten;
+            return $databaseFaq['jawaban_atau_konten'];
         }
 
         $greetingsConfig = config('telegram_knowledge.greetings', []);
@@ -92,7 +93,7 @@ class TelegramKnowledgeService
         $databaseKb = $this->getActiveKnowledges()
             ->where('tipe', 'kb')
             ->filter(function ($kb) use ($normalizedText) {
-                $keywords = $kb->kata_kunci ?? [];
+                $keywords = $kb['kata_kunci'] ?? [];
                 return $this->matchesAnyKeyword($normalizedText, $keywords);
             })
             ->pluck('jawaban_atau_konten')

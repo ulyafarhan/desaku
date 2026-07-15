@@ -84,7 +84,7 @@ class OpenAiProvider implements AiProviderInterface
                 'max_tokens' => 1024,
             ];
 
-            $response = Http::withHeaders([
+            $response = Http::timeout(30)->connectTimeout(10)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', $payload);
@@ -147,7 +147,7 @@ class OpenAiProvider implements AiProviderInterface
                 'max_tokens' => 2048,
             ];
 
-            $response = Http::withHeaders([
+            $response = Http::timeout(30)->connectTimeout(10)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', $payload);
@@ -195,7 +195,7 @@ class OpenAiProvider implements AiProviderInterface
                 'max_tokens' => 1024,
             ];
 
-            $response = Http::withHeaders([
+            $response = Http::timeout(30)->connectTimeout(10)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', $payload);
@@ -246,7 +246,7 @@ class OpenAiProvider implements AiProviderInterface
             if (empty($this->apiKey)) {
                 return false;
             }
-            $response = Http::withHeaders([
+            $response = Http::timeout(10)->connectTimeout(5)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
             ])->get($this->baseUrl . '/models');
             return $response->successful();

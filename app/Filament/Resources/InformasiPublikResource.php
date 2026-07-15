@@ -107,6 +107,7 @@ class InformasiPublikResource extends Resource
                         })
                         ->saveUploadedFileUsing(function (\Livewire\Features\SupportFileUploads\TemporaryUploadedFile $file) {
                             $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
                             $filename = \Illuminate\Support\Str::slug($filename);
                             $webpName = $filename . '-' . time() . '.webp';
                             $destinationPath = 'informasi/' . $webpName;
@@ -115,11 +116,15 @@ class InformasiPublikResource extends Resource
                             $processedLocalPath = \App\Services\ImageService::compressToWebP($tempPath, null, 1600, 80);
 
                             if ($processedLocalPath) {
+                                $finalExt = pathinfo($processedLocalPath, PATHINFO_EXTENSION);
+                                if ($finalExt !== 'webp') {
+                                    $destinationPath = 'informasi/' . $filename . '-' . time() . '.' . $finalExt;
+                                }
                                 \Illuminate\Support\Facades\Storage::disk('public')->put($destinationPath, file_get_contents($processedLocalPath));
                                 return $destinationPath;
                             }
 
-                            return $file->storeAs('informasi', $webpName, 'public');
+                            return $file->storeAs('informasi', $filename . '-' . time() . '.' . $extension, 'public');
                         }),
                     TextInput::make('cover_image_url')
                         ->label('Atau URL Gambar Cover (CDN/External)')

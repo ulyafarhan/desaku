@@ -69,7 +69,7 @@ class TelegramService
                 $payload['reply_markup'] = json_encode($keyboard);
             }
 
-            $response = Http::post("{$this->apiUrl}/sendMessage", $payload);
+            $response = Http::timeout(10)->connectTimeout(5)->post("{$this->apiUrl}/sendMessage", $payload);
 
             if (!$response->successful()) {
                 Log::error('Telegram Send Message Failed: ' . $response->body() . ' | Payload: ' . json_encode($payload));
@@ -106,7 +106,7 @@ class TelegramService
                 'parse_mode' => 'HTML',
             ];
 
-            $response = Http::post("{$this->apiUrl}/sendPhoto", $payload);
+            $response = Http::timeout(10)->connectTimeout(5)->post("{$this->apiUrl}/sendPhoto", $payload);
 
             if (!$response->successful()) {
                 Log::error('Telegram Send Photo Failed: ' . $response->body() . ' | Photo: ' . $photoUrl);
@@ -138,7 +138,7 @@ class TelegramService
                 return false;
             }
 
-            $response = Http::attach(
+            $response = Http::timeout(15)->connectTimeout(5)->attach(
                 'document',
                 file_get_contents($filePath),
                 basename($filePath)
@@ -270,7 +270,7 @@ class TelegramService
     public function setWebhook(string $url): bool
     {
         try {
-            $response = Http::post("{$this->apiUrl}/setWebhook", [
+            $response = Http::timeout(10)->connectTimeout(5)->post("{$this->apiUrl}/setWebhook", [
                 'url' => $url,
             ]);
 
@@ -290,7 +290,7 @@ class TelegramService
     public function getMe(): ?array
     {
         try {
-            $response = Http::get("{$this->apiUrl}/getMe");
+            $response = Http::timeout(10)->connectTimeout(5)->get("{$this->apiUrl}/getMe");
 
             if ($response->successful()) {
                 return $response->json('result');
