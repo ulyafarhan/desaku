@@ -48,7 +48,12 @@ Route::prefix('v1')->group(function () {
 
     // Telegram Webhook
     Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])->middleware('throttle:60,1');
+    
+    // WhatsApp
+    Route::post('/whatsapp/webhook', [WhatsAppWebhookController::class, 'handle'])->middleware('throttle:60,1');
+
 });
+
 
 // Protected Routes - Shared Auth
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {

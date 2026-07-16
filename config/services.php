@@ -107,6 +107,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | WHATSAPP GATEWAY
+    |--------------------------------------------------------------------------
+    |
+    | Layanan WhatsApp Gateway digunakan untuk mengirim notifikasi dan informasi
+    | kepada warga melalui WhatsApp. Konfigurasi meliputi URL gateway, API key,
+    | session ID, dan target default.
+    |
+    */
+    'whatsapp' => [
+        'gateway_url' => env('WHA_GATEWAY_URL', 'http://localhost:2785'),
+        'api_key'     => env('WHA_API_KEY'),
+        'session_id'  => env('WHA_SESSION_ID', 'sig-udeung'),
+        'default_target' => env('WHA_DEFAULT_TARGET'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | GOOGLE GEMINI AI
     |--------------------------------------------------------------------------
     |
