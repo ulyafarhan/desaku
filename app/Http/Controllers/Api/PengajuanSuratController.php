@@ -10,6 +10,7 @@ use App\Models\AuditLog;
 use App\Jobs\GenerateSuratPdfJob;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
+use App\Jobs\SendStatusWhatsappJob;
 
 /**
  * Controller untuk mengelola pengajuan surat pelayanan warga lewat API.
@@ -384,6 +385,16 @@ class PengajuanSuratController extends Controller
             'message' => 'Pengajuan berhasil disetujui',
             'data' => $pengajuan,
         ]);
+
+        if ($pengajuan->penduduk && !empty($pengajuan->penduduk->no_hp)) {
+            SendStatusWhatsappJob::dispatch(
+                $pengajuan->penduduk->nik,
+                $pengajuan->kategori?->nama_surat ?? 'Surat',
+                $pengajuan->status,
+                $pengajuan->nomor_registrasi ?? '-',
+                $request->catatan ?? null
+            );
+        }
     }
 
     /**
@@ -453,5 +464,15 @@ class PengajuanSuratController extends Controller
             'message' => 'Pengajuan ditolak',
             'data' => $pengajuan,
         ]);
+
+        if ($pengajuan->penduduk && !empty($pengajuan->penduduk->no_hp)) {
+            SendStatusWhatsappJob::dispatch(
+                $pengajuan->penduduk->nik,
+                $pengajuan->kategori?->nama_surat ?? 'Surat',
+                $pengajuan->status,
+                $pengajuan->nomor_registrasi ?? '-',
+                $request->catatan_penolakan ?? null
+            );
+        }
     }
 }

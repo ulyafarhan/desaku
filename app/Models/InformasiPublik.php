@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Support\Str;
 use App\Jobs\SendNewsTelegramNotificationJob;
+use App\Jobs\SendNewsWhatsappNotificationJob;
 
 /**
  * Model untuk merepresentasikan artikel berita dan pengumuman gampong.
@@ -141,11 +142,13 @@ class InformasiPublik extends Model
         static::saved(function ($model) {
             if ($model->wasRecentlyCreated && $model->is_published) {
                 SendNewsTelegramNotificationJob::dispatch($model->id);
+                SendNewsWhatsappNotificationJob::dispatch($model->id);
                 return;
             }
 
             if (!$model->wasRecentlyCreated && $model->is_published && !$model->getOriginal('is_published')) {
                 SendNewsTelegramNotificationJob::dispatch($model->id);
+                SendNewsWhatsappNotificationJob::dispatch($model->id);
             }
         });
     }

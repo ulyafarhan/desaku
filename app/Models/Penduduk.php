@@ -87,6 +87,7 @@ class Penduduk extends Authenticatable
         'foto_profil',
         'foto_ktp',
         'foto_kk',
+        'no_hp',
     ];
 
     /**
