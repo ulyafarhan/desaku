@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\FasilitasDesa;
 
 /**
  * Controller untuk mengelola halaman publik dan layanan portal umum.
@@ -243,4 +244,27 @@ class PublicPortalController extends Controller
 
         return back()->with('success', 'Aspirasi terkirim. Terima kasih!');
     }
+
+    public function fasilitas()
+    {
+        $kategori = request('kategori');
+
+        $fasilitas = FasilitasDesa::query()
+            ->when($kategori, fn ($q, $k) => $q->where('kategori', $k))
+            ->latest('created_at')
+            ->paginate(12);
+
+        $kategoriList = FasilitasDesa::select('kategori')
+            ->distinct()
+            ->orderBy('kategori')
+            ->pluck('kategori');
+
+        return inertia('Public/Fasilitas/Index', [
+            'fasilitas' => $fasilitas,
+            'kategoriList' => $kategoriList,
+            'selectedKategori' => $kategori,
+        ]);
+    }
 }
+
+

@@ -76,6 +76,7 @@ const sendAspirasi = async () => {
                     <Link href="/profil" class="px-4 py-2 rounded-full transition duration-200 hover:bg-slate-50" :class="activeClass = $page.url.startsWith('/profil') ? 'text-blue-600 bg-blue-50/50' : 'hover:text-slate-900'">Profil Desa</Link>
                     <Link href="/informasi" class="px-4 py-2 rounded-full transition duration-200 hover:bg-slate-50" :class="activeClass = $page.url.startsWith('/informasi') ? 'text-blue-600 bg-blue-50/50' : 'hover:text-slate-900'">Informasi</Link>
                     <Link href="/statistik" class="px-4 py-2 rounded-full transition duration-200 hover:bg-slate-50" :class="activeClass = $page.url.startsWith('/statistik') ? 'text-blue-600 bg-blue-50/50' : 'hover:text-slate-900'">Statistik</Link>
+                    <Link href="/fasilitas" class="px-4 py-2 rounded-full transition duration-200 hover:bg-slate-50" :class="$page.url.startsWith('/fasilitas') ? 'text-blue-600 bg-blue-50/50' : 'hover:text-slate-900'">Fasilitas</Link>
                     <Link href="/verifikasi" class="px-4 py-2 rounded-full transition duration-200 hover:bg-slate-50" :class="activeClass = $page.url.startsWith('/verifikasi') ? 'text-blue-600 bg-blue-50/50' : 'hover:text-slate-900'">Verifikasi Surat</Link>
                 </div>
 
@@ -105,6 +106,7 @@ const sendAspirasi = async () => {
                         <Link href="/profil" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-755 hover:bg-blue-50/60 hover:text-blue-600 transition" @click="mobileMenuOpen = false">Profil Desa</Link>
                         <Link href="/informasi" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-755 hover:bg-blue-50/60 hover:text-blue-600 transition" @click="mobileMenuOpen = false">Informasi</Link>
                         <Link href="/statistik" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-755 hover:bg-blue-50/60 hover:text-blue-600 transition" @click="mobileMenuOpen = false">Statistik</Link>
+                        <Link href="/fasilitas" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-755 hover:bg-blue-50/60 hover:text-blue-600 transition" @click="mobileMenuOpen = false">Fasilitas</Link>
                         <Link href="/verifikasi" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-755 hover:bg-blue-50/60 hover:text-blue-600 transition" @click="mobileMenuOpen = false">Verifikasi Surat</Link>
                         
                         <hr class="border-slate-100 my-2">
@@ -208,6 +210,7 @@ const sendAspirasi = async () => {
                             <li><Link href="/profil" class="hover:text-white transition duration-150">Profil & Lembaga</Link></li>
                             <li><Link href="/informasi" class="hover:text-white transition duration-150">Berita & Informasi</Link></li>
                             <li><Link href="/statistik" class="hover:text-white transition duration-150">Statistik Kependudukan</Link></li>
+                            <li><Link href="/fasilitas" class="hover:text-white transition duration-150">Fasilitas Desa</Link></li>
                             <li><Link href="/verifikasi" class="hover:text-white transition duration-150">Verifikasi Surat / Dokumen</Link></li>
                             <li><Link href="/login" class="hover:text-white transition duration-150">Portal Layanan Warga</Link></li>
                         </ul>
