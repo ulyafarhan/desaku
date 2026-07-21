@@ -56,7 +56,7 @@ const form = useForm({
 const populateDocsFromProfile = (pemohon) => {
     documents.value.forEach((document) => {
         const key = document.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-        if ((key === 'ktp' || key === 'foto_ktp') && pemohon.foto_ktp) {
+        if (key.includes('ktp') && pemohon.foto_ktp) {
             form.file_syarat[key] = pemohon.foto_ktp;
         } else if ((key === 'kk' || key === 'kartu_keluarga' || key === 'foto_kk') && pemohon.foto_kk) {
             form.file_syarat[key] = pemohon.foto_kk;
@@ -83,18 +83,35 @@ watch(selectedNik, (newNik) => {
         jenis_kelamin: pemohon.jenis_kelamin,
         agama: pemohon.agama,
         pekerjaan: pemohon.pekerjaan,
+        pekerjaan_ortu: pemohon.pekerjaan,
         pendidikan: pemohon.pendidikan,
+        pendidikan_terakhir: pemohon.pendidikan,
         status_perkawinan: pemohon.status_perkawinan,
         alamat: pemohon.alamat,
+        alamat_sekarang: pemohon.alamat,
+        dusun: pemohon.dusun,
+        rt: pemohon.rt_rw,
+        rw: pemohon.rt_rw,
+        rt_rw: pemohon.rt_rw,
         no_kk: pemohon.no_kk,
+        no_hp: pemohon.no_hp,
+        telepon: pemohon.no_hp,
+        hp: pemohon.no_hp,
+        whatsapp: pemohon.no_hp,
     };
     fields.value.forEach((field) => {
-        const key = field.field.toLowerCase();
+        const key = field.field.toLowerCase()
         if (autoFillMap[key] !== undefined && autoFillMap[key]) {
-            form.data_isian[field.field] = autoFillMap[key];
+            form.data_isian[field.field] = autoFillMap[key]
+        } else if (!form.data_isian[field.field]) {
+            if (key.startsWith('pekerjaan') && pemohon.pekerjaan) {
+                form.data_isian[field.field] = pemohon.pekerjaan
+            } else if (key.startsWith('pendidikan') && pemohon.pendidikan) {
+                form.data_isian[field.field] = pemohon.pendidikan
+            }
         }
-    });
-});
+    })
+})
 
 const doAutoFill = () => {
     const pemohon = selectedPemohon.value;
@@ -109,18 +126,35 @@ const doAutoFill = () => {
         jenis_kelamin: pemohon.jenis_kelamin,
         agama: pemohon.agama,
         pekerjaan: pemohon.pekerjaan,
+        pekerjaan_ortu: pemohon.pekerjaan,
         pendidikan: pemohon.pendidikan,
+        pendidikan_terakhir: pemohon.pendidikan,
         status_perkawinan: pemohon.status_perkawinan,
         alamat: pemohon.alamat,
+        alamat_sekarang: pemohon.alamat,
+        dusun: pemohon.dusun,
+        rt: pemohon.rt_rw,
+        rw: pemohon.rt_rw,
+        rt_rw: pemohon.rt_rw,
         no_kk: pemohon.no_kk,
-    };
+        no_hp: pemohon.no_hp,
+        telepon: pemohon.no_hp,
+        hp: pemohon.no_hp,
+        whatsapp: pemohon.no_hp,
+    }
     fields.value.forEach((field) => {
-        const key = field.field.toLowerCase();
+        const key = field.field.toLowerCase()
         if (autoFillMap[key] !== undefined && autoFillMap[key]) {
-            form.data_isian[field.field] = autoFillMap[key];
+            form.data_isian[field.field] = autoFillMap[key]
+        } else if (!form.data_isian[field.field]) {
+            if (key.startsWith('pekerjaan') && pemohon.pekerjaan) {
+                form.data_isian[field.field] = pemohon.pekerjaan
+            } else if (key.startsWith('pendidikan') && pemohon.pendidikan) {
+                form.data_isian[field.field] = pemohon.pendidikan
+            }
         }
-    });
-};
+    })
+}
 
 doAutoFill();
 

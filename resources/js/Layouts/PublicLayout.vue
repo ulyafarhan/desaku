@@ -45,7 +45,7 @@ const sendAspirasi = async () => {
                     <div class="flex items-center gap-5">
                         <span class="flex items-center gap-1.5"><MapPin class="size-3.5 text-blue-600 shrink-0" /> Kantor Keuchik Gampong {{ page.props.settings.nama_gampong }}, {{ page.props.settings.kabupaten }}</span>
                         <span class="h-3 w-px bg-slate-200" />
-                        <span class="flex items-center gap-1.5"><Clock class="size-3.5 text-blue-600 shrink-0" /> Pelayanan: Sen - Jum (08:00 - 16:30)</span>
+                        <span class="flex items-center gap-1.5"><Clock class="size-3.5 text-blue-600 shrink-0" /> Pelayanan: Sen - Minggu (08:30 - 17:30)</span>
                     </div>
                     <div class="flex items-center gap-5">
                         <a :href="'mailto:' + page.props.settings.email" class="flex items-center gap-1.5 hover:text-blue-700 transition duration-150"><Mail class="size-3.5 text-blue-600 shrink-0" /> {{ page.props.settings.email }}</a>
@@ -230,9 +230,7 @@ const sendAspirasi = async () => {
                     <div class="space-y-4">
                         <h4 class="text-xs font-bold tracking-widest text-white uppercase border-l-2 border-blue-500 pl-3">Jam Kerja Pelayanan</h4>
                         <div class="text-sm space-y-2.5 font-medium">
-                            <p>Senin – Kamis : <span class="text-white">08.00 – 16.30 WIB</span></p>
-                            <p>Jumat : <span class="text-white">08.00 – 16.00 WIB</span></p>
-                            <p>Sabtu – Minggu : <span class="text-slate-600">Tutup (Hari Libur)</span></p>
+                            <p>Senin – Minggu : <span class="text-white">08.30 – 17.30 WIB</span></p>
                         </div>
                         <div class="pt-2">
                             <a href="https://www.google.com/maps/place/5%C2%B016'39.8%22N+96%C2%B006'08.4%22E/@5.2777317,96.1023468,17z" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-800 px-5 py-3 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all duration-300 w-full">

@@ -116,10 +116,12 @@ return [
     |
     */
     'whatsapp' => [
-        'gateway_url' => env('WHA_GATEWAY_URL', 'http://localhost:2785'),
-        'api_key'     => env('WHA_API_KEY'),
-        'session_id'  => env('WHA_SESSION_ID', 'sig-udeung'),
-        'default_target' => env('WHA_DEFAULT_TARGET'),
+        'provider'      => env('WHA_PROVIDER', 'wa-gateway'),
+        'gateway_url'   => env('WHA_GATEWAY_URL', 'http://localhost:2785'),
+        'api_key'       => env('WHA_API_KEY', ''),
+        'session_id'    => env('WHA_SESSION_ID', 'sig-udeung'),
+        'default_target' => env('WHA_DEFAULT_TARGET', ''),
+        'fonnte_token'  => env('FONNTE_TOKEN', ''),
     ],
 
     /*

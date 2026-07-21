@@ -24,7 +24,7 @@ const props = defineProps({
 
                 <!-- Filter Kategori -->
                 <div class="flex flex-wrap gap-2 justify-center mb-8">
-                    <Link :href="route('fasilitas.index')"
+                    <Link href="/fasilitas"
                           class="px-4 py-2 rounded-full text-sm font-medium transition"
                           :class="!selectedKategori
                               ? 'bg-blue-600 text-white'
@@ -32,7 +32,7 @@ const props = defineProps({
                         Semua
                     </Link>
                     <Link v-for="k in kategoriList" :key="k"
-                          :href="route('fasilitas.index', { kategori: k })"
+                          :href="`/fasilitas?kategori=${encodeURIComponent(k)}`"
                           class="px-4 py-2 rounded-full text-sm font-medium transition"
                           :class="selectedKategori === k
                               ? 'bg-blue-600 text-white'
@@ -46,9 +46,13 @@ const props = defineProps({
                     <AppCard v-for="item in fasilitas.data" :key="item.id"
                              class="overflow-hidden">
                         <template #image>
-                            <img :src="item.foto ?? '/images/default-fasilitas.png'"
-                                 :alt="item.nama_fasilitas"
-                                 class="w-full h-48 object-cover">
+                            <div v-if="item.foto_url" class="w-full h-48 overflow-hidden">
+                                <img :src="item.foto_url" :alt="item.nama_fasilitas"
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <div v-else class="w-full h-48 bg-slate-100 flex items-center justify-center">
+                                <MapPin class="w-10 h-10 text-slate-300" />
+                            </div>
                         </template>
                         <template #content>
                             <h3 class="text-lg font-bold mb-1">{{ item.nama_fasilitas }}</h3>

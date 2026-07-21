@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendStatusWhatsappJob;
 use App\Models\KategoriSurat;
 use App\Models\Penduduk;
 use App\Models\PengajuanSurat;
@@ -59,6 +60,7 @@ class CitizenSubmissionController extends Controller
                     'dusun' => $keluarga->dusun,
                     'rt_rw' => $keluarga->rt_rw,
                     'no_kk' => $keluarga->no_kk,
+                    'no_hp' => $p->no_hp,
                     'foto_profil' => $p->foto_profil,
                     'foto_ktp' => $p->foto_ktp,
                     'foto_kk' => $p->foto_kk,
@@ -80,6 +82,7 @@ class CitizenSubmissionController extends Controller
             'dusun' => $keluarga?->dusun,
             'rt_rw' => $keluarga?->rt_rw,
             'no_kk' => $keluarga?->no_kk,
+            'no_hp' => $warga->no_hp,
             'foto_profil' => $warga->foto_profil,
             'foto_ktp' => $warga->foto_ktp,
             'foto_kk' => $warga->foto_kk,
@@ -186,6 +189,15 @@ class CitizenSubmissionController extends Controller
                 'keterangan_update' => 'Pengajuan surat dibuat',
             ]);
         });
+
+        if ($pengajuan->pemohon && !empty($pengajuan->pemohon->no_hp)) {
+            SendStatusWhatsappJob::dispatch(
+                $pengajuan->pemohon->nik,
+                $pengajuan->kategori?->nama_surat ?? 'Surat',
+                'Pending',
+                $pengajuan->nomor_registrasi ?? '-'
+            );
+        }
 
         return redirect()
             ->route('warga.pengajuan.show', $pengajuan)

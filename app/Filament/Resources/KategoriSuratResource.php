@@ -7,6 +7,8 @@ use App\Models\KategoriSurat;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
+use Illuminate\Database\QueryException;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -171,7 +173,22 @@ class KategoriSuratResource extends Resource
             ->headerActions([CreateAction::make()])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->using(function ($record) {
+                        try {
+                            $record->delete();
+                        } catch (QueryException $e) {
+                            if ($e->getCode() == 23000) {
+                                Notification::make()
+                                    ->title('Tidak Dapat Dihapus')
+                                    ->body('Kategori ini masih memiliki pengajuan surat terkait. Hapus atau pindahkan pengajuan terlebih dahulu.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+                            throw $e;
+                        }
+                    }),
             ])
             ->actionsColumnLabel('Aksi')
             ->striped()

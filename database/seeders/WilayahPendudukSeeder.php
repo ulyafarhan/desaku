@@ -404,7 +404,7 @@ class WilayahPendudukSeeder extends Seeder
                     $namaSodara = $faker->randomElement($namaPerempuanAceh) . ' ' . $namaBelakangSuami;
                 }
 
-                $nikSodara = '111806' . substr($tahunLahirSodara, -2) . $bulanSodara . $hariSodara . $faker->numerify('####');
+                $nikSodara = '111806' . substr($tahunLahirSodara, -2) . $bulanSodara . '-' . $hariSodara . $faker->numerify('####');
                 $usiaSodara = 2026 - $tahunLahirSodara;
 
                 $statusMutasiSodara = 'Tetap';

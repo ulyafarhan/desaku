@@ -172,7 +172,7 @@
     </div>
 
     <div class="content">
-        <p>Bahwa yang bersangkutan merupakan benar warga yang berdomisili di Gampong {{ \App\Models\PengaturanGampong::get('nama_gampong', 'Udeung') }}, Kecamatan {{ \App\Models\PengaturanGampong::get('kecamatan', 'Bandar Baru') }}, Kabupaten {{ \App\Models\PengaturanGampong::get('kabupaten', 'Pidie Jaya') }} yang telah tinggal selama <strong>{{ $data_isian['lama_tinggal'] ?? ($data_isian['Lama Tinggal'] ?? '-') }} tahun</strong>.</p>
+        <p>Bahwa yang bersangkutan merupakan benar warga yang berdomisili di Gampong {{ \App\Models\PengaturanGampong::get('nama_gampong', 'Udeung') }}, Kecamatan {{ \App\Models\PengaturanGampong::get('kecamatan', 'Bandar Baru') }}, Kabupaten {{ \App\Models\PengaturanGampong::get('kabupaten', 'Pidie Jaya') }} yang telah tinggal selama <strong>{{ $data_isian['lama_menetap'] ?? ($data_isian['Lama Menetap'] ?? $data_isian['lama_tinggal'] ?? '-') }} tahun</strong>.</p>
         
         <p>Surat keterangan ini dibuat untuk keperluan <strong>{{ $data_isian['keperluan'] ?? ($data_isian['Keperluan'] ?? '-') }}</strong>.</p>
         

@@ -1,0 +1,1300 @@
+name: Administrasi
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/admin/surat/pengajuan
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: 'Pengajuan Surat'
+      subgroupDescription: ''
+      title: 'Mengambil data seluruh pengajuan surat untuk kebutuhan panel admin desa.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "current_page": 1,
+            "data": [
+              {
+                "id": 1,
+                "nik_pemohon": "1118060512900001",
+                "nomor_registrasi": "REG/2026/0001",
+                "status": "Pending",
+                "kategori": {
+                  "id": 1,
+                  "nama_surat": "Surat Keterangan Domisili"
+                },
+                "pemohon": {
+                  "nik": "1118060512900001",
+                  "nama_lengkap": "Ahmad Fauzi"
+                }
+              }
+            ],
+            "per_page": 20
+          }
+        headers: []
+        description: ''
+    responseFields:
+      current_page:
+        custom: []
+        name: current_page
+        description: 'Halaman saat ini.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Daftar pengajuan surat untuk admin.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].id':
+        custom: []
+        name: 'data[].id'
+        description: 'ID pengajuan surat.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].nomor_registrasi':
+        custom: []
+        name: 'data[].nomor_registrasi'
+        description: 'Nomor registrasi pengajuan.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].status':
+        custom: []
+        name: 'data[].status'
+        description: 'Status pengajuan.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].kategori':
+        custom: []
+        name: 'data[].kategori'
+        description: 'Informasi kategori surat.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].pemohon':
+        custom: []
+        name: 'data[].pemohon'
+        description: 'Data pemohon.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'Jumlah item per halaman (20).'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/admin/surat/pengajuan/{id}/approve'
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: 'Pengajuan Surat'
+      subgroupDescription: ''
+      title: 'Menyetujui pengajuan surat dan memicu proses tanda tangan digital PDF otomatis.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the pengajuan.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Pengajuan berhasil disetujui",
+            "data": {
+              "id": 1,
+              "nomor_registrasi": "REG/2026/0001",
+              "status": "Disetujui",
+              "diverifikasi_oleh": 1,
+              "nik_pemohon": "1118060512900001"
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Data pengajuan surat yang telah disetujui.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.status:
+        custom: []
+        name: data.status
+        description: 'Status baru ("Disetujui").'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.diverifikasi_oleh:
+        custom: []
+        name: data.diverifikasi_oleh
+        description: 'ID admin yang menyetujui.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/admin/surat/pengajuan/{id}/reject'
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: 'Pengajuan Surat'
+      subgroupDescription: ''
+      title: 'Menolak pengajuan permohonan surat warga dengan menyertakan catatan penolakan.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the pengajuan.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      catatan_penolakan:
+        custom: []
+        name: catatan_penolakan
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      catatan_penolakan: architecto
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Pengajuan ditolak",
+            "data": {
+              "id": 1,
+              "nomor_registrasi": "REG/2026/0001",
+              "status": "Ditolak",
+              "catatan_penolakan": "Berkas tidak lengkap",
+              "diverifikasi_oleh": 1
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Data pengajuan surat yang telah ditolak.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.status:
+        custom: []
+        name: data.status
+        description: 'Status baru ("Ditolak").'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.catatan_penolakan:
+        custom: []
+        name: data.catatan_penolakan
+        description: 'Catatan alasan penolakan.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/admin/mutasi
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: 'Mutasi Penduduk'
+      subgroupDescription: ''
+      title: 'Mengambil seluruh data mutasi penduduk untuk panel admin desa.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "current_page": 1,
+            "data": [
+              {
+                "id": 1,
+                "nik": "1118060512900001",
+                "jenis_mutasi": "Kepindahan",
+                "tanggal_mutasi": "2026-07-10",
+                "status_verifikasi": "Pending",
+                "penduduk": {
+                  "nik": "1118060512900001",
+                  "nama_lengkap": "Ahmad Fauzi"
+                },
+                "verifikator": null
+              }
+            ],
+            "per_page": 20
+          }
+        headers: []
+        description: ''
+    responseFields:
+      current_page:
+        custom: []
+        name: current_page
+        description: 'Halaman saat ini.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Daftar pengajuan mutasi untuk admin.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].id':
+        custom: []
+        name: 'data[].id'
+        description: 'ID pengajuan mutasi.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].nik':
+        custom: []
+        name: 'data[].nik'
+        description: 'NIK penduduk.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].jenis_mutasi':
+        custom: []
+        name: 'data[].jenis_mutasi'
+        description: 'Jenis mutasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].status_verifikasi':
+        custom: []
+        name: 'data[].status_verifikasi'
+        description: 'Status verifikasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].penduduk':
+        custom: []
+        name: 'data[].penduduk'
+        description: 'Data penduduk terkait.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].verifikator':
+        custom: []
+        name: 'data[].verifikator'
+        description: 'Data admin verifikator (jika sudah diverifikasi).'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'Jumlah item per halaman (20).'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/admin/mutasi/{id}/approve'
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: 'Mutasi Penduduk'
+      subgroupDescription: ''
+      title: 'Menyetujui pengajuan mutasi dan memperbarui status aktif/pasif kependudukan warga terkait.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the mutasi.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Mutasi berhasil disetujui",
+            "data": {
+              "id": 1,
+              "nik": "1118060512900001",
+              "jenis_mutasi": "Kepindahan",
+              "status_verifikasi": "Disetujui",
+              "diverifikasi_oleh": 1
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Data pengajuan mutasi yang telah disetujui.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.status_verifikasi:
+        custom: []
+        name: data.status_verifikasi
+        description: 'Status verifikasi baru ("Disetujui").'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.diverifikasi_oleh:
+        custom: []
+        name: data.diverifikasi_oleh
+        description: 'ID admin yang menyetujui.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/admin/mutasi/{id}/reject'
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: 'Mutasi Penduduk'
+      subgroupDescription: ''
+      title: 'Menolak pengajuan mutasi penduduk.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the mutasi.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Mutasi ditolak",
+            "data": {
+              "id": 1,
+              "nik": "1118060512900001",
+              "jenis_mutasi": "Kepindahan",
+              "status_verifikasi": "Ditolak",
+              "diverifikasi_oleh": 1
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Data pengajuan mutasi yang telah ditolak.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.status_verifikasi:
+        custom: []
+        name: data.status_verifikasi
+        description: 'Status verifikasi baru ("Ditolak").'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.diverifikasi_oleh:
+        custom: []
+        name: data.diverifikasi_oleh
+        description: 'ID admin yang menolak.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/admin/informasi
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: Informasi
+      subgroupDescription: ''
+      title: 'Mengambil daftar informasi publik untuk keperluan panel admin (termasuk draf).'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "current_page": 1,
+            "data": [
+              {
+                "id": 1,
+                "judul": "Pengumuman Pemilihan Keuchik 2026",
+                "slug": "pengumuman-pemilihan-keuchik-2026",
+                "is_published": true,
+                "kategori": "Pengumuman",
+                "author": {
+                  "id": 1,
+                  "nama_lengkap": "Administrator Desa"
+                }
+              }
+            ],
+            "per_page": 20
+          }
+        headers: []
+        description: ''
+    responseFields:
+      current_page:
+        custom: []
+        name: current_page
+        description: 'Halaman saat ini.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Daftar artikel informasi publik untuk admin.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].id':
+        custom: []
+        name: 'data[].id'
+        description: 'ID artikel.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].judul':
+        custom: []
+        name: 'data[].judul'
+        description: 'Judul artikel.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].is_published':
+        custom: []
+        name: 'data[].is_published'
+        description: 'Status publikasi artikel.'
+        required: false
+        example: null
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'data[].author':
+        custom: []
+        name: 'data[].author'
+        description: 'Data penulis artikel.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'Jumlah item per halaman (20).'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/admin/informasi
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: Informasi
+      subgroupDescription: ''
+      title: 'Menyimpan artikel informasi publik baru ke database.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      judul:
+        custom: []
+        name: judul
+        description: 'Kolom value tidak boleh berukuran lebih besar dari 255 karakter.'
+        required: true
+        example: vwgshl
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      konten:
+        custom: []
+        name: konten
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      kategori:
+        custom: []
+        name: kategori
+        description: 'Kolom value tidak boleh berukuran lebih besar dari 50 karakter.'
+        required: true
+        example: wgshlz
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cover_image:
+        custom: []
+        name: cover_image
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      is_published:
+        custom: []
+        name: is_published
+        description: ''
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      judul: vwgshl
+      konten: architecto
+      kategori: wgshlz
+      cover_image: architecto
+      is_published: false
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "message": "Informasi berhasil dibuat",
+            "data": {
+              "id": 1,
+              "judul": "Pengumuman Pemilihan Keuchik 2026",
+              "slug": "pengumuman-pemilihan-keuchik-2026",
+              "konten": "Diumumkan kepada seluruh warga Gampong Udeung...",
+              "kategori": "Pengumuman",
+              "cover_image": "images/pemilihan.jpg",
+              "is_published": true,
+              "author_id": 1
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Data artikel yang berhasil dibuat.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.id:
+        custom: []
+        name: data.id
+        description: 'ID artikel.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.judul:
+        custom: []
+        name: data.judul
+        description: 'Judul artikel.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.slug:
+        custom: []
+        name: data.slug
+        description: 'Slug unik artikel (otomatis dibuat dari judul).'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.is_published:
+        custom: []
+        name: data.is_published
+        description: 'Status publikasi artikel.'
+        required: false
+        example: null
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/v1/admin/informasi/{id}'
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: Informasi
+      subgroupDescription: ''
+      title: 'Memperbarui detail artikel informasi publik tertentu berdasarkan ID.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the informasi.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      judul:
+        custom: []
+        name: judul
+        description: 'Kolom value tidak boleh berukuran lebih besar dari 255 karakter.'
+        required: false
+        example: vwgshl
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      konten:
+        custom: []
+        name: konten
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      kategori:
+        custom: []
+        name: kategori
+        description: 'Kolom value tidak boleh berukuran lebih besar dari 50 karakter.'
+        required: false
+        example: wgshlz
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cover_image:
+        custom: []
+        name: cover_image
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      is_published:
+        custom: []
+        name: is_published
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      judul: vwgshl
+      konten: architecto
+      kategori: wgshlz
+      cover_image: architecto
+      is_published: true
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Informasi berhasil diupdate",
+            "data": {
+              "id": 1,
+              "judul": "Judul Baru",
+              "slug": "judul-baru",
+              "konten": "Konten artikel yang diperbarui...",
+              "kategori": "Berita",
+              "is_published": true
+            }
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data:
+        custom: []
+        name: data
+        description: 'Data artikel yang diperbarui.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.id:
+        custom: []
+        name: data.id
+        description: 'ID artikel.'
+        required: false
+        example: null
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data.judul:
+        custom: []
+        name: data.judul
+        description: 'Judul artikel terbaru.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/admin/informasi/{id}'
+    metadata:
+      custom: []
+      groupName: Administrasi
+      groupDescription: ''
+      subgroup: Informasi
+      subgroupDescription: ''
+      title: 'Menghapus artikel informasi publik tertentu dari database.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the informasi.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Informasi berhasil dihapus"
+          }
+        headers: []
+        description: ''
+    responseFields:
+      message:
+        custom: []
+        name: message
+        description: 'Pesan hasil operasi.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aeEfP6bZ46DkvV31d5hac8g'
+    controller: null
+    method: null
+    route: null

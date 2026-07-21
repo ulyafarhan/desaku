@@ -20,6 +20,7 @@ const form = useForm({
     pendidikan: props.warga.pendidikan || '',
     pekerjaan: props.warga.pekerjaan || '',
     status_perkawinan: props.warga.status_perkawinan || '',
+    no_hp: props.warga.no_hp || '',
     telegram_chat_id: props.warga.telegram_chat_id || '',
     foto_profil: null,
     foto_ktp: null,
@@ -236,6 +237,10 @@ const getInitials = (name) => {
                     <span class="overline-label">Telegram Chat ID</span>
                     <p class="body-md text-neutral font-medium mt-0.5">{{ warga.telegram_chat_id || 'Belum terhubung' }}</p>
                 </div>
+                <div class="data-item">
+                    <span class="overline-label">No. HP (WhatsApp)</span>
+                    <p class="body-md mt-0.5 font-medium" :class="warga.no_hp ? 'text-neutral font-mono' : 'text-error'">{{ warga.no_hp || 'Belum diisi' }}</p>
+                </div>
             </div>
 
             <form v-else @submit.prevent="save" class="space-y-6">
@@ -274,6 +279,15 @@ const getInitials = (name) => {
                             label="Telegram Chat ID"
                             placeholder="Ketik Chat ID untuk menerima notifikasi pengajuan"
                             :error="form.errors.telegram_chat_id"
+                        />
+                    </div>
+                    <div class="input-wrapper">
+                        <FormInput
+                            id="no_hp"
+                            v-model="form.no_hp"
+                            label="No. HP (WhatsApp)"
+                            placeholder="62812xxxx"
+                            :error="form.errors.no_hp"
                         />
                     </div>
                 </div>

@@ -27,7 +27,7 @@
             </style>
 
     <script>
-        var tryItOutBaseUrl = "http://localhost";
+        var tryItOutBaseUrl = "https://gampong.web.id";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
@@ -239,6 +239,16 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-lainnya" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="lainnya">
+                    <a href="#lainnya">Lainnya</a>
+                </li>
+                                    <ul id="tocify-subheader-lainnya" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="lainnya-POSTapi-v1-whatsapp-webhook">
+                                <a href="#lainnya-POSTapi-v1-whatsapp-webhook">POST api/v1/whatsapp/webhook</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
             </div>
 
     <ul class="toc-footer" id="toc-footer">
@@ -248,7 +258,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Terakhir diperbarui: July 11, 2026</li>
+        <li>Terakhir diperbarui: July 20, 2026</li>
     </ul>
 </div>
 
@@ -488,7 +498,7 @@ curl http://localhost/api/v1/surat/kategori \
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/login/warga" \
+    "https://gampong.web.id/api/v1/auth/login/warga" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -500,7 +510,7 @@ curl http://localhost/api/v1/surat/kategori \
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/auth/login/warga';
+$url = 'https://gampong.web.id/api/v1/auth/login/warga';
 $response = $client-&gt;post(
     $url,
     [
@@ -520,7 +530,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/login/warga"
+    "https://gampong.web.id/api/v1/auth/login/warga"
 );
 
 const headers = {
@@ -696,7 +706,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/login/admin" \
+    "https://gampong.web.id/api/v1/auth/login/admin" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -708,7 +718,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/auth/login/admin';
+$url = 'https://gampong.web.id/api/v1/auth/login/admin';
 $response = $client-&gt;post(
     $url,
     [
@@ -728,7 +738,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/login/admin"
+    "https://gampong.web.id/api/v1/auth/login/admin"
 );
 
 const headers = {
@@ -904,7 +914,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/logout" \
+    "https://gampong.web.id/api/v1/auth/logout" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -912,7 +922,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/auth/logout';
+$url = 'https://gampong.web.id/api/v1/auth/logout';
 $response = $client-&gt;post(
     $url,
     [
@@ -929,7 +939,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/logout"
+    "https://gampong.web.id/api/v1/auth/logout"
 );
 
 const headers = {
@@ -1066,7 +1076,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/auth/profile" \
+    --get "https://gampong.web.id/api/v1/auth/profile" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1074,7 +1084,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/auth/profile';
+$url = 'https://gampong.web.id/api/v1/auth/profile';
 $response = $client-&gt;get(
     $url,
     [
@@ -1091,7 +1101,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/profile"
+    "https://gampong.web.id/api/v1/auth/profile"
 );
 
 const headers = {
@@ -1237,7 +1247,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/bind-telegram" \
+    "https://gampong.web.id/api/v1/auth/bind-telegram" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1249,7 +1259,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/auth/bind-telegram';
+$url = 'https://gampong.web.id/api/v1/auth/bind-telegram';
 $response = $client-&gt;post(
     $url,
     [
@@ -1269,7 +1279,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/bind-telegram"
+    "https://gampong.web.id/api/v1/auth/bind-telegram"
 );
 
 const headers = {
@@ -1435,14 +1445,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/informasi" \
+    --get "https://gampong.web.id/api/v1/informasi" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/informasi';
+$url = 'https://gampong.web.id/api/v1/informasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -1458,7 +1468,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/informasi"
+    "https://gampong.web.id/api/v1/informasi"
 );
 
 const headers = {
@@ -1664,14 +1674,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/informasi/architecto" \
+    --get "https://gampong.web.id/api/v1/informasi/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/informasi/architecto';
+$url = 'https://gampong.web.id/api/v1/informasi/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -1687,7 +1697,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/informasi/architecto"
+    "https://gampong.web.id/api/v1/informasi/architecto"
 );
 
 const headers = {
@@ -1892,7 +1902,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/surat/kategori" \
+    --get "https://gampong.web.id/api/v1/surat/kategori" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1900,7 +1910,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/surat/kategori';
+$url = 'https://gampong.web.id/api/v1/surat/kategori';
 $response = $client-&gt;get(
     $url,
     [
@@ -1917,7 +1927,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/surat/kategori"
+    "https://gampong.web.id/api/v1/surat/kategori"
 );
 
 const headers = {
@@ -2089,7 +2099,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/surat/kategori/architecto" \
+    --get "https://gampong.web.id/api/v1/surat/kategori/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2097,7 +2107,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/surat/kategori/architecto';
+$url = 'https://gampong.web.id/api/v1/surat/kategori/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -2114,7 +2124,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/surat/kategori/architecto"
+    "https://gampong.web.id/api/v1/surat/kategori/architecto"
 );
 
 const headers = {
@@ -2314,7 +2324,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/surat/pengajuan" \
+    "https://gampong.web.id/api/v1/surat/pengajuan" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2328,7 +2338,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/surat/pengajuan';
+$url = 'https://gampong.web.id/api/v1/surat/pengajuan';
 $response = $client-&gt;post(
     $url,
     [
@@ -2350,7 +2360,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/surat/pengajuan"
+    "https://gampong.web.id/api/v1/surat/pengajuan"
 );
 
 const headers = {
@@ -2591,7 +2601,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/surat/pengajuan" \
+    --get "https://gampong.web.id/api/v1/surat/pengajuan" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2599,7 +2609,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/surat/pengajuan';
+$url = 'https://gampong.web.id/api/v1/surat/pengajuan';
 $response = $client-&gt;get(
     $url,
     [
@@ -2616,7 +2626,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/surat/pengajuan"
+    "https://gampong.web.id/api/v1/surat/pengajuan"
 );
 
 const headers = {
@@ -2841,7 +2851,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/surat/pengajuan/architecto" \
+    --get "https://gampong.web.id/api/v1/surat/pengajuan/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2849,7 +2859,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/surat/pengajuan/architecto';
+$url = 'https://gampong.web.id/api/v1/surat/pengajuan/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -2866,7 +2876,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/surat/pengajuan/architecto"
+    "https://gampong.web.id/api/v1/surat/pengajuan/architecto"
 );
 
 const headers = {
@@ -3089,14 +3099,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/mutasi" \
+    "https://gampong.web.id/api/v1/mutasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"nik\": \"architecto\",
-    \"jenis_mutasi\": \"Kelahiran\",
-    \"tanggal_mutasi\": \"2026-07-11T10:32:22\",
+    \"jenis_mutasi\": \"Kedatangan\",
+    \"tanggal_mutasi\": \"2026-07-20T18:14:34\",
     \"keterangan\": \"architecto\",
     \"dokumen_bukti\": \"architecto\"
 }"
@@ -3105,7 +3115,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/mutasi';
+$url = 'https://gampong.web.id/api/v1/mutasi';
 $response = $client-&gt;post(
     $url,
     [
@@ -3116,8 +3126,8 @@ $response = $client-&gt;post(
         ],
         'json' =&gt; [
             'nik' =&gt; 'architecto',
-            'jenis_mutasi' =&gt; 'Kelahiran',
-            'tanggal_mutasi' =&gt; '2026-07-11T10:32:22',
+            'jenis_mutasi' =&gt; 'Kedatangan',
+            'tanggal_mutasi' =&gt; '2026-07-20T18:14:34',
             'keterangan' =&gt; 'architecto',
             'dokumen_bukti' =&gt; 'architecto',
         ],
@@ -3129,7 +3139,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/mutasi"
+    "https://gampong.web.id/api/v1/mutasi"
 );
 
 const headers = {
@@ -3140,8 +3150,8 @@ const headers = {
 
 let body = {
     "nik": "architecto",
-    "jenis_mutasi": "Kelahiran",
-    "tanggal_mutasi": "2026-07-11T10:32:22",
+    "jenis_mutasi": "Kedatangan",
+    "tanggal_mutasi": "2026-07-20T18:14:34",
     "keterangan": "architecto",
     "dokumen_bukti": "architecto"
 };
@@ -3277,10 +3287,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="jenis_mutasi"                data-endpoint="POSTapi-v1-mutasi"
-               value="Kelahiran"
+               value="Kedatangan"
                data-component="body">
     <br>
-<p>Example: <code>Kelahiran</code></p>
+<p>Example: <code>Kedatangan</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>Kelahiran</code></li> <li><code>Kematian</code></li> <li><code>Kedatangan</code></li> <li><code>Kepindahan</code></li></ul>
         </div>
@@ -3291,10 +3301,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tanggal_mutasi"                data-endpoint="POSTapi-v1-mutasi"
-               value="2026-07-11T10:32:22"
+               value="2026-07-20T18:14:34"
                data-component="body">
     <br>
-<p>Kolom value bukan tanggal yang valid. Example: <code>2026-07-11T10:32:22</code></p>
+<p>Kolom value bukan tanggal yang valid. Example: <code>2026-07-20T18:14:34</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>keterangan</code></b>&nbsp;&nbsp;
@@ -3390,7 +3400,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/mutasi" \
+    --get "https://gampong.web.id/api/v1/mutasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3398,7 +3408,7 @@ Must be one of:
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/mutasi';
+$url = 'https://gampong.web.id/api/v1/mutasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -3415,7 +3425,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/mutasi"
+    "https://gampong.web.id/api/v1/mutasi"
 );
 
 const headers = {
@@ -3631,7 +3641,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/admin/surat/pengajuan" \
+    --get "https://gampong.web.id/api/v1/admin/surat/pengajuan" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3639,7 +3649,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/surat/pengajuan';
+$url = 'https://gampong.web.id/api/v1/admin/surat/pengajuan';
 $response = $client-&gt;get(
     $url,
     [
@@ -3656,7 +3666,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/surat/pengajuan"
+    "https://gampong.web.id/api/v1/admin/surat/pengajuan"
 );
 
 const headers = {
@@ -3870,7 +3880,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/admin/surat/pengajuan/architecto/approve" \
+    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/approve" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3878,7 +3888,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/surat/pengajuan/architecto/approve';
+$url = 'https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/approve';
 $response = $client-&gt;post(
     $url,
     [
@@ -3895,7 +3905,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/surat/pengajuan/architecto/approve"
+    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/approve"
 );
 
 const headers = {
@@ -4080,7 +4090,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/admin/surat/pengajuan/architecto/reject" \
+    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/reject" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4092,7 +4102,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/surat/pengajuan/architecto/reject';
+$url = 'https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/reject';
 $response = $client-&gt;post(
     $url,
     [
@@ -4112,7 +4122,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/surat/pengajuan/architecto/reject"
+    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/reject"
 );
 
 const headers = {
@@ -4315,7 +4325,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/admin/mutasi" \
+    --get "https://gampong.web.id/api/v1/admin/mutasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4323,7 +4333,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/mutasi';
+$url = 'https://gampong.web.id/api/v1/admin/mutasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -4340,7 +4350,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/mutasi"
+    "https://gampong.web.id/api/v1/admin/mutasi"
 );
 
 const headers = {
@@ -4560,7 +4570,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/admin/mutasi/architecto/approve" \
+    "https://gampong.web.id/api/v1/admin/mutasi/architecto/approve" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4568,7 +4578,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/mutasi/architecto/approve';
+$url = 'https://gampong.web.id/api/v1/admin/mutasi/architecto/approve';
 $response = $client-&gt;post(
     $url,
     [
@@ -4585,7 +4595,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/mutasi/architecto/approve"
+    "https://gampong.web.id/api/v1/admin/mutasi/architecto/approve"
 );
 
 const headers = {
@@ -4770,7 +4780,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/admin/mutasi/architecto/reject" \
+    "https://gampong.web.id/api/v1/admin/mutasi/architecto/reject" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4778,7 +4788,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/mutasi/architecto/reject';
+$url = 'https://gampong.web.id/api/v1/admin/mutasi/architecto/reject';
 $response = $client-&gt;post(
     $url,
     [
@@ -4795,7 +4805,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/mutasi/architecto/reject"
+    "https://gampong.web.id/api/v1/admin/mutasi/architecto/reject"
 );
 
 const headers = {
@@ -4981,7 +4991,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/admin/informasi" \
+    --get "https://gampong.web.id/api/v1/admin/informasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4989,7 +4999,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/informasi';
+$url = 'https://gampong.web.id/api/v1/admin/informasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -5006,7 +5016,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/informasi"
+    "https://gampong.web.id/api/v1/admin/informasi"
 );
 
 const headers = {
@@ -5209,7 +5219,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/admin/informasi" \
+    "https://gampong.web.id/api/v1/admin/informasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5218,14 +5228,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"konten\": \"architecto\",
     \"kategori\": \"wgshlz\",
     \"cover_image\": \"architecto\",
-    \"is_published\": true
+    \"is_published\": false
 }"
 </code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/informasi';
+$url = 'https://gampong.web.id/api/v1/admin/informasi';
 $response = $client-&gt;post(
     $url,
     [
@@ -5239,7 +5249,7 @@ $response = $client-&gt;post(
             'konten' =&gt; 'architecto',
             'kategori' =&gt; 'wgshlz',
             'cover_image' =&gt; 'architecto',
-            'is_published' =&gt; true,
+            'is_published' =&gt; false,
         ],
     ]
 );
@@ -5249,7 +5259,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/informasi"
+    "https://gampong.web.id/api/v1/admin/informasi"
 );
 
 const headers = {
@@ -5263,7 +5273,7 @@ let body = {
     "konten": "architecto",
     "kategori": "wgshlz",
     "cover_image": "architecto",
-    "is_published": true
+    "is_published": false
 };
 
 fetch(url, {
@@ -5447,7 +5457,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
         </form>
 
@@ -5519,7 +5529,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/v1/admin/informasi/architecto" \
+    "https://gampong.web.id/api/v1/admin/informasi/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5528,14 +5538,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"konten\": \"architecto\",
     \"kategori\": \"wgshlz\",
     \"cover_image\": \"architecto\",
-    \"is_published\": false
+    \"is_published\": true
 }"
 </code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/informasi/architecto';
+$url = 'https://gampong.web.id/api/v1/admin/informasi/architecto';
 $response = $client-&gt;put(
     $url,
     [
@@ -5549,7 +5559,7 @@ $response = $client-&gt;put(
             'konten' =&gt; 'architecto',
             'kategori' =&gt; 'wgshlz',
             'cover_image' =&gt; 'architecto',
-            'is_published' =&gt; false,
+            'is_published' =&gt; true,
         ],
     ]
 );
@@ -5559,7 +5569,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/informasi/architecto"
+    "https://gampong.web.id/api/v1/admin/informasi/architecto"
 );
 
 const headers = {
@@ -5573,7 +5583,7 @@ let body = {
     "konten": "architecto",
     "kategori": "wgshlz",
     "cover_image": "architecto",
-    "is_published": false
+    "is_published": true
 };
 
 fetch(url, {
@@ -5768,7 +5778,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
         </form>
 
@@ -5824,7 +5834,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/v1/admin/informasi/architecto" \
+    "https://gampong.web.id/api/v1/admin/informasi/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5832,7 +5842,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/informasi/architecto';
+$url = 'https://gampong.web.id/api/v1/admin/informasi/architecto';
 $response = $client-&gt;delete(
     $url,
     [
@@ -5849,7 +5859,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/informasi/architecto"
+    "https://gampong.web.id/api/v1/admin/informasi/architecto"
 );
 
 const headers = {
@@ -6002,14 +6012,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/statistik/demografi" \
+    --get "https://gampong.web.id/api/v1/statistik/demografi" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/statistik/demografi';
+$url = 'https://gampong.web.id/api/v1/statistik/demografi';
 $response = $client-&gt;get(
     $url,
     [
@@ -6025,7 +6035,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/statistik/demografi"
+    "https://gampong.web.id/api/v1/statistik/demografi"
 );
 
 const headers = {
@@ -6202,14 +6212,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/statistik/layanan" \
+    --get "https://gampong.web.id/api/v1/statistik/layanan" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/statistik/layanan';
+$url = 'https://gampong.web.id/api/v1/statistik/layanan';
 $response = $client-&gt;get(
     $url,
     [
@@ -6225,7 +6235,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/statistik/layanan"
+    "https://gampong.web.id/api/v1/statistik/layanan"
 );
 
 const headers = {
@@ -6398,14 +6408,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/verifikasi/architecto" \
+    --get "https://gampong.web.id/api/v1/verifikasi/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/verifikasi/architecto';
+$url = 'https://gampong.web.id/api/v1/verifikasi/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -6421,7 +6431,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/verifikasi/architecto"
+    "https://gampong.web.id/api/v1/verifikasi/architecto"
 );
 
 const headers = {
@@ -6656,7 +6666,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/admin/statistik/clear-cache" \
+    "https://gampong.web.id/api/v1/admin/statistik/clear-cache" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6664,7 +6674,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/admin/statistik/clear-cache';
+$url = 'https://gampong.web.id/api/v1/admin/statistik/clear-cache';
 $response = $client-&gt;post(
     $url,
     [
@@ -6681,7 +6691,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/admin/statistik/clear-cache"
+    "https://gampong.web.id/api/v1/admin/statistik/clear-cache"
 );
 
 const headers = {
@@ -6821,14 +6831,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/telegram/webhook" \
+    "https://gampong.web.id/api/v1/telegram/webhook" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/api/v1/telegram/webhook';
+$url = 'https://gampong.web.id/api/v1/telegram/webhook';
 $response = $client-&gt;post(
     $url,
     [
@@ -6844,7 +6854,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/telegram/webhook"
+    "https://gampong.web.id/api/v1/telegram/webhook"
 );
 
 const headers = {
@@ -6954,7 +6964,172 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <br>
 <p>Status penerimaan webhook.</p>
         </div>
-                
+                    <h1 id="lainnya">Lainnya</h1>
+
+    
+
+                                <h2 id="lainnya-POSTapi-v1-whatsapp-webhook">POST api/v1/whatsapp/webhook</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-whatsapp-webhook">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://gampong.web.id/api/v1/whatsapp/webhook" \
+    --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'https://gampong.web.id/api/v1/whatsapp/webhook';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_AUTH_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://gampong.web.id/api/v1/whatsapp/webhook"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-whatsapp-webhook">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 59
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;ok&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-whatsapp-webhook" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-whatsapp-webhook"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-whatsapp-webhook"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-whatsapp-webhook" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-whatsapp-webhook">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-whatsapp-webhook" data-method="POST"
+      data-path="api/v1/whatsapp/webhook"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-whatsapp-webhook', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-whatsapp-webhook"
+                    onclick="tryItOut('POSTapi-v1-whatsapp-webhook');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-whatsapp-webhook"
+                    onclick="cancelTryOut('POSTapi-v1-whatsapp-webhook');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-whatsapp-webhook"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/whatsapp/webhook</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-whatsapp-webhook"
+               value="Bearer {YOUR_AUTH_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-whatsapp-webhook"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-whatsapp-webhook"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+            
 
         
     </div>

@@ -1,5 +1,9 @@
 <template>
-    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <slot />
-    </section>
+    <div class="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <slot name="image" />
+        <div class="p-5">
+            <slot name="content" />
+            <slot />
+        </div>
+    </div>
 </template>

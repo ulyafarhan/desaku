@@ -250,4 +250,15 @@ class Penduduk extends Authenticatable
             $q->where('dusun', $dusun);
         });
     }
+
+    public function setNoHpAttribute($value)
+    {
+        $clean = preg_replace('/[^0-9]/', '', $value);
+        if (strlen($clean) > 0 && $clean[0] === '0') {
+            $clean = '62' . substr($clean, 1);
+        } elseif (strlen($clean) > 0 && $clean[0] === '8') {
+            $clean = '62' . $clean;
+        }
+        $this->attributes['no_hp'] = $clean;
+    }
 }
