@@ -12,6 +12,8 @@
  * @see \App\Http\Controllers\Web\
  */
 
+use App\Http\Controllers\Admin\NotificationApiController;
+use App\Http\Controllers\Admin\NotificationSettingsController;
 use App\Http\Controllers\Web\CitizenAuthController;
 use App\Http\Controllers\Web\CitizenDashboardController;
 use App\Http\Controllers\Web\CitizenFamilyController;
@@ -27,6 +29,7 @@ Route::get('/informasi/{slug}', [PublicPortalController::class, 'informationShow
 Route::get('/verifikasi', [PublicPortalController::class, 'verifyIndex'])->name('verify.index');
 Route::get('/verifikasi/{hash}', [PublicPortalController::class, 'verify'])->where('hash', '.*')->name('verify');
 Route::get('/statistik', [PublicPortalController::class, 'statistik'])->name('statistik');
+Route::get('/fasilitas', [PublicPortalController::class, 'fasilitas'])->name('fasilitas.index');
 Route::post('/aspirasi', [PublicPortalController::class, 'storeAspirasi'])->middleware('throttle:5,1')->name('aspirasi.store');
 
 Route::middleware('guest:penduduk')->group(function () {
@@ -51,4 +54,19 @@ Route::prefix('warga')
         Route::post('/surat/pengajuan', [CitizenSubmissionController::class, 'store'])->name('surat.store');
         Route::get('/pengajuan/{pengajuan}', [CitizenSubmissionController::class, 'show'])->name('pengajuan.show');
         Route::get('/pengajuan/{pengajuan}/print', [CitizenSubmissionController::class, 'print'])->name('pengajuan.print');
+    });
+
+// ── Admin: Notification Settings (Vue page via Inertia) ────────────────
+Route::middleware(['auth:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/notifications', NotificationSettingsController::class)->name('notifications');
+
+        // API proxy (AJAX dari Vue page)
+        Route::get('/notifications/wa/status', [NotificationApiController::class, 'waStatus'])->name('notifications.wa.status');
+        Route::get('/notifications/wa/qr', [NotificationApiController::class, 'waQr'])->name('notifications.wa.qr');
+        Route::post('/notifications/wa/test', [NotificationApiController::class, 'waTest'])->name('notifications.wa.test');
+        Route::get('/notifications/telegram/status', [NotificationApiController::class, 'tgStatus'])->name('notifications.tg.status');
+        Route::post('/notifications/telegram/broadcast', [NotificationApiController::class, 'tgBroadcast'])->name('notifications.tg.broadcast');
     });

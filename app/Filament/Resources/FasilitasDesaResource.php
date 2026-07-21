@@ -26,7 +26,7 @@ class FasilitasDesaResource extends Resource
     protected static ?string $recordTitleAttribute = 'nama_fasilitas';
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationLabel = 'Fasilitas Desa';
-    protected static ?string $navigationGroup = 'Konten';
+    protected static string|\UnitEnum|null $navigationGroup = 'Konten';
     protected static ?int $navigationSort = 5;
 
     public static function getGloballySearchableAttributes(): array
@@ -39,13 +39,13 @@ class FasilitasDesaResource extends Resource
         return $schema->components([
             Section::make('Informasi Fasilitas')
                 ->icon('heroicon-o-building-library')
-                ->columns(2)
                 ->schema([
                     TextInput::make('nama_fasilitas')
                         ->label('Nama Fasilitas')
                         ->required()
                         ->maxLength(150)
-                        ->prefixIcon('heroicon-o-building-library'),
+                        ->prefixIcon('heroicon-o-building-library')
+                        ->columnSpanFull(),
                     Select::make('kategori')
                         ->label('Kategori')
                         ->required()
@@ -57,11 +57,13 @@ class FasilitasDesaResource extends Resource
                             'Ibadah' => 'Ibadah',
                             'Infrastruktur' => 'Infrastruktur',
                             'Umum' => 'Umum',
-                        ]),
+                        ])
+                        ->columnSpanFull(),
                     TextInput::make('lokasi')
                         ->label('Lokasi')
                         ->maxLength(200)
-                        ->prefixIcon('heroicon-o-map-pin'),
+                        ->prefixIcon('heroicon-o-map-pin')
+                        ->columnSpanFull(),
                     Select::make('status')
                         ->label('Status')
                         ->required()
@@ -71,7 +73,8 @@ class FasilitasDesaResource extends Resource
                             'Rusak Berat' => 'Rusak Berat',
                             'Tidak Aktif' => 'Tidak Aktif',
                         ])
-                        ->default('Aktif'),
+                        ->default('Aktif')
+                        ->columnSpanFull(),
                 ]),
             Section::make('Deskripsi dan Foto')
                 ->icon('heroicon-o-photo')
@@ -168,7 +171,9 @@ class FasilitasDesaResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageFasilitasDesa::route('/'),
+            'index' => Pages\ListFasilitasDesa::route('/'),
+            'create' => Pages\CreateFasilitasDesa::route('/create'),
+            'edit' => Pages\EditFasilitasDesa::route('/{record}/edit'),
         ];
     }
 }

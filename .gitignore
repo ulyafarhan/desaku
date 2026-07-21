@@ -38,6 +38,9 @@
 .DS_Store
 Thumbs.db
 
+# wa-gateway (repo terpisah, deploy sendiri)
+/wa-gateway/
+
 # Laravel Specific
 /auth.json
 Homestead.json

@@ -73,7 +73,7 @@ const featureItems = [
         desc: "Warga dapat mengajukan berbagai jenis surat keterangan secara mandiri online.",
         icon: FileText,
         gradient: "from-blue-500/10 to-indigo-500/10 text-blue-600 border-blue-500/10",
-        href: "/login"
+        href: "/warga/dashboard"
     },
     {
         title: "Transparansi Data",

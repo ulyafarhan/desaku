@@ -121,7 +121,17 @@ class WilayahPendudukSeeder extends Seeder
             'Meulaboh', 'Takengon',
         ];
 
-        // 8. Generate Data Keluarga dan Penduduk
+        // 8. Prefix nomor HP operator Indonesia
+        $hpPrefixes = [
+            '62811', '62812', '62813', '62821', '62822', '62823',
+            '62852', '62853',
+            '62855', '62856', '62857', '62858',
+            '62877', '62878', '62879',
+            '62881', '62882', '62883',
+            '62895', '62896', '62897', '62898', '62899',
+        ];
+
+        // 9. Generate Data Keluarga dan Penduduk
         $jumlahKeluarga = 310; // 310 KK realistis untuk gampong
 
         for ($i = 0; $i < $jumlahKeluarga; $i++) {
@@ -140,7 +150,7 @@ class WilayahPendudukSeeder extends Seeder
                 'no_kk' => $noKk,
                 'alamat' => $alamatLengkap,
                 'dusun' => $dusun,
-                'rt_rw' => $dusun,
+                'rt_rw' => str_pad($faker->numberBetween(1, 5), 3, '0', STR_PAD_LEFT) . '/' . str_pad($faker->numberBetween(1, 3), 3, '0', STR_PAD_LEFT),
             ]);
 
             // Status mutasi keluarga
@@ -192,6 +202,7 @@ class WilayahPendudukSeeder extends Seeder
                 'status_perkawinan' => $statusPerkawinanSuami,
                 'status_keluarga' => 'Kepala Keluarga',
                 'status_mutasi' => $statusMutasiKK,
+                'no_hp' => $faker->randomElement($hpPrefixes) . $faker->numerify('#######'),
             ]);
 
             $keluarga->update(['kepala_keluarga_nik' => $nikSuami]);
@@ -237,6 +248,7 @@ class WilayahPendudukSeeder extends Seeder
                     'status_perkawinan' => $statusMutasiKK === 'Meninggal' ? 'Cerai Mati' : 'Kawin',
                     'status_keluarga' => 'Istri',
                     'status_mutasi' => $statusMutasiIstri,
+                    'no_hp' => $faker->randomElement($hpPrefixes) . $faker->numerify('#######'),
                 ]);
             }
 
@@ -320,6 +332,7 @@ class WilayahPendudukSeeder extends Seeder
                     'status_perkawinan' => $statusPerkawinanAnak,
                     'status_keluarga' => 'Anak',
                     'status_mutasi' => $statusMutasiAnak,
+                    'no_hp' => $usiaAnak >= 12 ? $faker->randomElement($hpPrefixes) . $faker->numerify('#######') : null,
                 ]);
             }
 
@@ -372,6 +385,7 @@ class WilayahPendudukSeeder extends Seeder
                     'status_perkawinan' => $statusPerkawinanOrtu,
                     'status_keluarga' => $jenisKelaminOrtu === 'L' ? 'Ayah' : 'Ibu',
                     'status_mutasi' => $statusMutasiOrtu,
+                    'no_hp' => $faker->randomElement($hpPrefixes) . $faker->numerify('#######'),
                 ]);
             }
 
@@ -390,7 +404,7 @@ class WilayahPendudukSeeder extends Seeder
                     $namaSodara = $faker->randomElement($namaPerempuanAceh) . ' ' . $namaBelakangSuami;
                 }
 
-                $nikSodara = '111806' . substr($tahunLahirSodara, -2) . $bulanSodara . $hariSodara . $faker->numerify('####');
+                $nikSodara = '111806' . substr($tahunLahirSodara, -2) . $bulanSodara . '-' . $hariSodara . $faker->numerify('####');
                 $usiaSodara = 2026 - $tahunLahirSodara;
 
                 $statusMutasiSodara = 'Tetap';
@@ -411,6 +425,7 @@ class WilayahPendudukSeeder extends Seeder
                     'status_perkawinan' => $usiaSodara < 20 ? 'Belum Kawin' : $faker->randomElement(['Kawin', 'Belum Kawin']),
                     'status_keluarga' => 'Saudara',
                     'status_mutasi' => $statusMutasiSodara,
+                    'no_hp' => $faker->randomElement($hpPrefixes) . $faker->numerify('#######'),
                 ]);
             }
         }

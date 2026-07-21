@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Events\PengajuanStatusUpdated;
 use App\Filament\Resources\PengajuanSuratResource\Pages;
 use App\Jobs\GenerateSuratPdfJob;
+use App\Jobs\SendStatusWhatsappJob;
 use App\Models\PengajuanSurat;
 use App\Models\TrackingPengajuanSurat;
 use Filament\Actions\Action;
@@ -221,7 +222,7 @@ class PengajuanSuratResource extends Resource
                     ->modalSubmitActionLabel('Ya, Setujui')
                     ->action(function (PengajuanSurat $record): void {
                         $admin = auth('admin')->user();
-                        \Illuminate\Support\Facades\DB::transaction(function () use ($record, $admin) {
+                        \Illuminate\Support\Facades\DB::transaction(function () use ($record, $admin, &$lockedRecord) {
                             $lockedRecord = PengajuanSurat::where('id', $record->id)->lockForUpdate()->firstOrFail();
                             $oldStatus = $lockedRecord->status;
                             PengajuanSurat::withoutEvents(function () use ($lockedRecord, $admin) {
@@ -244,6 +245,14 @@ class PengajuanSuratResource extends Resource
                             }
                             PengajuanStatusUpdated::dispatch($lockedRecord, $oldStatus, 'Disetujui');
                         });
+                        if ($lockedRecord->pemohon && !empty($lockedRecord->pemohon->no_hp)) {
+                            SendStatusWhatsappJob::dispatch(
+                                $lockedRecord->pemohon->nik,
+                                $lockedRecord->kategori?->nama_surat ?? 'Surat',
+                                'Disetujui',
+                                $lockedRecord->nomor_registrasi ?? '-'
+                            );
+                        }
                     }),
                 Action::make('reject')
                     ->label('Tolak')
@@ -260,7 +269,7 @@ class PengajuanSuratResource extends Resource
                     ])
                     ->action(function (PengajuanSurat $record, array $data): void {
                         $admin = auth('admin')->user();
-                        \Illuminate\Support\Facades\DB::transaction(function () use ($record, $admin, $data) {
+                        \Illuminate\Support\Facades\DB::transaction(function () use ($record, $admin, $data, &$lockedRecord) {
                             $lockedRecord = PengajuanSurat::where('id', $record->id)->lockForUpdate()->firstOrFail();
                             $oldStatus = $lockedRecord->status;
                             PengajuanSurat::withoutEvents(function () use ($lockedRecord, $admin, $data) {
@@ -279,6 +288,15 @@ class PengajuanSuratResource extends Resource
                             ]);
                             PengajuanStatusUpdated::dispatch($lockedRecord, $oldStatus, 'Ditolak');
                         });
+                        if ($lockedRecord->pemohon && !empty($lockedRecord->pemohon->no_hp)) {
+                            SendStatusWhatsappJob::dispatch(
+                                $lockedRecord->pemohon->nik,
+                                $lockedRecord->kategori?->nama_surat ?? 'Surat',
+                                'Ditolak',
+                                $lockedRecord->nomor_registrasi ?? '-',
+                                $data['catatan_penolakan'] ?? null
+                            );
+                        }
                     }),
                 \Filament\Actions\ViewAction::make(),
                 DeleteAction::make(),

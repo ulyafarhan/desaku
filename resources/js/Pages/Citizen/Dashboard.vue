@@ -21,12 +21,6 @@ const props = defineProps({
 });
 
 const activeTab = ref('beranda');
-const tabs = [
-    { id: 'beranda', label: 'Beranda', icon: 'home' },
-    { id: 'pengajuan', label: 'Pengajuan Surat', icon: 'file' },
-    { id: 'keluarga', label: 'Keluarga Saya', icon: 'users' },
-    { id: 'biodata', label: 'Biodata', icon: 'user' },
-];
 
 const setActiveTab = (tabId) => {
     activeTab.value = tabId;
@@ -83,22 +77,7 @@ const recentPengajuan = computed(() => (props.pengajuan?.data || []).slice(0, 3)
 <template>
     <div class="google-editorial min-h-screen py-8 px-4">
         <div class="max-w-4xl mx-auto space-y-8">
-            <div class="hidden md:flex gap-1 overflow-x-auto rounded-full border border-slate-200 bg-white p-1.5 shadow-sm max-w-max mx-auto">
-                <button
-                    v-for="tab in tabs" :key="tab.id"
-                    @click="setActiveTab(tab.id)"
-                    class="flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition-all"
-                    :class="activeTab === tab.id
-                        ? 'bg-primary text-white shadow-sm'
-                        : 'text-secondary hover:bg-slate-50'"
-                >
-                    <svg v-if="tab.icon === 'home'" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    <svg v-else-if="tab.icon === 'file'" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    <svg v-else-if="tab.icon === 'users'" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-                    <svg v-else-if="tab.icon === 'user'" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <span>{{ tab.label }}</span>
-                </button>
-            </div>
+            <!-- Top tab navigation removed because there's already a navigation above -->
 
             <BerandaTab
                 v-if="activeTab === 'beranda'"

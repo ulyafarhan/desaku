@@ -252,7 +252,11 @@ class PublicPortalController extends Controller
         $fasilitas = FasilitasDesa::query()
             ->when($kategori, fn ($q, $k) => $q->where('kategori', $k))
             ->latest('created_at')
-            ->paginate(12);
+            ->paginate(12)
+            ->through(function ($item) {
+                $item->foto_url = $item->foto ? asset('storage/' . $item->foto) : null;
+                return $item;
+            });
 
         $kategoriList = FasilitasDesa::select('kategori')
             ->distinct()

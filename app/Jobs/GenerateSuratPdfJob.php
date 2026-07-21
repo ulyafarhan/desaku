@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\SendStatusWhatsappJob;
 use App\Models\PengajuanSurat;
 use App\Models\TrackingPengajuanSurat;
 use App\Services\PdfGeneratorService;
@@ -113,6 +114,16 @@ class GenerateSuratPdfJob implements ShouldQueue
                 'Selesai',
                 $this->pengajuan->nomor_registrasi
             );
+
+            if ($pemohon && !empty($pemohon->no_hp)) {
+                SendStatusWhatsappJob::dispatch(
+                    $pemohon->nik,
+                    $this->pengajuan->kategori->nama_surat ?? 'Surat',
+                    'Selesai',
+                    $this->pengajuan->nomor_registrasi ?? '-',
+                    'Surat siap diunduh di ' . config('app.url') . '/warga/dashboard?tab=pengajuan'
+                );
+            }
 
             Log::info("Letter processed successfully for pengajuan #{$this->pengajuan->id}");
 

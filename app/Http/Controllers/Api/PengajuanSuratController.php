@@ -159,6 +159,15 @@ class PengajuanSuratController extends Controller
             $pengajuan->nomor_registrasi
         );
 
+        if ($pengajuan->pemohon && !empty($pengajuan->pemohon->no_hp)) {
+            SendStatusWhatsappJob::dispatch(
+                $pengajuan->pemohon->nik,
+                $pengajuan->kategori?->nama_surat ?? 'Surat',
+                'Pending',
+                $pengajuan->nomor_registrasi ?? '-'
+            );
+        }
+
         return response()->json([
             'message' => 'Pengajuan surat berhasil dibuat',
             'data' => $pengajuan->load('kategori'),
@@ -381,20 +390,19 @@ class PengajuanSuratController extends Controller
             $pengajuan->nomor_registrasi
         );
 
+        if ($pengajuan->pemohon && !empty($pengajuan->pemohon->no_hp)) {
+            SendStatusWhatsappJob::dispatch(
+                $pengajuan->pemohon->nik,
+                $pengajuan->kategori?->nama_surat ?? 'Surat',
+                'Disetujui',
+                $pengajuan->nomor_registrasi ?? '-'
+            );
+        }
+
         return response()->json([
             'message' => 'Pengajuan berhasil disetujui',
             'data' => $pengajuan,
         ]);
-
-        if ($pengajuan->penduduk && !empty($pengajuan->penduduk->no_hp)) {
-            SendStatusWhatsappJob::dispatch(
-                $pengajuan->penduduk->nik,
-                $pengajuan->kategori?->nama_surat ?? 'Surat',
-                $pengajuan->status,
-                $pengajuan->nomor_registrasi ?? '-',
-                $request->catatan ?? null
-            );
-        }
     }
 
     /**
@@ -460,19 +468,19 @@ class PengajuanSuratController extends Controller
             $request->catatan_penolakan
         );
 
-        return response()->json([
-            'message' => 'Pengajuan ditolak',
-            'data' => $pengajuan,
-        ]);
-
-        if ($pengajuan->penduduk && !empty($pengajuan->penduduk->no_hp)) {
+        if ($pengajuan->pemohon && !empty($pengajuan->pemohon->no_hp)) {
             SendStatusWhatsappJob::dispatch(
-                $pengajuan->penduduk->nik,
+                $pengajuan->pemohon->nik,
                 $pengajuan->kategori?->nama_surat ?? 'Surat',
-                $pengajuan->status,
+                'Ditolak',
                 $pengajuan->nomor_registrasi ?? '-',
                 $request->catatan_penolakan ?? null
             );
         }
+
+        return response()->json([
+            'message' => 'Pengajuan ditolak',
+            'data' => $pengajuan,
+        ]);
     }
 }

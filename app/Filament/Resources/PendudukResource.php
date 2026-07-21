@@ -92,6 +92,11 @@ class PendudukResource extends Resource
                         ->label('Status Mutasi')
                         ->options(['Tetap' => 'Tetap', 'Pindah' => 'Pindah', 'Meninggal' => 'Meninggal'])
                         ->required(),
+                    TextInput::make('no_hp')
+                        ->label('No. HP (WhatsApp)')
+                        ->placeholder('62812xxxx')
+                        ->maxLength(20)
+                        ->prefixIcon('heroicon-o-phone'),
                     TextInput::make('telegram_chat_id')
                         ->label('Telegram Chat ID')
                         ->maxLength(50),
@@ -122,6 +127,10 @@ class PendudukResource extends Resource
                     ->formatStateUsing(fn (string $state): string => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
                 TextColumn::make('keluarga.dusun')
                     ->label('Dusun'),
+                TextColumn::make('no_hp')
+                    ->label('No. HP')
+                    ->copyable()
+                    ->copyMessage('No HP disalin!'),
                 TextColumn::make('status_mutasi')
                     ->label('Status')
                     ->badge()

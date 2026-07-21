@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\PengajuanSuratController;
 use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\TelegramWebhookController;
 use App\Http\Controllers\Api\VerifikasiController;
+use App\Http\Controllers\Api\WhatsAppWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
