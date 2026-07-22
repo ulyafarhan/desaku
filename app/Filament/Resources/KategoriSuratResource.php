@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\KategoriSuratResource\Pages;
 use App\Models\KategoriSurat;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -173,6 +174,19 @@ class KategoriSuratResource extends Resource
             ->headerActions([CreateAction::make()])
             ->recordActions([
                 EditAction::make(),
+                Action::make('nonaktifkan')
+                    ->label('Nonaktifkan')
+                    ->icon('heroicon-o-eye-slash')
+                    ->color('warning')
+                    ->visible(fn (KategoriSurat $record) => $record->is_active)
+                    ->action(function (KategoriSurat $record) {
+                        $record->update(['is_active' => false]);
+                        Notification::make()
+                            ->title('Kategori Dinonaktifkan')
+                            ->body("Kategori \"{$record->nama_surat}\" sudah dinonaktifkan dan tidak akan muncul untuk warga.")
+                            ->warning()
+                            ->send();
+                    }),
                 DeleteAction::make()
                     ->using(function ($record) {
                         try {
@@ -181,7 +195,7 @@ class KategoriSuratResource extends Resource
                             if ($e->getCode() == 23000) {
                                 Notification::make()
                                     ->title('Tidak Dapat Dihapus')
-                                    ->body('Kategori ini masih memiliki pengajuan surat terkait. Hapus atau pindahkan pengajuan terlebih dahulu.')
+                                    ->body("Kategori \"{$record->nama_surat}\" masih memiliki pengajuan surat terkait. Gunakan tombol Nonaktifkan agar kategori tidak muncul di form warga.")
                                     ->danger()
                                     ->send();
                                 return;

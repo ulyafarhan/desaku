@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\PengaturanFrontend;
+use App\Models\PengaturanGampong;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -41,12 +42,14 @@ class PengaturanKontenPublik extends Page implements HasForms
     public function mount(): void
     {
         $this->form->fill([
+            'nama_keuchik' => PengaturanFrontend::get('nama_keuchik') ?? PengaturanGampong::get('nama_keuchik', 'Nama Keuchik'),
+            'foto_keuchik' => PengaturanFrontend::get('foto_keuchik'),
             'nama_sekdes' => PengaturanFrontend::get('nama_sekdes', 'Nama Sekretaris Desa'),
             'foto_sekdes' => PengaturanFrontend::get('foto_sekdes'),
             'nama_operator' => PengaturanFrontend::get('nama_operator', 'Nama Operator'),
             'foto_operator' => PengaturanFrontend::get('foto_operator'),
-            'foto_keuchik' => PengaturanFrontend::get('foto_keuchik'),
             'telepon_operator' => PengaturanFrontend::get('telepon_operator', '0812-xxxx-xxxx'),
+            'foto_kantor' => PengaturanFrontend::get('foto_kantor'),
             'medsos_facebook' => PengaturanFrontend::get('medsos_facebook', 'https://facebook.com'),
             'medsos_instagram' => PengaturanFrontend::get('medsos_instagram', 'https://instagram.com'),
             'medsos_twitter' => PengaturanFrontend::get('medsos_twitter', 'https://twitter.com'),
@@ -68,6 +71,10 @@ class PengaturanKontenPublik extends Page implements HasForms
                         Tab::make('Staf & Aparatur Gampong')
                             ->icon('heroicon-o-users')
                             ->schema([
+                                TextInput::make('nama_keuchik')
+                                    ->label('Nama Keuchik (Kepala Desa)')
+                                    ->required()
+                                    ->maxLength(150),
                                 FileUpload::make('foto_keuchik')
                                     ->label('Foto Resmi Keuchik (Kepala Desa)')
                                     ->image()
@@ -95,6 +102,11 @@ class PengaturanKontenPublik extends Page implements HasForms
                         Tab::make('Kontak & Media Sosial')
                             ->icon('heroicon-o-phone')
                             ->schema([
+                                FileUpload::make('foto_kantor')
+                                    ->label('Foto Kantor Desa')
+                                    ->image()
+                                    ->directory('gampong/kantor')
+                                    ->helperText('Foto gedung kantor desa untuk section alur pengajuan di beranda.'),
                                 TextInput::make('telepon_operator')
                                     ->label('Nomor Telepon/WhatsApp Operator')
                                     ->required()

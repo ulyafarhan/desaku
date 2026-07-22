@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\FasilitasDesa;
+use App\Models\PengaturanFrontend;
+use App\Models\PengaturanGampong;
 
 /**
  * Controller untuk mengelola halaman publik dan layanan portal umum.
@@ -32,6 +34,23 @@ class PublicPortalController extends Controller
      */
     public function home(StatistikService $statistik): Response
     {
+        $getFotoUrl = function ($kunci) {
+            $val = PengaturanFrontend::get($kunci);
+            if (empty($val)) {
+                return null;
+            }
+            return asset('storage/' . $val);
+        };
+
+        $telepon = PengaturanFrontend::get('telepon_operator') ?? PengaturanGampong::get('telepon', '');
+        $teleponNorm = preg_replace('/[^0-9]/', '', $telepon);
+        if (str_starts_with($teleponNorm, '0')) {
+            $teleponNorm = '62' . substr($teleponNorm, 1);
+        }
+
+        $fotoKantor = PengaturanFrontend::get('foto_kantor');
+        $fotoKantorUrl = $fotoKantor ? asset('storage/' . $fotoKantor) : null;
+
         return Inertia::render('Public/Home', [
             'demografi' => $statistik->getDemografi(),
             'layanan' => $statistik->getLayanan(),
@@ -46,6 +65,23 @@ class PublicPortalController extends Controller
                 ->orderBy('nama_surat')
                 ->limit(6)
                 ->get(['id', 'kode_surat', 'nama_surat']),
+            'foto_kantor' => $fotoKantorUrl,
+            'aparatur' => [
+                'keuchik' => [
+                    'nama' => PengaturanFrontend::get('nama_keuchik') ?? PengaturanGampong::get('nama_keuchik', 'Keuchik'),
+                    'foto' => $getFotoUrl('foto_keuchik'),
+                ],
+                'sekdes' => [
+                    'nama' => PengaturanFrontend::get('nama_sekdes', 'Sekretaris Desa'),
+                    'foto' => $getFotoUrl('foto_sekdes'),
+                ],
+                'operator' => [
+                    'nama' => PengaturanFrontend::get('nama_operator', 'Operator'),
+                    'foto' => $getFotoUrl('foto_operator'),
+                    'telepon' => $telepon,
+                    'wa_link' => 'https://wa.me/' . $teleponNorm,
+                ],
+            ],
         ]);
     }
 
@@ -248,9 +284,15 @@ class PublicPortalController extends Controller
     public function fasilitas()
     {
         $kategori = request('kategori');
+        $search = request('search');
 
         $fasilitas = FasilitasDesa::query()
             ->when($kategori, fn ($q, $k) => $q->where('kategori', $k))
+            ->when($search, fn ($q, $s) => $q->where(function ($q) use ($s) {
+                $q->where('nama_fasilitas', 'like', "%{$s}%")
+                  ->orWhere('deskripsi', 'like', "%{$s}%")
+                  ->orWhere('lokasi', 'like', "%{$s}%");
+            }))
             ->latest('created_at')
             ->paginate(12)
             ->through(function ($item) {
@@ -267,6 +309,29 @@ class PublicPortalController extends Controller
             'fasilitas' => $fasilitas,
             'kategoriList' => $kategoriList,
             'selectedKategori' => $kategori,
+            'filters' => ['search' => $search],
+        ]);
+    }
+
+    public function fasilitasShow(FasilitasDesa $fasilitasDesa): Response
+    {
+        $fasilitasDesa->foto_url = $fasilitasDesa->foto
+            ? asset('storage/' . $fasilitasDesa->foto)
+            : null;
+
+        $fasilitasTerbaru = FasilitasDesa::query()
+            ->where('id', '!=', $fasilitasDesa->id)
+            ->latest('created_at')
+            ->limit(3)
+            ->get()
+            ->map(function ($item) {
+                $item->foto_url = $item->foto ? asset('storage/' . $item->foto) : null;
+                return $item;
+            });
+
+        return Inertia::render('Public/Fasilitas/Show', [
+            'fasilitas' => $fasilitasDesa,
+            'fasilitasTerbaru' => $fasilitasTerbaru,
         ]);
     }
 }

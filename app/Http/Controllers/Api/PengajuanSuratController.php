@@ -85,7 +85,7 @@ class PengajuanSuratController extends Controller
      */
     public function detailKategori($id)
     {
-        $kategori = KategoriSurat::findOrFail($id);
+        $kategori = KategoriSurat::active()->findOrFail($id);
 
         return response()->json([
             'data' => $kategori,
@@ -130,7 +130,7 @@ class PengajuanSuratController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kategori_surat_id' => 'required|exists:kategori_surat,id',
+            'kategori_surat_id' => 'required|exists:kategori_surat,id,is_active,1',
             'data_isian' => 'required|array',
             'file_syarat' => 'required|array',
         ]);

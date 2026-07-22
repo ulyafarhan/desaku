@@ -30,6 +30,7 @@ Route::get('/verifikasi', [PublicPortalController::class, 'verifyIndex'])->name(
 Route::get('/verifikasi/{hash}', [PublicPortalController::class, 'verify'])->where('hash', '.*')->name('verify');
 Route::get('/statistik', [PublicPortalController::class, 'statistik'])->name('statistik');
 Route::get('/fasilitas', [PublicPortalController::class, 'fasilitas'])->name('fasilitas.index');
+Route::get('/fasilitas/{fasilitasDesa}', [PublicPortalController::class, 'fasilitasShow'])->name('fasilitas.show');
 Route::post('/aspirasi', [PublicPortalController::class, 'storeAspirasi'])->middleware('throttle:5,1')->name('aspirasi.store');
 
 Route::middleware('guest:penduduk')->group(function () {

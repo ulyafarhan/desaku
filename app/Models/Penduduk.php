@@ -251,6 +251,23 @@ class Penduduk extends Authenticatable
         });
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // ponytail: auto-create keluarga if no_kk doesn't exist yet
+        static::creating(function (self $penduduk) {
+            if ($penduduk->no_kk && !Keluarga::where('no_kk', $penduduk->no_kk)->exists()) {
+                Keluarga::create([
+                    'no_kk' => $penduduk->no_kk,
+                    'alamat' => '',
+                    'dusun' => '',
+                    'rt_rw' => '',
+                ]);
+            }
+        });
+    }
+
     public function setNoHpAttribute($value)
     {
         $clean = preg_replace('/[^0-9]/', '', $value);

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { Link, Head } from '@inertiajs/vue3';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 import AppButton from '../../Components/AppButton.vue';
@@ -40,6 +40,8 @@ const props = defineProps({
     layanan: Object,
     berita: Array,
     kategoriSurat: Array,
+    aparatur: Object,
+    foto_kantor: String,
 });
 
 const animatedStats = ref({ penduduk: 0, keluarga: 0, pengajuan: 0, layanan: 0 });
@@ -67,7 +69,7 @@ onMounted(() => {
     animateCount('layanan', props.kategoriSurat?.length ?? 0);
 });
 
-const featureItems = [
+const featureItems = computed(() => [
     {
         title: "Layanan Mandiri",
         desc: "Warga dapat mengajukan berbagai jenis surat keterangan secara mandiri online.",
@@ -94,30 +96,30 @@ const featureItems = [
         desc: "Hubungi operator pelayanan langsung melalui WhatsApp untuk bantuan berkas.",
         icon: PhoneCall,
         gradient: "from-sky-500/10 to-cyan-500/10 text-sky-600 border-sky-500/10",
-        href: "https://wa.me/6281234567890",
+        href: props.aparatur?.operator?.wa_link || "https://wa.me/6281234567890",
         external: true
     }
-];
+]);
 
-const aparaturList = [
+const aparaturList = computed(() => [
     {
-        name: "H. Syarifuddin",
+        name: props.aparatur?.keuchik?.nama || 'Keuchik',
         role: "Keuchik (Kepala Desa)",
-        photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop"
+        photo: props.aparatur?.keuchik?.foto || null
     },
     {
-        name: "Cut Rahmawati, S.Sos",
+        name: props.aparatur?.sekdes?.nama || 'Sekretaris Desa',
         role: "Sekretaris Desa",
-        photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop"
+        photo: props.aparatur?.sekdes?.foto || null
     },
     {
-        name: "Ahmad Faisal",
-        role: "Kaur Keuangan",
-        photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop"
+        name: props.aparatur?.operator?.nama || 'Operator',
+        role: "Operator Layanan",
+        photo: props.aparatur?.operator?.foto || null
     }
-];
+]);
 
-const jsonLd = {
+const jsonLd = computed(() => ({
   "@context": "https://schema.org",
   "@type": "GovernmentOrganization",
   "name": "Pemerintahan Gampong Udeung",
@@ -133,10 +135,10 @@ const jsonLd = {
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+62-812-3456-7890",
+    "telephone": "+62" + (props.aparatur?.operator?.telepon || '81234567890').replace(/^0/, ''),
     "contactType": "customer service"
   }
-};
+}));
 </script>
 
 <template>
@@ -335,10 +337,14 @@ const jsonLd = {
                 <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-indigo-500/20 rounded-2xl filter blur-xl opacity-70 -z-10" />
                 <div class="overflow-hidden rounded-2xl border border-slate-200">
                     <img 
-                        src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop" 
-                        alt="Citizen using portal" 
+                        v-if="foto_kantor"
+                        :src="foto_kantor" 
+                        alt="Kantor Desa Udeung" 
                         class="size-full object-cover aspect-[4/3]"
                     />
+                    <div v-else class="size-full aspect-[4/3] bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-blue-600/20 flex items-center justify-center">
+                        <HomeIcon class="size-16 text-blue-800/30 stroke-[1]" />
+                    </div>
                 </div>
             </div>
 
@@ -376,16 +382,20 @@ const jsonLd = {
 
                 <div class="mt-8 rounded-2xl bg-slate-50 border border-slate-200 p-5 flex flex-col sm:flex-row items-center gap-4">
                     <img 
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop" 
-                        alt="Operator Foto" 
+                        v-if="aparatur?.operator?.foto"
+                        :src="aparatur.operator.foto"
+                        :alt="aparatur.operator.nama"
                         class="size-12 rounded-full object-cover shrink-0"
                     />
+                    <div v-else class="size-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                        <User class="size-5 text-blue-600" />
+                    </div>
                     <div class="grow text-center sm:text-left space-y-0.5">
                         <p class="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Layanan WhatsApp Mandiri</p>
-                        <p class="text-sm font-bold text-slate-800">Nadia Safira (Operator Gampong)</p>
-                        <p class="text-xs text-blue-800 font-bold">0812-3456-7890</p>
+                        <p class="text-sm font-bold text-slate-800">{{ aparatur?.operator?.nama || 'Operator Gampong' }} (Operator Gampong)</p>
+                        <p class="text-xs text-blue-800 font-bold">{{ aparatur?.operator?.telepon || '-' }}</p>
                     </div>
-                    <a href="https://wa.me/6281234567890" target="_blank" class="inline-flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-750 text-white font-bold text-xs py-2.5 px-5 transition-all shadow-sm">
+                    <a :href="aparatur?.operator?.wa_link || 'https://wa.me/6281234567890'" target="_blank" class="inline-flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-750 text-white font-bold text-xs py-2.5 px-5 transition-all shadow-sm">
                         Hubungi Operator
                     </a>
                 </div>
@@ -461,12 +471,14 @@ const jsonLd = {
                 :key="aparat.name"
                 class="bg-slate-50/50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm transition-all duration-300"
             >
-                <div class="aspect-[4/3] w-full overflow-hidden bg-slate-50">
+                <div class="aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-blue-600/20 flex items-center justify-center">
                     <img 
+                        v-if="aparat.photo"
                         :src="aparat.photo" 
                         :alt="aparat.name"
                         class="size-full object-cover"
                     />
+                    <User v-else class="size-12 text-blue-800/40 stroke-[1.5]" />
                 </div>
                 <div class="p-6 text-center space-y-2 bg-white border-t border-slate-100">
                     <h3 class="text-base font-bold text-slate-900">{{ aparat.name }}</h3>

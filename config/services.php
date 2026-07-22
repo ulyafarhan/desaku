@@ -120,8 +120,9 @@ return [
         'gateway_url'   => env('WHA_GATEWAY_URL', 'http://localhost:2785'),
         'api_key'       => env('WHA_API_KEY', ''),
         'session_id'    => env('WHA_SESSION_ID', 'sig-udeung'),
-        'default_target' => env('WHA_DEFAULT_TARGET', ''),
-        'fonnte_token'  => env('FONNTE_TOKEN', ''),
+        'default_target'  => env('WHA_DEFAULT_TARGET', ''),
+        'webhook_secret'  => env('WHA_WEBHOOK_SECRET', ''),
+        'fonnte_token'    => env('FONNTE_TOKEN', ''),
     ],
 
     /*

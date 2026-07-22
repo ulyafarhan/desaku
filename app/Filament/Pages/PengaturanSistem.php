@@ -223,23 +223,19 @@ class PengaturanSistem extends Page implements HasForms
                                     ->label('Gemini API Key')
                                     ->password()
                                     ->revealable()
-                                    ->requiredIf('ai_active_provider', 'gemini')
                                     ->visible(fn ($get) => $get('ai_active_provider') === 'gemini'),
                                 TextInput::make('ai_openai_key')
                                     ->label('OpenAI API Key')
                                     ->password()
                                     ->revealable()
-                                    ->requiredIf('ai_active_provider', 'openai')
                                     ->visible(fn ($get) => $get('ai_active_provider') === 'openai'),
                                 TextInput::make('ai_openai_model')
                                     ->label('OpenAI Model')
                                     ->default('gpt-4o-mini')
-                                    ->requiredIf('ai_active_provider', 'openai')
                                     ->visible(fn ($get) => $get('ai_active_provider') === 'openai'),
                                 TextInput::make('ai_openai_base_url')
                                     ->label('OpenAI Base URL')
                                     ->default('https://api.openai.com/v1')
-                                    ->requiredIf('ai_active_provider', 'openai')
                                     ->visible(fn ($get) => $get('ai_active_provider') === 'openai'),
 
                                 Repeater::make('ai_providers_list')
@@ -261,8 +257,7 @@ class PengaturanSistem extends Page implements HasForms
                                         TextInput::make('api_key')
                                             ->label('API Key / Token')
                                             ->password()
-                                            ->revealable()
-                                            ->required(),
+                                            ->revealable(),
                                         TextInput::make('model')
                                             ->label('Model AI')
                                             ->placeholder('Contoh: gemini-flash-lite-latest atau deepseek-v4-flash')
