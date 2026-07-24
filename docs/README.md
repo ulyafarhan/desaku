@@ -120,3 +120,7 @@ Selamat datang di pusat dokumentasi resmi Sistem Informasi Gampong Udeung (SIG-U
 | Vitest | ^4.1.8 |
 | DomPDF | ^3.0 |
 | Simple QRCode | ^4.2 |
+| WhatsApp Gateway | OpenWA (Baileys) — self-hosted |
+| WhatsApp SaaS | Fonnte — fallback otomatis |
+| Telegram Bot | Telegram Bot API |
+| AI Provider | Google Gemini / OpenAI-compatible |

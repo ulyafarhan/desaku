@@ -27,7 +27,7 @@
             </style>
 
     <script>
-        var tryItOutBaseUrl = "https://gampong.web.id";
+        var tryItOutBaseUrl = "https://127.0.0.1:8000";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
@@ -63,11 +63,41 @@
                     <a href="#pendahuluan">Pendahuluan</a>
                 </li>
                                     <ul id="tocify-subheader-pendahuluan" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="tentang-sig-udeung">
-                                <a href="#tentang-sig-udeung">Tentang SIG-Udeung</a>
+                                                    <li class="tocify-item level-2" data-unique="base-url">
+                                <a href="#base-url">Base URL</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoint-overview">
-                                <a href="#endpoint-overview">Endpoint Overview</a>
+                                                                                <li class="tocify-item level-2" data-unique="tentang-sistem">
+                                <a href="#tentang-sistem">Tentang Sistem</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="autentikasi">
+                                <a href="#autentikasi">Autentikasi</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="format-response">
+                                <a href="#format-response">Format Response</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="rate-limiting">
+                                <a href="#rate-limiting">Rate Limiting</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="grup-endpoint">
+                                <a href="#grup-endpoint">Grup Endpoint</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="implementasi-real">
+                                <a href="#implementasi-real">Implementasi Real</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="webhook-callback">
+                                <a href="#webhook-callback">Webhook & Callback</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="notifikasi">
+                                <a href="#notifikasi">Notifikasi</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="struktur-data-penting">
+                                <a href="#struktur-data-penting">Struktur Data Penting</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="informasi-teknis">
+                                <a href="#informasi-teknis">Informasi Teknis</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="koleksi-postman-openapi">
+                                <a href="#koleksi-postman-openapi">Koleksi Postman & OpenAPI</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -76,14 +106,23 @@
                     <a href="#autentikasi-permintaan">Autentikasi Permintaan</a>
                 </li>
                                     <ul id="tocify-subheader-autentikasi-permintaan" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="mendapatkan-token">
-                                <a href="#mendapatkan-token">Mendapatkan Token</a>
+                                                    <li class="tocify-item level-2" data-unique="header">
+                                <a href="#header">Header</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="menggunakan-token">
-                                <a href="#menggunakan-token">Menggunakan Token</a>
+                                                                                <li class="tocify-item level-2" data-unique="alur-mendapatkan-token">
+                                <a href="#alur-mendapatkan-token">Alur Mendapatkan Token</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="contoh-lengkap">
-                                <a href="#contoh-lengkap">Contoh Lengkap</a>
+                                                                                <li class="tocify-item level-2" data-unique="login-warga">
+                                <a href="#login-warga">Login Warga</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="login-administrator">
+                                <a href="#login-administrator">Login Administrator</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="logout">
+                                <a href="#logout">Logout</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="bind-telegram">
+                                <a href="#bind-telegram">Bind Telegram</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="catatan-penting">
                                 <a href="#catatan-penting">Catatan Penting</a>
@@ -258,7 +297,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Terakhir diperbarui: July 20, 2026</li>
+        <li>Terakhir diperbarui: July 22, 2026</li>
     </ul>
 </div>
 
@@ -266,218 +305,606 @@
     <div class="dark-box"></div>
     <div class="content">
         <h1 id="pendahuluan">Pendahuluan</h1>
-<p>Dokumentasi ini menyediakan semua informasi yang Anda butuhkan untuk bekerja dengan API SIG-Udeung.</p>
-<p><strong>Base URL:</strong> <code>{base_url}/api/v1</code></p>
-<h2 id="tentang-sig-udeung">Tentang SIG-Udeung</h2>
-<p>SIG-Udeung (Sistem Informasi Gampong Udeung) adalah platform digital administrasi desa untuk Gampong Udeung, Kecamatan Bandar Baru, Kabupaten Pidie Jaya, Provinsi Aceh.</p>
-<h2 id="endpoint-overview">Endpoint Overview</h2>
+<p>Dokumentasi resmi API <strong>Sistem Informasi Gampong Udeung (SIG-Udeung)</strong> — platform digital administrasi desa untuk <strong>Gampong Udeung, Kecamatan Bandar Baru, Kabupaten Pidie Jaya, Provinsi Aceh</strong>.</p>
+<hr />
+<h2 id="base-url">Base URL</h2>
+<pre><code>https://gampong.web.id/api/v1</code></pre>
+<p>Seluruh endpoint menggunakan prefiks <code>/api/v1</code>. Contoh:</p>
+<ul>
+<li><code>https://gampong.web.id/api/v1/auth/login/warga</code></li>
+<li><code>https://gampong.web.id/api/v1/surat/kategori</code></li>
+<li><code>https://gampong.web.id/api/v1/admin/surat/pengajuan</code></li>
+</ul>
+<hr />
+<h2 id="tentang-sistem">Tentang Sistem</h2>
+<p>SIG-Udeung adalah sistem informasi desa terpadu yang mencakup:</p>
 <table>
 <thead>
 <tr>
-<th>Metode</th>
-<th>Endpoint</th>
-<th>Autentikasi</th>
-<th>Deskripsi</th>
+<th>Modul</th>
+<th>Fungsi</th>
+<th>Teknologi</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>POST</td>
-<td><code>/auth/login/warga</code></td>
-<td>Tidak</td>
-<td>Login warga dengan NIK</td>
+<td><strong>Portal Publik</strong></td>
+<td>Halaman beranda, profil desa, berita, statistik</td>
+<td>Vue 3 + Inertia.js</td>
 </tr>
 <tr>
-<td>POST</td>
-<td><code>/auth/login/admin</code></td>
-<td>Tidak</td>
-<td>Login administrator</td>
+<td><strong>Layanan Warga</strong></td>
+<td>Pengajuan surat online, mutasi penduduk</td>
+<td>Vue 3 + Inertia.js</td>
 </tr>
 <tr>
-<td>POST</td>
-<td><code>/auth/logout</code></td>
-<td>Ya</td>
-<td>Logout pengguna</td>
+<td><strong>Panel Admin</strong></td>
+<td>Verifikasi pengajuan, manajemen konten, statistik</td>
+<td>Filament PHP 5</td>
 </tr>
 <tr>
-<td>GET</td>
-<td><code>/auth/profile</code></td>
-<td>Ya</td>
-<td>Ambil profil pengguna</td>
+<td><strong>Notifikasi WhatsApp</strong></td>
+<td>Status surat &amp; broadcast berita ke warga</td>
+<td>WA Gateway (Baileys) + Fonnte (fallback)</td>
 </tr>
 <tr>
-<td>POST</td>
-<td><code>/auth/bind-telegram</code></td>
-<td>Ya</td>
-<td>Hubungkan akun Telegram</td>
+<td><strong>Notifikasi Telegram</strong></td>
+<td>Notifikasi surat ke personal chat &amp; broadcast berita ke grup</td>
+<td>Telegram Bot API</td>
 </tr>
 <tr>
-<td>GET</td>
-<td><code>/informasi</code></td>
-<td>Tidak</td>
-<td>Daftar informasi publik</td>
+<td><strong>Chatbot AI</strong></td>
+<td>Asisten virtual warga via Telegram</td>
+<td>Google Gemini / OpenAI</td>
 </tr>
 <tr>
-<td>GET</td>
-<td><code>/informasi/{slug}</code></td>
-<td>Tidak</td>
-<td>Detail informasi</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/statistik/demografi</code></td>
-<td>Tidak</td>
-<td>Statistik demografi</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/statistik/layanan</code></td>
-<td>Tidak</td>
-<td>Statistik layanan</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/verifikasi/{hash}</code></td>
-<td>Tidak</td>
-<td>Verifikasi dokumen</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/telegram/webhook</code></td>
-<td>Tidak</td>
-<td>Webhook Telegram</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/surat/kategori</code></td>
-<td>Ya</td>
-<td>Daftar kategori surat</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/surat/pengajuan</code></td>
-<td>Ya</td>
-<td>Ajukan surat</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/surat/pengajuan</code></td>
-<td>Ya</td>
-<td>Riwayat pengajuan</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/mutasi</code></td>
-<td>Ya</td>
-<td>Ajukan mutasi</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/mutasi</code></td>
-<td>Ya</td>
-<td>Riwayat mutasi</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/admin/surat/pengajuan</code></td>
-<td>Admin</td>
-<td>Kelola pengajuan surat</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/admin/surat/pengajuan/{id}/approve</code></td>
-<td>Admin</td>
-<td>Setujui pengajuan</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/admin/surat/pengajuan/{id}/reject</code></td>
-<td>Admin</td>
-<td>Tolak pengajuan</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/admin/mutasi</code></td>
-<td>Admin</td>
-<td>Kelola mutasi</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/admin/mutasi/{id}/approve</code></td>
-<td>Admin</td>
-<td>Setujui mutasi</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/admin/mutasi/{id}/reject</code></td>
-<td>Admin</td>
-<td>Tolak mutasi</td>
-</tr>
-<tr>
-<td>GET</td>
-<td><code>/admin/informasi</code></td>
-<td>Admin</td>
-<td>Kelola informasi</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/admin/informasi</code></td>
-<td>Admin</td>
-<td>Buat informasi baru</td>
-</tr>
-<tr>
-<td>PUT</td>
-<td><code>/admin/informasi/{id}</code></td>
-<td>Admin</td>
-<td>Perbarui informasi</td>
-</tr>
-<tr>
-<td>DELETE</td>
-<td><code>/admin/informasi/{id}</code></td>
-<td>Admin</td>
-<td>Hapus informasi</td>
-</tr>
-<tr>
-<td>POST</td>
-<td><code>/admin/statistik/clear-cache</code></td>
-<td>Admin</td>
-<td>Hapus cache statistik</td>
+<td><strong>Verifikasi QR</strong></td>
+<td>Validasi keaslian dokumen surat via QR Code</td>
+<td>SHA-256 + QR Code</td>
 </tr>
 </tbody>
 </table>
-
-        <h1 id="autentikasi-permintaan">Autentikasi Permintaan</h1>
-<p>Untuk melakukan autentikasi pada endpoint yang memerlukan, sertakan header <strong><code>Authorization</code></strong> dengan nilai <strong><code>Bearer {YOUR_AUTH_TOKEN}</code></strong>.</p>
-<h2 id="mendapatkan-token">Mendapatkan Token</h2>
+<hr />
+<h2 id="autentikasi">Autentikasi</h2>
 <h3 id="login-warga">Login Warga</h3>
-<pre><code class="language-bash">POST /api/v1/auth/login/warga
+<p>Warga login menggunakan <strong>NIK</strong> (16 digit) dan <strong>Nomor Kartu Keluarga</strong> (16 digit):</p>
+<pre><code class="language-http">POST https://gampong.web.id/api/v1/auth/login/warga
+Content-Type: application/json
+
 {
   "nik": "1118060512900001",
   "no_kk": "1118060001000001"
 }</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  "message": "Login berhasil",
+  "data": {
+    "user": {
+      "nik": "1118060512900001",
+      "nama_lengkap": "Muhammad Ali",
+      "jenis_kelamin": "L",
+      "tempat_lahir": "Udeung",
+      "tanggal_lahir": "1990-12-05",
+      "alamat": "Jl. Gampong Udeung No. 10",
+      "agama": "Islam",
+      "pekerjaan": "Petani",
+      "telegram_chat_id": null
+    },
+    "token": "1|abc123def456..."
+  }
+}</code></pre>
 <h3 id="login-administrator">Login Administrator</h3>
-<pre><code class="language-bash">POST /api/v1/auth/login/admin
+<p>Admin login menggunakan <strong>username</strong> dan <strong>password</strong>:</p>
+<pre><code class="language-http">POST https://gampong.web.id/api/v1/auth/login/admin
+Content-Type: application/json
+
 {
   "username": "operator",
-  "password": "password"
+  "password": "********"
 }</code></pre>
-<h2 id="menggunakan-token">Menggunakan Token</h2>
-<p>Setelah mendapatkan token, sertakan di header setiap request:</p>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  "message": "Login berhasil",
+  "data": {
+    "user": {
+      "id": 1,
+      "username": "operator",
+      "nama_lengkap": "Operator Desa"
+    },
+    "token": "1|xyz789..."
+  }
+}</code></pre>
+<h3 id="menggunakan-token">Menggunakan Token</h3>
+<p>Setelah login, sertakan token sebagai <strong>Bearer Token</strong> di header <code>Authorization</code> setiap request:</p>
 <pre><code class="language-http">Authorization: Bearer 1|abc123def456...</code></pre>
-<h2 id="contoh-lengkap">Contoh Lengkap</h2>
-<pre><code class="language-bash"># Step 1: Login
-curl -X POST http://localhost/api/v1/auth/login/warga \
-  -H "Content-Type: application/json" \
-  -d '{"nik":"1118060512900001","no_kk":"1118060001000001"}'
+<p>Token berlaku selama sesi aktif. Setiap user hanya dapat memiliki <strong>satu token aktif</strong> — token sebelumnya otomatis dicabut saat login baru.</p>
+<hr />
+<h2 id="format-response">Format Response</h2>
+<h3 id="response-berhasil">Response Berhasil</h3>
+<pre><code class="language-json">{
+  "message": "String pesan deskriptif",
+  "data": {
+    ...
+  }
+}</code></pre>
+<h3 id="response-validasi-gagal-422">Response Validasi Gagal (422)</h3>
+<pre><code class="language-json">{
+  "message": "Validasi gagal",
+  "errors": {
+    "nik": ["NIK harus 16 digit"],
+    "no_kk": ["Nomor KK wajib diisi"]
+  }
+}</code></pre>
+<h3 id="response-tidak-ditemukan-404">Response Tidak Ditemukan (404)</h3>
+<pre><code class="language-json">{
+  "message": "Data tidak ditemukan"
+}</code></pre>
+<h3 id="response-error-server-500">Response Error Server (500)</h3>
+<pre><code class="language-json">{
+  "message": "Terjadi kesalahan internal server"
+}</code></pre>
+<h3 id="response-autentikasi-gagal-401">Response Autentikasi Gagal (401)</h3>
+<pre><code class="language-json">{
+  "message": "Unauthenticated"
+}</code></pre>
+<h3 id="response-tidak-diizinkan-403">Response Tidak Diizinkan (403)</h3>
+<pre><code class="language-json">{
+  "message": "Forbidden — anda tidak memiliki akses ke sumber daya ini"
+}</code></pre>
+<hr />
+<h2 id="rate-limiting">Rate Limiting</h2>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Batas</th>
+<th>Periode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Login warga &amp; admin</td>
+<td><strong>5 request</strong></td>
+<td>per menit per IP</td>
+</tr>
+<tr>
+<td>Webhook Telegram</td>
+<td><strong>60 request</strong></td>
+<td>per menit</td>
+</tr>
+<tr>
+<td>Seluruh endpoint lainnya</td>
+<td><strong>60 request</strong></td>
+<td>per menit per IP</td>
+</tr>
+</tbody>
+</table>
+<p>Saat batas terlampaui, response <code>429 Too Many Requests</code>:</p>
+<pre><code class="language-json">{
+  "message": "Too Many Attempts."
+}</code></pre>
+<hr />
+<h2 id="grup-endpoint">Grup Endpoint</h2>
+<table>
+<thead>
+<tr>
+<th>Grup</th>
+<th>Endpoint</th>
+<th>Autentikasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Autentikasi</strong></td>
+<td>Login warga, login admin, logout, profil, bind Telegram</td>
+<td>Bervariasi</td>
+</tr>
+<tr>
+<td><strong>Informasi Publik</strong></td>
+<td>Berita, pengumuman desa</td>
+<td>Publik (read-only)</td>
+</tr>
+<tr>
+<td><strong>Layanan Warga</strong></td>
+<td>Kategori surat, pengajuan surat, mutasi penduduk</td>
+<td>Token warga</td>
+</tr>
+<tr>
+<td><strong>Administrasi</strong></td>
+<td>Verifikasi pengajuan, manajemen informasi, statistik</td>
+<td>Token admin</td>
+</tr>
+<tr>
+<td><strong>Statistik &amp; Verifikasi</strong></td>
+<td>Data demografi, statistik layanan, verifikasi QR</td>
+<td>Publik + admin</td>
+</tr>
+<tr>
+<td><strong>Integrasi Telegram</strong></td>
+<td>Webhook incoming dari Telegram Bot</td>
+<td>Publik (via secret)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="implementasi-real">Implementasi Real</h2>
+<h3 id="contoh-alur-pengajuan-surat-lengkap">Contoh: Alur Pengajuan Surat Lengkap</h3>
+<p>Berikut alur lengkap dari warga mengajukan surat hingga mendapat notifikasi:</p>
+<pre><code class="language-php">// === Step 1: Login warga ===
+use Illuminate\Support\Facades\Http;
 
-# Step 2: Gunakan token dari response
-curl http://localhost/api/v1/surat/kategori \
-  -H "Authorization: Bearer 1|your_token_here"</code></pre>
+$login = Http::post('https://gampong.web.id/api/v1/auth/login/warga', [
+    'nik' =&gt; '1118060512900001',
+    'no_kk' =&gt; '1118060001000001',
+]);
+
+$token = $login['data']['token'];
+
+// === Step 2: Ambil daftar kategori surat ===
+$kategori = Http::withToken($token)
+    -&gt;get('https://gampong.web.id/api/v1/surat/kategori')
+    -&gt;json();
+
+// Pilih kategori, misal SKD (Surat Keterangan Domisili)
+$kategoriId = $kategori['data'][0]['id'];
+
+// === Step 3: Ajukan surat ===
+$pengajuan = Http::withToken($token)
+    -&gt;post('https://gampong.web.id/api/v1/surat/pengajuan', [
+        'kategori_surat_id' =&gt; $kategoriId,
+        'data_isian' =&gt; [
+            'alamat_sekarang' =&gt; 'Gampong Udeung, Kec. Bandar Baru',
+            'lama_menetap' =&gt; '5 Tahun',
+            'status_tempat_tinggal' =&gt; 'Milik Sendiri',
+            'keperluan' =&gt; 'Pendaftaran BPJS',
+        ],
+        'file_syarat' =&gt; [
+            'KTP' =&gt; 'https://storage.gampong.web.id/uploads/ktp.jpg',
+            'Kartu Keluarga' =&gt; 'https://storage.gampong.web.id/uploads/kk.jpg',
+        ],
+    ]);
+
+// Response: {"message": "Pengajuan surat berhasil dibuat", "data": {...}}
+
+// === Step 4: Cek status pengajuan (dari dashboard warga) ===
+$riwayat = Http::withToken($token)
+    -&gt;get('https://gampong.web.id/api/v1/surat/pengajuan')
+    -&gt;json();</code></pre>
+<h3 id="contoh-admin-approve-surat-dari-sistem-eksternal">Contoh: Admin Approve Surat (dari sistem eksternal)</h3>
+<pre><code class="language-php">// Login admin
+$login = Http::post('https://gampong.web.id/api/v1/auth/login/admin', [
+    'username' =&gt; 'keuchik',
+    'password' =&gt; '********',
+]);
+$adminToken = $login['data']['token'];
+
+// Approve pengajuan
+$approve = Http::withToken($adminToken)
+    -&gt;post('https://gampong.web.id/api/v1/admin/surat/pengajuan/{id}/approve')
+    -&gt;json();
+
+// Sistem otomatis:
+// 1. Generate nomor surat (format: SKD/001/VI/2026)
+// 2. Generate QR hash (SHA-256)
+// 3. Update status menjadi 'Selesai'
+// 4. Kirim notifikasi WhatsApp ke warga (via WA Gateway / Fonnte)
+// 5. Kirim notifikasi Telegram ke personal chat warga (jika terdaftar)</code></pre>
+<h3 id="contoh-javascript-fetch-api-untuk-integrasi-frontend">Contoh: JavaScript (Fetch API) untuk Integrasi Frontend</h3>
+<pre><code class="language-javascript">// Login warga
+async function loginWarga(nik, no_kk) {
+  const res = await fetch('https://gampong.web.id/api/v1/auth/login/warga', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nik, no_kk })
+  });
+  const { data } = await res.json();
+  return data.token;
+}
+
+// Ambil kategori surat
+async function getKategoriSurat(token) {
+  const res = await fetch('https://gampong.web.id/api/v1/surat/kategori', {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  return await res.json();
+}
+
+// Ajukan surat
+async function ajukanSurat(token, kategoriId, dataIsian, fileSyarat) {
+  const res = await fetch('https://gampong.web.id/api/v1/surat/pengajuan', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      kategori_surat_id: kategoriId,
+      data_isian: dataIsian,
+      file_syarat: fileSyarat
+    })
+  });
+  return await res.json();
+}</code></pre>
+<h3 id="contoh-curl-untuk-scripting">Contoh: cURL untuk Scripting</h3>
+<pre><code class="language-bash">#!/bin/bash
+
+# Login warga
+TOKEN=$(curl -s -X POST https://gampong.web.id/api/v1/auth/login/warga \
+  -H "Content-Type: application/json" \
+  -d '{"nik":"1118060512900001","no_kk":"1118060001000001"}' \
+  | jq -r '.data.token')
+
+# Ambil kategori surat
+curl -s https://gampong.web.id/api/v1/surat/kategori \
+  -H "Authorization: Bearer $TOKEN" \
+  | jq
+
+# Ajukan surat baru
+curl -s -X POST https://gampong.web.id/api/v1/surat/pengajuan \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "kategori_surat_id": "01AR...",
+    "data_isian": {
+      "keperluan": "Pendaftaran BPJS",
+      "alamat_sekarang": "Gampong Udeung"
+    },
+    "file_syarat": {
+      "KTP": "https://storage.gampong.web.id/uploads/ktp.jpg"
+    }
+  }' | jq</code></pre>
+<hr />
+<h2 id="webhook-callback">Webhook &amp; Callback</h2>
+<h3 id="telegram-webhook">Telegram Webhook</h3>
+<p>Sistem menerima pesan dari Telegram Bot melalui endpoint:</p>
+<pre><code>POST https://gampong.web.id/api/v1/telegram/webhook</code></pre>
+<p>Bot Telegram akan mengirimkan update secara real-time ke endpoint ini. Sistem memproses:</p>
+<ol>
+<li><strong>Pesan teks biasa</strong> — dicocokkan dengan knowledge base FAQ, kemudian diproses oleh AI (Gemini/OpenAI) jika tidak ada kecocokan</li>
+<li><strong>Perintah <code>/start</code></strong> — mengirim pesan selamat datang</li>
+<li><strong>Perintah <code>/bind</code></strong> — instruksi menghubungkan akun Telegram ke NIK</li>
+</ol>
+<h3 id="whatsapp-webhook-wa-gateway">WhatsApp Webhook (WA Gateway)</h3>
+<p>WA Gateway mengirimkan status pesan dan pesan masuk ke:</p>
+<pre><code>POST https://gampong.web.id/api/v1/whatsapp/webhook</code></pre>
+<p>Webhook ini digunakan untuk memantau status pengiriman (terkirim/gagal) dan menerima pesan masuk dari warga.</p>
+<hr />
+<h2 id="notifikasi">Notifikasi</h2>
+<h3 id="whatsapp-dual-provider">WhatsApp — Dual Provider</h3>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Status</th>
+<th>Cara Kerja</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>WA Gateway</strong> (primary)</td>
+<td>Self-hosted Node.js + Baileys</td>
+<td>QR pairing, anti-ban engine, SOCKS5 proxy</td>
+</tr>
+<tr>
+<td><strong>Fonnte</strong> (fallback)</td>
+<td>SaaS, token-only</td>
+<td>Auto-fallback jika primary gagal</td>
+</tr>
+</tbody>
+</table>
+<p>Konfigurasi di <code>.env</code>:</p>
+<pre><code class="language-env">WHA_PROVIDER=wa-gateway        # atau 'fonnte'
+WHA_GATEWAY_URL=https://wa.gampong.web.id
+WHA_API_KEY=***
+WHA_SESSION_ID=sig-udeung
+FONNTE_TOKEN=***                # diisi untuk fallback</code></pre>
+<p><strong>Auto-fallback:</strong> Jika wa-gateway gagal mengirim dan <code>FONNTE_TOKEN</code> terisi, sistem otomatis mengirim ulang via Fonnte tanpa intervensi manual.</p>
+<h3 id="telegram">Telegram</h3>
+<table>
+<thead>
+<tr>
+<th>Jenis Notifikasi</th>
+<th>Tujuan</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status surat</td>
+<td>Personal chat warga</td>
+<td>Submit, approve, reject</td>
+</tr>
+<tr>
+<td>Berita baru</td>
+<td>Grup @kabargampongudeung</td>
+<td>Publikasi berita oleh admin</td>
+</tr>
+<tr>
+<td>Chatbot AI</td>
+<td>Personal chat warga</td>
+<td>Pesan masuk ke bot</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="struktur-data-penting">Struktur Data Penting</h2>
+<h3 id="pengajuan-surat">Pengajuan Surat</h3>
+<pre><code class="language-json">{
+  "id": "01AR...",
+  "nomor_registrasi": "20260723-0001",
+  "nik_pemohon": "1118060512900001",
+  "kategori_surat_id": "01AR...",
+  "data_isian": { ... },
+  "file_syarat": [ ... ],
+  "status": "Pending | Disetujui | Ditolak | Selesai",
+  "nomor_surat": "SKD/001/VII/2026",
+  "qr_hash": "a1b2c3d4e5f6...",
+  "file_pdf_url": "/warga/pengajuan/01AR.../print",
+  "catatan_penolakan": null,
+  "diverifikasi_oleh": 1,
+  "created_at": "2026-07-23T10:00:00",
+  "updated_at": "2026-07-23T14:30:00"
+}</code></pre>
+<p><strong>Status Flow:</strong></p>
+<pre><code>Pending → Diproses → Disetujui → Selesai
+                  → Ditolak</code></pre>
+<h3 id="kategori-surat">Kategori Surat</h3>
+<pre><code class="language-json">{
+  "id": "01AR...",
+  "kode_surat": "SKD",
+  "nama_surat": "Surat Keterangan Domisili",
+  "template_view": "domisili",
+  "body_content": "Bahwa yang bersangkutan merupakan benar warga yang berdomisili...",
+  "schema_isian": [
+    { "field": "keperluan", "label": "Keperluan Surat", "type": "text", "required": true }
+  ],
+  "syarat_dokumen": ["KTP", "KK"],
+  "is_active": true
+}</code></pre>
+<hr />
+<h2 id="informasi-teknis">Informasi Teknis</h2>
+<h3 id="encoding-format">Encoding &amp; Format</h3>
+<table>
+<thead>
+<tr>
+<th>Aspek</th>
+<th>Spesifikasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request/Response</td>
+<td>JSON (<code>application/json</code>)</td>
+</tr>
+<tr>
+<td>Encoding</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Bearer Token (Sanctum)</td>
+</tr>
+<tr>
+<td>Pagination</td>
+<td><code>?page=1&amp;per_page=10</code> (default: 10)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cors">CORS</h3>
+<p>API mengizinkan request dari:</p>
+<ul>
+<li><code>https://gampong.web.id</code></li>
+<li><code>http://localhost:*</code> (development)</li>
+<li>Aplikasi mobile dan PWA</li>
+</ul>
+<h3 id="keamanan">Keamanan</h3>
+<ul>
+<li>Rate limiting pada endpoint login (5/menit) untuk mencegah brute force</li>
+<li>Validasi input ketat di semua endpoint</li>
+<li>Role-based access control: warga vs admin</li>
+<li>Verifikasi dokumen via QR Code + hash SHA-256</li>
+<li>Webhook Telegram/WhatsApp divalidasi dengan secret header</li>
+<li>Semua file upload divalidasi tipe dan ukuran</li>
+</ul>
+<hr />
+<h2 id="koleksi-postman-openapi">Koleksi Postman &amp; OpenAPI</h2>
+<p>Dokumentasi ini tersedia dalam format:</p>
+<ul>
+<li><strong>Postman Collection:</strong> <code>https://gampong.web.id/docs.postman</code></li>
+<li><strong>OpenAPI/Swagger:</strong> <code>https://gampong.web.id/docs.openapi</code></li>
+</ul>
+<p>Koleksi Postman dapat diimpor langsung ke aplikasi Postman untuk pengujian endpoint secara interaktif.</p>
+
+        <h1 id="autentikasi-permintaan">Autentikasi Permintaan</h1>
+<p>Seluruh endpoint yang memerlukan autentikasi menggunakan <strong>Bearer Token</strong> (Laravel Sanctum).</p>
+<h2 id="header">Header</h2>
+<pre><code class="language-http">Authorization: Bearer 1|abc123def456...
+Content-Type: application/json
+Accept: application/json</code></pre>
+<h2 id="alur-mendapatkan-token">Alur Mendapatkan Token</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Client
+    participant API as api.gampong.web.id
+    participant DB as Database
+
+    Client-&gt;&gt;API: POST /api/v1/auth/login/warga
+    Note over Client: { nik, no_kk }
+    API-&gt;&gt;DB: Verifikasi NIK &amp; KK
+    DB--&gt;&gt;API: Valid
+    API--&gt;&gt;Client: { message, data: { user, token } }
+
+    Client-&gt;&gt;API: GET /api/v1/surat/kategori
+    Note over Client: Authorization: Bearer {token}
+    API--&gt;&gt;Client: Daftar kategori surat</code></pre>
+<h2 id="login-warga">Login Warga</h2>
+<pre><code class="language-http">POST https://gampong.web.id/api/v1/auth/login/warga
+Content-Type: application/json
+
+{
+  "nik": "1118060512900001",
+  "no_kk": "1118060001000001"
+}</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  "message": "Login berhasil",
+  "data": {
+    "user": {
+      "nik": "1118060512900001",
+      "nama_lengkap": "Muhammad Ali",
+      "jenis_kelamin": "L",
+      "tempat_lahir": "Udeung",
+      "tanggal_lahir": "1990-12-05",
+      "alamat": "Jl. Gampong Udeung No. 10",
+      "agama": "Islam",
+      "pekerjaan": "Petani",
+      "telegram_chat_id": null
+    },
+    "token": "1|abc123def456..."
+  }
+}</code></pre>
+<h2 id="login-administrator">Login Administrator</h2>
+<pre><code class="language-http">POST https://gampong.web.id/api/v1/auth/login/admin
+Content-Type: application/json
+
+{
+  "username": "keuchik",
+  "password": "********"
+}</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  "message": "Login berhasil",
+  "data": {
+    "user": {
+      "id": 1,
+      "username": "keuchik",
+      "nama_lengkap": "Tgk. Muhammad",
+      "jabatan": "Keuchik"
+    },
+    "token": "1|xyz789..."
+  }
+}</code></pre>
+<h2 id="logout">Logout</h2>
+<pre><code class="language-http">POST https://gampong.web.id/api/v1/auth/logout
+Authorization: Bearer 1|abc123def456...</code></pre>
+<p>Mencabut token yang sedang aktif. Response: <code>204 No Content</code>.</p>
+<h2 id="bind-telegram">Bind Telegram</h2>
+<p>Menghubungkan akun Telegram ke akun warga:</p>
+<pre><code class="language-http">POST https://gampong.web.id/api/v1/auth/bind-telegram
+Authorization: Bearer 1|abc123def456...
+Content-Type: application/json
+
+{
+  "telegram_chat_id": "123456789"
+}</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+  "message": "Akun Telegram berhasil dihubungkan"
+}</code></pre>
 <h2 id="catatan-penting">Catatan Penting</h2>
 <ul>
-<li>Token berlaku selama <strong>session aktif</strong> di server</li>
+<li>Token berlaku selama <strong>sesi aktif</strong> di server</li>
 <li>Simpan token di tempat aman, jangan bagikan ke publik</li>
-<li>Jika token kedaluarsa, lakukan login ulang</li>
+<li>Jika token kedaluwarsa, lakukan login ulang</li>
 <li>Setiap user hanya bisa memiliki <strong>1 token aktif</strong> (token sebelumnya otomatis revoked saat login baru)</li>
 </ul>
 
@@ -498,7 +925,7 @@ curl http://localhost/api/v1/surat/kategori \
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/auth/login/warga" \
+    "https://127.0.0.1:8000/api/v1/auth/login/warga" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -510,7 +937,7 @@ curl http://localhost/api/v1/surat/kategori \
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/auth/login/warga';
+$url = 'https://127.0.0.1:8000/api/v1/auth/login/warga';
 $response = $client-&gt;post(
     $url,
     [
@@ -530,7 +957,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/auth/login/warga"
+    "https://127.0.0.1:8000/api/v1/auth/login/warga"
 );
 
 const headers = {
@@ -706,7 +1133,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/auth/login/admin" \
+    "https://127.0.0.1:8000/api/v1/auth/login/admin" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -718,7 +1145,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/auth/login/admin';
+$url = 'https://127.0.0.1:8000/api/v1/auth/login/admin';
 $response = $client-&gt;post(
     $url,
     [
@@ -738,7 +1165,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/auth/login/admin"
+    "https://127.0.0.1:8000/api/v1/auth/login/admin"
 );
 
 const headers = {
@@ -914,7 +1341,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/auth/logout" \
+    "https://127.0.0.1:8000/api/v1/auth/logout" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -922,7 +1349,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/auth/logout';
+$url = 'https://127.0.0.1:8000/api/v1/auth/logout';
 $response = $client-&gt;post(
     $url,
     [
@@ -939,7 +1366,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/auth/logout"
+    "https://127.0.0.1:8000/api/v1/auth/logout"
 );
 
 const headers = {
@@ -1076,7 +1503,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/auth/profile" \
+    --get "https://127.0.0.1:8000/api/v1/auth/profile" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1084,7 +1511,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/auth/profile';
+$url = 'https://127.0.0.1:8000/api/v1/auth/profile';
 $response = $client-&gt;get(
     $url,
     [
@@ -1101,7 +1528,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/auth/profile"
+    "https://127.0.0.1:8000/api/v1/auth/profile"
 );
 
 const headers = {
@@ -1247,7 +1674,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/auth/bind-telegram" \
+    "https://127.0.0.1:8000/api/v1/auth/bind-telegram" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1259,7 +1686,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/auth/bind-telegram';
+$url = 'https://127.0.0.1:8000/api/v1/auth/bind-telegram';
 $response = $client-&gt;post(
     $url,
     [
@@ -1279,7 +1706,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/auth/bind-telegram"
+    "https://127.0.0.1:8000/api/v1/auth/bind-telegram"
 );
 
 const headers = {
@@ -1445,14 +1872,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/informasi" \
+    --get "https://127.0.0.1:8000/api/v1/informasi" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/informasi';
+$url = 'https://127.0.0.1:8000/api/v1/informasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -1468,7 +1895,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/informasi"
+    "https://127.0.0.1:8000/api/v1/informasi"
 );
 
 const headers = {
@@ -1674,14 +2101,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/informasi/architecto" \
+    --get "https://127.0.0.1:8000/api/v1/informasi/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/informasi/architecto';
+$url = 'https://127.0.0.1:8000/api/v1/informasi/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -1697,7 +2124,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/informasi/architecto"
+    "https://127.0.0.1:8000/api/v1/informasi/architecto"
 );
 
 const headers = {
@@ -1902,7 +2329,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/surat/kategori" \
+    --get "https://127.0.0.1:8000/api/v1/surat/kategori" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1910,7 +2337,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/surat/kategori';
+$url = 'https://127.0.0.1:8000/api/v1/surat/kategori';
 $response = $client-&gt;get(
     $url,
     [
@@ -1927,7 +2354,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/surat/kategori"
+    "https://127.0.0.1:8000/api/v1/surat/kategori"
 );
 
 const headers = {
@@ -2099,7 +2526,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/surat/kategori/architecto" \
+    --get "https://127.0.0.1:8000/api/v1/surat/kategori/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2107,7 +2534,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/surat/kategori/architecto';
+$url = 'https://127.0.0.1:8000/api/v1/surat/kategori/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -2124,7 +2551,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/surat/kategori/architecto"
+    "https://127.0.0.1:8000/api/v1/surat/kategori/architecto"
 );
 
 const headers = {
@@ -2324,7 +2751,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/surat/pengajuan" \
+    "https://127.0.0.1:8000/api/v1/surat/pengajuan" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2338,7 +2765,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/surat/pengajuan';
+$url = 'https://127.0.0.1:8000/api/v1/surat/pengajuan';
 $response = $client-&gt;post(
     $url,
     [
@@ -2360,7 +2787,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/surat/pengajuan"
+    "https://127.0.0.1:8000/api/v1/surat/pengajuan"
 );
 
 const headers = {
@@ -2601,7 +3028,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/surat/pengajuan" \
+    --get "https://127.0.0.1:8000/api/v1/surat/pengajuan" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2609,7 +3036,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/surat/pengajuan';
+$url = 'https://127.0.0.1:8000/api/v1/surat/pengajuan';
 $response = $client-&gt;get(
     $url,
     [
@@ -2626,7 +3053,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/surat/pengajuan"
+    "https://127.0.0.1:8000/api/v1/surat/pengajuan"
 );
 
 const headers = {
@@ -2851,7 +3278,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/surat/pengajuan/architecto" \
+    --get "https://127.0.0.1:8000/api/v1/surat/pengajuan/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2859,7 +3286,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/surat/pengajuan/architecto';
+$url = 'https://127.0.0.1:8000/api/v1/surat/pengajuan/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -2876,7 +3303,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/surat/pengajuan/architecto"
+    "https://127.0.0.1:8000/api/v1/surat/pengajuan/architecto"
 );
 
 const headers = {
@@ -3099,14 +3526,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/mutasi" \
+    "https://127.0.0.1:8000/api/v1/mutasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"nik\": \"architecto\",
-    \"jenis_mutasi\": \"Kedatangan\",
-    \"tanggal_mutasi\": \"2026-07-20T18:14:34\",
+    \"jenis_mutasi\": \"Kepindahan\",
+    \"tanggal_mutasi\": \"2026-07-22T20:40:21\",
     \"keterangan\": \"architecto\",
     \"dokumen_bukti\": \"architecto\"
 }"
@@ -3115,7 +3542,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/mutasi';
+$url = 'https://127.0.0.1:8000/api/v1/mutasi';
 $response = $client-&gt;post(
     $url,
     [
@@ -3126,8 +3553,8 @@ $response = $client-&gt;post(
         ],
         'json' =&gt; [
             'nik' =&gt; 'architecto',
-            'jenis_mutasi' =&gt; 'Kedatangan',
-            'tanggal_mutasi' =&gt; '2026-07-20T18:14:34',
+            'jenis_mutasi' =&gt; 'Kepindahan',
+            'tanggal_mutasi' =&gt; '2026-07-22T20:40:21',
             'keterangan' =&gt; 'architecto',
             'dokumen_bukti' =&gt; 'architecto',
         ],
@@ -3139,7 +3566,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/mutasi"
+    "https://127.0.0.1:8000/api/v1/mutasi"
 );
 
 const headers = {
@@ -3150,8 +3577,8 @@ const headers = {
 
 let body = {
     "nik": "architecto",
-    "jenis_mutasi": "Kedatangan",
-    "tanggal_mutasi": "2026-07-20T18:14:34",
+    "jenis_mutasi": "Kepindahan",
+    "tanggal_mutasi": "2026-07-22T20:40:21",
     "keterangan": "architecto",
     "dokumen_bukti": "architecto"
 };
@@ -3287,10 +3714,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="jenis_mutasi"                data-endpoint="POSTapi-v1-mutasi"
-               value="Kedatangan"
+               value="Kepindahan"
                data-component="body">
     <br>
-<p>Example: <code>Kedatangan</code></p>
+<p>Example: <code>Kepindahan</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>Kelahiran</code></li> <li><code>Kematian</code></li> <li><code>Kedatangan</code></li> <li><code>Kepindahan</code></li></ul>
         </div>
@@ -3301,10 +3728,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="tanggal_mutasi"                data-endpoint="POSTapi-v1-mutasi"
-               value="2026-07-20T18:14:34"
+               value="2026-07-22T20:40:21"
                data-component="body">
     <br>
-<p>Kolom value bukan tanggal yang valid. Example: <code>2026-07-20T18:14:34</code></p>
+<p>Kolom value bukan tanggal yang valid. Example: <code>2026-07-22T20:40:21</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>keterangan</code></b>&nbsp;&nbsp;
@@ -3400,7 +3827,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/mutasi" \
+    --get "https://127.0.0.1:8000/api/v1/mutasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3408,7 +3835,7 @@ Must be one of:
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/mutasi';
+$url = 'https://127.0.0.1:8000/api/v1/mutasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -3425,7 +3852,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/mutasi"
+    "https://127.0.0.1:8000/api/v1/mutasi"
 );
 
 const headers = {
@@ -3641,7 +4068,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/admin/surat/pengajuan" \
+    --get "https://127.0.0.1:8000/api/v1/admin/surat/pengajuan" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3649,7 +4076,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/surat/pengajuan';
+$url = 'https://127.0.0.1:8000/api/v1/admin/surat/pengajuan';
 $response = $client-&gt;get(
     $url,
     [
@@ -3666,7 +4093,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/surat/pengajuan"
+    "https://127.0.0.1:8000/api/v1/admin/surat/pengajuan"
 );
 
 const headers = {
@@ -3880,7 +4307,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/approve" \
+    "https://127.0.0.1:8000/api/v1/admin/surat/pengajuan/architecto/approve" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3888,7 +4315,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/approve';
+$url = 'https://127.0.0.1:8000/api/v1/admin/surat/pengajuan/architecto/approve';
 $response = $client-&gt;post(
     $url,
     [
@@ -3905,7 +4332,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/approve"
+    "https://127.0.0.1:8000/api/v1/admin/surat/pengajuan/architecto/approve"
 );
 
 const headers = {
@@ -4090,7 +4517,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/reject" \
+    "https://127.0.0.1:8000/api/v1/admin/surat/pengajuan/architecto/reject" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4102,7 +4529,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/reject';
+$url = 'https://127.0.0.1:8000/api/v1/admin/surat/pengajuan/architecto/reject';
 $response = $client-&gt;post(
     $url,
     [
@@ -4122,7 +4549,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/surat/pengajuan/architecto/reject"
+    "https://127.0.0.1:8000/api/v1/admin/surat/pengajuan/architecto/reject"
 );
 
 const headers = {
@@ -4325,7 +4752,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/admin/mutasi" \
+    --get "https://127.0.0.1:8000/api/v1/admin/mutasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4333,7 +4760,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/mutasi';
+$url = 'https://127.0.0.1:8000/api/v1/admin/mutasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -4350,7 +4777,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/mutasi"
+    "https://127.0.0.1:8000/api/v1/admin/mutasi"
 );
 
 const headers = {
@@ -4570,7 +4997,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/admin/mutasi/architecto/approve" \
+    "https://127.0.0.1:8000/api/v1/admin/mutasi/architecto/approve" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4578,7 +5005,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/mutasi/architecto/approve';
+$url = 'https://127.0.0.1:8000/api/v1/admin/mutasi/architecto/approve';
 $response = $client-&gt;post(
     $url,
     [
@@ -4595,7 +5022,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/mutasi/architecto/approve"
+    "https://127.0.0.1:8000/api/v1/admin/mutasi/architecto/approve"
 );
 
 const headers = {
@@ -4780,7 +5207,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/admin/mutasi/architecto/reject" \
+    "https://127.0.0.1:8000/api/v1/admin/mutasi/architecto/reject" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4788,7 +5215,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/mutasi/architecto/reject';
+$url = 'https://127.0.0.1:8000/api/v1/admin/mutasi/architecto/reject';
 $response = $client-&gt;post(
     $url,
     [
@@ -4805,7 +5232,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/mutasi/architecto/reject"
+    "https://127.0.0.1:8000/api/v1/admin/mutasi/architecto/reject"
 );
 
 const headers = {
@@ -4991,7 +5418,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/admin/informasi" \
+    --get "https://127.0.0.1:8000/api/v1/admin/informasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4999,7 +5426,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/informasi';
+$url = 'https://127.0.0.1:8000/api/v1/admin/informasi';
 $response = $client-&gt;get(
     $url,
     [
@@ -5016,7 +5443,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/informasi"
+    "https://127.0.0.1:8000/api/v1/admin/informasi"
 );
 
 const headers = {
@@ -5219,7 +5646,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/admin/informasi" \
+    "https://127.0.0.1:8000/api/v1/admin/informasi" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5235,7 +5662,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/informasi';
+$url = 'https://127.0.0.1:8000/api/v1/admin/informasi';
 $response = $client-&gt;post(
     $url,
     [
@@ -5259,7 +5686,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/informasi"
+    "https://127.0.0.1:8000/api/v1/admin/informasi"
 );
 
 const headers = {
@@ -5529,7 +5956,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "https://gampong.web.id/api/v1/admin/informasi/architecto" \
+    "https://127.0.0.1:8000/api/v1/admin/informasi/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5538,14 +5965,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"konten\": \"architecto\",
     \"kategori\": \"wgshlz\",
     \"cover_image\": \"architecto\",
-    \"is_published\": true
+    \"is_published\": false
 }"
 </code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/informasi/architecto';
+$url = 'https://127.0.0.1:8000/api/v1/admin/informasi/architecto';
 $response = $client-&gt;put(
     $url,
     [
@@ -5559,7 +5986,7 @@ $response = $client-&gt;put(
             'konten' =&gt; 'architecto',
             'kategori' =&gt; 'wgshlz',
             'cover_image' =&gt; 'architecto',
-            'is_published' =&gt; true,
+            'is_published' =&gt; false,
         ],
     ]
 );
@@ -5569,7 +5996,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/informasi/architecto"
+    "https://127.0.0.1:8000/api/v1/admin/informasi/architecto"
 );
 
 const headers = {
@@ -5583,7 +6010,7 @@ let body = {
     "konten": "architecto",
     "kategori": "wgshlz",
     "cover_image": "architecto",
-    "is_published": true
+    "is_published": false
 };
 
 fetch(url, {
@@ -5778,7 +6205,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
         </form>
 
@@ -5834,7 +6261,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "https://gampong.web.id/api/v1/admin/informasi/architecto" \
+    "https://127.0.0.1:8000/api/v1/admin/informasi/architecto" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5842,7 +6269,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/informasi/architecto';
+$url = 'https://127.0.0.1:8000/api/v1/admin/informasi/architecto';
 $response = $client-&gt;delete(
     $url,
     [
@@ -5859,7 +6286,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/informasi/architecto"
+    "https://127.0.0.1:8000/api/v1/admin/informasi/architecto"
 );
 
 const headers = {
@@ -6012,14 +6439,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/statistik/demografi" \
+    --get "https://127.0.0.1:8000/api/v1/statistik/demografi" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/statistik/demografi';
+$url = 'https://127.0.0.1:8000/api/v1/statistik/demografi';
 $response = $client-&gt;get(
     $url,
     [
@@ -6035,7 +6462,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/statistik/demografi"
+    "https://127.0.0.1:8000/api/v1/statistik/demografi"
 );
 
 const headers = {
@@ -6212,14 +6639,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/statistik/layanan" \
+    --get "https://127.0.0.1:8000/api/v1/statistik/layanan" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/statistik/layanan';
+$url = 'https://127.0.0.1:8000/api/v1/statistik/layanan';
 $response = $client-&gt;get(
     $url,
     [
@@ -6235,7 +6662,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/statistik/layanan"
+    "https://127.0.0.1:8000/api/v1/statistik/layanan"
 );
 
 const headers = {
@@ -6408,14 +6835,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://gampong.web.id/api/v1/verifikasi/architecto" \
+    --get "https://127.0.0.1:8000/api/v1/verifikasi/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/verifikasi/architecto';
+$url = 'https://127.0.0.1:8000/api/v1/verifikasi/architecto';
 $response = $client-&gt;get(
     $url,
     [
@@ -6431,7 +6858,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/verifikasi/architecto"
+    "https://127.0.0.1:8000/api/v1/verifikasi/architecto"
 );
 
 const headers = {
@@ -6666,7 +7093,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/admin/statistik/clear-cache" \
+    "https://127.0.0.1:8000/api/v1/admin/statistik/clear-cache" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6674,7 +7101,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/admin/statistik/clear-cache';
+$url = 'https://127.0.0.1:8000/api/v1/admin/statistik/clear-cache';
 $response = $client-&gt;post(
     $url,
     [
@@ -6691,7 +7118,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/admin/statistik/clear-cache"
+    "https://127.0.0.1:8000/api/v1/admin/statistik/clear-cache"
 );
 
 const headers = {
@@ -6831,14 +7258,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/telegram/webhook" \
+    "https://127.0.0.1:8000/api/v1/telegram/webhook" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/telegram/webhook';
+$url = 'https://127.0.0.1:8000/api/v1/telegram/webhook';
 $response = $client-&gt;post(
     $url,
     [
@@ -6854,7 +7281,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/telegram/webhook"
+    "https://127.0.0.1:8000/api/v1/telegram/webhook"
 );
 
 const headers = {
@@ -6982,7 +7409,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://gampong.web.id/api/v1/whatsapp/webhook" \
+    "https://127.0.0.1:8000/api/v1/whatsapp/webhook" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6990,7 +7417,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'https://gampong.web.id/api/v1/whatsapp/webhook';
+$url = 'https://127.0.0.1:8000/api/v1/whatsapp/webhook';
 $response = $client-&gt;post(
     $url,
     [
@@ -7007,7 +7434,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://gampong.web.id/api/v1/whatsapp/webhook"
+    "https://127.0.0.1:8000/api/v1/whatsapp/webhook"
 );
 
 const headers = {

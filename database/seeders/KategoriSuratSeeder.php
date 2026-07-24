@@ -60,6 +60,7 @@ class KategoriSuratSeeder extends Seeder
                     'Foto Tempat Usaha',
                     'Kartu Keluarga',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar memiliki dan menjalankan usaha di Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}. Surat keterangan usaha ini dibuat untuk keperluan pengajuan dokumen administrasi dan perizinan usaha.',
                 'is_active' => true,
             ],
 
@@ -99,6 +100,7 @@ class KategoriSuratSeeder extends Seeder
                     'KTP Asli dan Fotokopi',
                     'Kartu Keluarga',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan merupakan benar warga yang berdomisili di Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}.',
                 'is_active' => true,
             ],
 
@@ -139,6 +141,7 @@ class KategoriSuratSeeder extends Seeder
                     'Foto Kondisi Rumah Depan & Dalam',
                     'Surat Pernyataan Tidak Mampu dari Tetangga',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan merupakan benar warga yang berdomisili di Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten} yang tergolong TIDAK MAMPU secara ekonomi.',
                 'is_active' => true,
             ],
 
@@ -198,6 +201,7 @@ class KategoriSuratSeeder extends Seeder
                     'Kartu Keluarga',
                     'Buku Nikah / Akta Perkawinan',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar telah melahirkan seorang anak di Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}. Surat keterangan ini dibuat untuk pengurusan akta kelahiran dan administrasi kependudukan.',
                 'is_active' => true,
             ],
 
@@ -245,6 +249,7 @@ class KategoriSuratSeeder extends Seeder
                     'Kartu Keluarga',
                     'KTP Pelapor',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar telah meninggal dunia di Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}. Surat keterangan ini dibuat untuk pengurusan administrasi kependudukan dan pemakaman.',
                 'is_active' => true,
             ],
 
@@ -280,6 +285,7 @@ class KategoriSuratSeeder extends Seeder
                     'Fotokopi Akta Kelahiran / Ijazah Terakhir',
                     'Pas Foto 4x6 Background Merah',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan berkelakuan baik dan tidak pernah terlibat tindak pidana. Surat pengantar ini dibuat untuk keperluan pengurusan Surat Keterangan Catatan Kepolisian (SKCK) di Polres setempat.',
                 'is_active' => true,
             ],
 
@@ -307,6 +313,7 @@ class KategoriSuratSeeder extends Seeder
                     'Kartu Keluarga',
                     'Surat Pernyataan dari Orang Tua',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar berstatus belum menikah menurut hukum yang berlaku. Surat keterangan ini dibuat untuk keperluan administrasi dan persyaratan dokumen kependudukan.',
                 'is_active' => true,
             ],
 
@@ -358,6 +365,7 @@ class KategoriSuratSeeder extends Seeder
                     'Kartu Keluarga',
                     'Surat Pengantar dari Desa Tujuan',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar akan pindah tempat tinggal dari Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}. Surat keterangan ini dibuat untuk pengurusan administrasi kependudukan.',
                 'is_active' => true,
             ],
 
@@ -412,6 +420,7 @@ class KategoriSuratSeeder extends Seeder
                     'Pas Foto 2x6 Background Biru',
                     'Surat Izin Orang Tua (jika belum 21 tahun)',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar akan melaksanakan pernikahan di Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}. Surat pengantar ini dibuat untuk keperluan pencatatan pernikahan di Kantor Urusan Agama (KUA) setempat.',
                 'is_active' => true,
             ],
 
@@ -445,12 +454,16 @@ class KategoriSuratSeeder extends Seeder
                     'Kartu Keluarga',
                     'Surat Keterangan Usaha (jika pedagang)',
                 ],
+                'body_content' => 'Bahwa yang bersangkutan benar memiliki penghasilan sebagai warga Gampong {nama_gampong}, Kecamatan {kecamatan}, Kabupaten {kabupaten}. Surat keterangan ini dibuat untuk keperluan administrasi dan pengajuan dokumen yang memerlukan keterangan penghasilan.',
                 'is_active' => true,
             ],
         ];
 
         foreach ($kategoriSurat as $kategori) {
-            KategoriSurat::create($kategori);
+            KategoriSurat::updateOrCreate(
+                ['kode_surat' => $kategori['kode_surat']],
+                $kategori
+            );
         }
     }
 }

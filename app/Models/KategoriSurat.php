@@ -47,6 +47,7 @@ class KategoriSurat extends Model
         'kode_surat',
         'nama_surat',
         'template_view',
+        'body_content',
         'schema_isian',
         'syarat_dokumen',
         'is_active',

@@ -7,6 +7,7 @@ use App\Filament\Resources\PengajuanSuratResource\Pages;
 use App\Jobs\GenerateSuratPdfJob;
 use App\Jobs\SendStatusWhatsappJob;
 use App\Models\PengajuanSurat;
+use App\Services\TelegramService;
 use App\Models\TrackingPengajuanSurat;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -245,6 +246,11 @@ class PengajuanSuratResource extends Resource
                             }
                             PengajuanStatusUpdated::dispatch($lockedRecord, $oldStatus, 'Disetujui');
                         });
+                        app(TelegramService::class)->notifyPengajuanStatus(
+                            $lockedRecord->nik_pemohon,
+                            'Disetujui',
+                            $lockedRecord->nomor_registrasi
+                        );
                         if ($lockedRecord->pemohon && !empty($lockedRecord->pemohon->no_hp)) {
                             SendStatusWhatsappJob::dispatch(
                                 $lockedRecord->pemohon->nik,
@@ -288,6 +294,12 @@ class PengajuanSuratResource extends Resource
                             ]);
                             PengajuanStatusUpdated::dispatch($lockedRecord, $oldStatus, 'Ditolak');
                         });
+                        app(TelegramService::class)->notifyPengajuanStatus(
+                            $lockedRecord->nik_pemohon,
+                            'Ditolak',
+                            $lockedRecord->nomor_registrasi,
+                            $data['catatan_penolakan'] ?? null
+                        );
                         if ($lockedRecord->pemohon && !empty($lockedRecord->pemohon->no_hp)) {
                             SendStatusWhatsappJob::dispatch(
                                 $lockedRecord->pemohon->nik,

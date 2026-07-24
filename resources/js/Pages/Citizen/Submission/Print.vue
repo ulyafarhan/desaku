@@ -7,6 +7,7 @@ const props = defineProps({
     qrCodeSvg: String,
     tanggalSurat: String,
     settings: Object,
+    bodyContent: String,
 });
 
 const documentTitle = computed(() => {
@@ -134,8 +135,9 @@ const formatCurrency = (val) => {
                 </tbody>
             </table>
 
-            <div class="mb-5 text-justify indent-10 leading-relaxed">
-                Bahwa yang bersangkutan merupakan benar warga yang berdomisili di Gampong {{ settings.nama_gampong || 'Udeung' }}, Kecamatan {{ settings.kecamatan || 'Bandar Baru' }}, Kabupaten {{ settings.kabupaten || 'Pidie Jaya' }}, yang termasuk wilayah terdampak bencana hidrometeorologi pada tahun 2025.
+            <div v-if="bodyContent" class="mb-5 text-justify indent-10 leading-relaxed" v-html="bodyContent"></div>
+            <div v-else class="mb-5 text-justify indent-10 leading-relaxed">
+                Bahwa yang bersangkutan merupakan benar warga yang berdomisili di Gampong {{ settings.nama_gampong || 'Udeung' }}, Kecamatan {{ settings.kecamatan || 'Bandar Baru' }}, Kabupaten {{ settings.kabupaten || 'Pidie Jaya' }}.
             </div>
 
             <div class="mb-6 text-justify indent-10 leading-relaxed">

@@ -8,6 +8,7 @@ use App\Models\KategoriSurat;
 use App\Models\Penduduk;
 use App\Models\PengajuanSurat;
 use App\Models\TrackingPengajuanSurat;
+use App\Services\TelegramService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -190,6 +191,12 @@ class CitizenSubmissionController extends Controller
             ]);
         });
 
+        app(TelegramService::class)->notifyPengajuanStatus(
+            $pengajuan->nik_pemohon,
+            'Pending',
+            $pengajuan->nomor_registrasi
+        );
+
         if ($pengajuan->pemohon && !empty($pengajuan->pemohon->no_hp)) {
             SendStatusWhatsappJob::dispatch(
                 $pengajuan->pemohon->nik,
@@ -269,10 +276,26 @@ class CitizenSubmissionController extends Controller
         $verificationUrl = config('app.url') . '/verifikasi/' . ($pengajuan->qr_hash ?? 'invalid');
         $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->generate($verificationUrl)->toHtml();
 
+        $bodyContent = $pengajuan->kategori?->body_content;
+        if ($bodyContent) {
+            $s = $pengajuan->data_isian ?? [];
+            $bodyContent = str_replace(
+                ['{nama_gampong}', '{kecamatan}', '{kabupaten}', '{nama_keuchik}'],
+                [
+                    \App\Models\PengaturanGampong::get('nama_gampong', 'Udeung'),
+                    \App\Models\PengaturanGampong::get('kecamatan', 'Bandar Baru'),
+                    \App\Models\PengaturanGampong::get('kabupaten', 'Pidie Jaya'),
+                    \App\Models\PengaturanGampong::get('nama_keuchik', 'Keuchik'),
+                ],
+                $bodyContent
+            );
+        }
+
         return Inertia::render('Citizen/Submission/Print', [
             'pengajuan' => $pengajuan,
             'qrCodeSvg' => $qrCodeSvg,
             'tanggalSurat' => $pengajuan->updated_at?->locale('id')->isoFormat('D MMMM YYYY') ?? now()->locale('id')->isoFormat('D MMMM YYYY'),
+            'bodyContent' => $bodyContent,
             'settings' => [
                 'nama_gampong' => \App\Models\PengaturanGampong::get('nama_gampong', 'Udeung'),
                 'kecamatan' => \App\Models\PengaturanGampong::get('kecamatan', 'Bandar Baru'),

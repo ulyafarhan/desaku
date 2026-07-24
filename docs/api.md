@@ -128,84 +128,63 @@ Middleware: `auth:sanctum`, `abilities:admin` — prefix: `/api/v1/admin`
 
 ---
 
-## 3. WA Gateway REST API
+## 3. WhatsApp Notification — Dual Provider
 
-Service Node.js standalone di `https://wa.gampong.web.id` (atau `http://localhost:2785`).
+WhatsApp dikirim melalui **dua provider** dengan auto-fallback.
 
-**Auth:** Header `X-API-Key: {API_KEY}` — lihat `.env` WA Gateway.
+| Provider | Kapan Dipakai | Konfigurasi |
+|----------|--------------|-------------|
+| **WA Gateway** (primary) | `WHA_PROVIDER=wa-gateway` | Self-hosted Node.js, QR pairing |
+| **Fonnte** (fallback) | Saat primary gagal | SaaS, token-only, 1000 gratis/bulan |
 
-### 3.1. Health
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/health` | Cek status server WA Gateway | No |
-
-### 3.2. Session Management
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/sessions` | Daftar semua session aktif | Yes |
-| POST | `/api/sessions` | Buat session baru | Yes |
-| GET | `/api/sessions/:id/status` | Status koneksi WhatsApp | Yes |
-| GET | `/api/sessions/:id/qr` | QR code pairing (`?format=html` untuk HTML view) | Yes |
-| PUT | `/api/sessions/:id/webhook` | Set webhook URL untuk session | Yes |
-| DELETE | `/api/sessions/:id` | Hapus session & disconnect | Yes |
-
-### 3.3. Messages
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| POST | `/api/sessions/:id/messages` | Kirim pesan (type: text/image/audio/document) | Yes |
-| POST | `/api/sessions/:id/messages/send-text` | Kirim pesan teks (legacy) | Yes |
-| POST | `/api/sessions/:id/messages/send-image` | Kirim gambar (legacy) | Yes |
-| GET | `/api/sessions/:id/messages` | Riwayat pesan terkirim | Yes |
-| POST | `/api/sessions/:id/broadcast` | Broadcast ke banyak nomor | Yes |
-| GET | `/api/sessions/:id/incoming` | Pesan masuk terbaru (50 terakhir) | Yes |
-
-### 3.4. Behavior Engine (AI)
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/sessions/:id/behavior` | Konfigurasi AI behavior | Yes |
-| POST | `/api/sessions/:id/behavior` | Update konfigurasi AI behavior | Yes |
-
-### 3.5. User Profiles
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/sessions/:id/users` | Daftar profil user | Yes |
-| GET | `/api/sessions/:id/users/:userId` | Detail profil user | Yes |
-| PUT | `/api/sessions/:id/users/:userId/persona` | Update persona user (quick/normal/relaxed) | Yes |
-
-### 3.6. FAQ
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/sessions/:id/faq` | Daftar FAQ | Yes |
-| POST | `/api/sessions/:id/faq` | Tambah FAQ baru | Yes |
-| DELETE | `/api/sessions/:id/faq/:faqId` | Hapus FAQ | Yes |
-
-### 3.7. Templates
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/sessions/:id/templates` | Daftar template pesan | Yes |
-| POST | `/api/sessions/:id/templates/:intent` | Simpan template per intent | Yes |
-
-### 3.8. Analytics
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| GET | `/api/sessions/:id/analytics/personas` | Distribusi persona user | Yes |
-| GET | `/api/sessions/:id/analytics/sources` | Sumber pesan masuk | Yes |
-| GET | `/api/sessions/:id/analytics/volume` | Volume pesan per jam (24 jam) | Yes |
+Auto-fallback berjalan otomatis: jika `wa-gateway` gagal dan `FONNTE_TOKEN` terisi, sistem mengirim ulang via Fonnte tanpa intervensi.
 
 ---
 
-## 4. Catatan
+## 4. WA Gateway REST API
 
-- **Rate Limit API Laravel:** 60 request/menit default, kecuali disebut khusus.
-- **Auth WA Gateway:** Header `X-API-Key` atau query param `?apikey=`. Jika `API_KEY` kosong (dev), auth dilewati.
-- **Format ChatId WA:** Nomor dengan kode negara tanpa `+` atau spasi, contoh: `6281234567890@s.whatsapp.net` atau cukup `6281234567890` (akan diformat otomatis).
-- **Broadcast WA:** Maksimal ~100 nomor per request (rate limit internal 1.5s/pesan).
-- **QR Expiry:** QR code WhatsApp berlaku ~60 detik. Halaman `?format=html` auto-refresh tiap 12 detik.
+Service Node.js standalone di `https://wa.gampong.web.id` (atau `http://localhost:2785`).
+
+**Auth:** Header `X-API-Key: {API_KEY}`.
+
+### 4.1. Health
+
+| Method | Path | Keterangan |
+|--------|------|------------|
+| GET | `/api/health` | Cek status server |
+
+### 4.2. Session
+
+| Method | Path | Keterangan |
+|--------|------|------------|
+| GET | `/api/sessions` | Daftar session aktif |
+| POST | `/api/sessions` | Buat session baru |
+| GET | `/api/sessions/:id/status` | Status koneksi |
+| GET | `/api/sessions/:id/qr` | QR pairing (`?format=html`) |
+| PUT | `/api/sessions/:id/webhook` | Set webhook URL |
+| DELETE | `/api/sessions/:id` | Hapus session |
+
+### 4.3. Messages
+
+| Method | Path | Keterangan |
+|--------|------|------------|
+| POST | `/api/sessions/:id/messages/send-text` | Kirim teks |
+| POST | `/api/sessions/:id/messages/send-image` | Kirim gambar |
+| POST | `/api/sessions/:id/broadcast` | Broadcast massal |
+
+### 4.4. Behavior & Analytics
+
+| Method | Path | Keterangan |
+|--------|------|------------|
+| GET/POST | `/api/sessions/:id/behavior` | Konfigurasi anti-ban |
+| GET | `/api/sessions/:id/analytics/volume` | Volume pesan per jam |
+
+---
+
+## 5. Catatan
+
+- **Rate Limit API Laravel:** 60 request/menit default.
+- **Auth WA Gateway:** Header `X-API-Key`. Jika kosong (dev), auth dilewati.
+- **Format nomor WA:** `6281234567890` (diformat otomatis oleh sistem).
+- **QR Expiry:** ~60 detik. Halaman `?format=html` auto-refresh tiap 12 detik.
+- **Fonnte:** Tidak perlu pairing, cukup isi token di `.env`.

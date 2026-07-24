@@ -161,11 +161,32 @@ Pastikan **Rewrite** diaktifkan di panel LiteSpeed → **Virtual Host → Rewrit
 
 ---
 
-## 4. WA Gateway Deployment
+## 4. WhatsApp Notification
 
-WA Gateway adalah service Node.js **terpisah** dari Laravel, bisa di VPS sama atau beda.
+Dua provider WhatsApp didukung. `wa-gateway` sebagai primary, `fonnte` sebagai fallback otomatis.
 
-### 4.1. Install & Jalankan
+### 4.1. Konfigurasi `.env`
+
+```env
+# Provider: 'wa-gateway' atau 'fonnte'
+WHA_PROVIDER=wa-gateway
+
+# ═══ WA Gateway (self-hosted) ═══
+WHA_GATEWAY_URL=https://wa.gampong.web.id
+WHA_API_KEY=uKGhUfIXZJTl8SzOFNsk1Q2q7tygwr0R
+WHA_SESSION_ID=sig-udeung
+
+# ═══ Fonnte (SaaS fallback) ═══
+FONNTE_TOKEN=token_fonnte_kamu
+```
+
+**Auto-fallback:** Jika `WHA_PROVIDER=wa-gateway` gagal mengirim dan `FONNTE_TOKEN` terisi, sistem otomatis kirim via Fonnte — tanpa perlu ganti `.env`.
+
+### 4.2. WA Gateway (Self-hosted)
+
+Microservice Node.js terpisah dari Laravel.
+
+#### Install & Jalankan
 
 ```bash
 cd /home/ubuntu/desaku/wa-gateway
@@ -187,11 +208,9 @@ WEBHOOK_URL=https://gampong.web.id/api/v1/whatsapp/webhook
 LOG_LEVEL=silent
 ```
 
-**Catatan:** `SOCKS5_PROXY` hanya diperlukan jika IP VPS diblokir WhatsApp (biasanya AWS/GCP/Linode). Gunakan Cloudflare WARP (`localhost:40000`) sebagai SOCKS5.
+`SOCKS5_PROXY` hanya diperlukan jika IP VPS diblokir WhatsApp. Gunakan Cloudflare WARP.
 
-### 4.2. Systemd Service
-
-`wa-gateway.service` sudah tersedia. Deploy ke systemd:
+#### Systemd Service
 
 ```bash
 sudo cp wa-gateway.service /etc/systemd/system/
@@ -200,13 +219,7 @@ sudo systemctl enable wa-gateway
 sudo systemctl start wa-gateway
 ```
 
-Cek status:
-
-```bash
-sudo systemctl status wa-gateway
-```
-
-### 4.3. Ekspos via Cloudflare Tunnel (Opsional)
+#### Ekspos via Cloudflare Tunnel (Opsional)
 
 ```bash
 cloudflared tunnel create wa-gateway
@@ -223,15 +236,23 @@ ingress:
   - service: http_status:404
 ```
 
-### 4.4. Pairing WhatsApp
-
-Akses QR pairing:
+#### Pairing WhatsApp
 
 ```
 https://wa.gampong.web.id/api/sessions/sig-udeung/qr?format=html
 ```
 
-Scan dengan WhatsApp kamu. Status koneksi bisa dicek di panel admin `/admin/notifications`.
+### 4.3. Fonnte (SaaS - Alternatif)
+
+Jika WA Gateway sering banned, ganti provider ke Fonnte — cukup token, tanpa VPS.
+
+1. Daftar di [fonnte.com](https://fonnte.com) (1000 pesan gratis/bulan)
+2. Salin token ke `.env`:
+   ```env
+   WHA_PROVIDER=fonnte
+   FONNTE_TOKEN=token_dari_fonnte
+   ```
+3. Tidak perlu pairing QR. Status di panel admin `/admin/notifications`.
 
 ---
 
@@ -329,8 +350,29 @@ Solusi umum:
 - Pastikan `API_KEY` sama di `.env` Laravel (`WHA_API_KEY`) dan WA Gateway (`API_KEY`).
 - VPS pakai cloud IP? Aktifkan SOCKS5 proxy WARP.
 - WA kadang disconnect otomatis — systemd `Restart=always` akan reconnect.
+- **Jika sering banned:** ganti ke Fonnte — cukup isi `WHA_PROVIDER=fonnte` + token, tanpa VPS.
 
-### 6.3. Asset Frontend Rusak (CSS/JS tidak muncul)
+### 6.3. Notifikasi WhatsApp Tidak Terkirim
+
+```bash
+# Cek log Laravel
+tail -f storage/logs/laravel.log | grep -i whatsapp
+
+# Cek apakah Fonnte terkonfigurasi (fallback)
+php artisan tinker
+> config('services.whatsapp.fonnte_token')
+> config('services.whatsapp.provider')
+
+# Cek queue worker (jika pakai Redis)
+sudo supervisorctl status desaku-worker:*
+```
+
+Penyebab umum:
+- **WA Gateway banned** → sistem otomatis fallback ke Fonnte (jika token terisi).
+- **Fonnte juga error** → cek saldo/token di fonnte.com.
+- **Queue worker mati** → Notifikasi WA menumpuk di Redis, tidak terkirim.
+
+### 6.4. Asset Frontend Rusak (CSS/JS tidak muncul)
 
 ```bash
 # Rebuild
@@ -340,7 +382,7 @@ npm run build
 php artisan view:clear
 ```
 
-### 6.4. Queue Tidak Berjalan
+### 6.5. Queue Tidak Berjalan
 
 ```bash
 # Cek supervisor
@@ -354,7 +396,7 @@ php artisan tinker
 sudo supervisorctl restart desaku-worker:*
 ```
 
-### 6.5. Migrasi Error
+### 6.6. Migrasi Error
 
 ```bash
 # Rollback + migrate ulang (hati-hati: data hilang)
@@ -364,7 +406,7 @@ php artisan migrate:fresh --force
 php artisan migrate:status
 ```
 
-### 6.6. File Upload Gagal
+### 6.7. File Upload Gagal
 
 ```bash
 # Cek storage link
@@ -377,7 +419,7 @@ df -h
 php -i | grep upload_max_filesize
 ```
 
-### 6.7. Let's Encrypt / SSL
+### 6.8. Let's Encrypt / SSL
 
 ```bash
 sudo apt install certbot python3-certbot-nginx
@@ -407,11 +449,12 @@ Gunakan checklist ini setelah deploy selesai.
 - [ ] Config/route/view cache sudah dijalankan
 - [ ] Frontend sudah build (`npm run build`)
 
-### □ WA Gateway
-- [ ] Service berjalan (`systemctl status wa-gateway`)
+### □ WhatsApp Notification
+- [ ] Dual provider: `FONNTE_TOKEN` terisi di `.env` (fallback)
+- [ ] Jika pakai WA Gateway: service berjalan (`systemctl status wa-gateway`)
 - [ ] API Key sama antara Laravel dan WA Gateway
 - [ ] QR sudah dipairing dengan WhatsApp
-- [ ] Webhook terdaftar (WA → Laravel)
+- [ ] Atau jika pakai Fonnte: `WHA_PROVIDER=fonnte` + token valid
 
 ### □ Web Server & SSL
 - [ ] Virtual host Nginx/OLS terkonfigurasi

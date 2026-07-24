@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e325fab4662c8ba543a72528ff01b6a7",
+    "content-hash": "b6a610e1882ced002434f7f74cd0586a",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -8992,6 +8992,51 @@
                 }
             ],
             "time": "2026-04-26T05:33:54+00:00"
+        },
+        {
+            "name": "waaceh/wa-gateway",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ulyafarhan/wa-gateway-php.git",
+                "reference": "ff3adcef307223dcfacaa1dd658089fed1e37097"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ulyafarhan/wa-gateway-php/zipball/ff3adcef307223dcfacaa1dd658089fed1e37097",
+                "reference": "ff3adcef307223dcfacaa1dd658089fed1e37097",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "WAGateway": "WaAceh\\WAGateway\\Laravel\\WAGatewayFacade"
+                    },
+                    "providers": [
+                        "WaAceh\\WAGateway\\Laravel\\WAGatewayServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "WaAceh\\WAGateway\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "WA Gateway PHP SDK — WhatsApp API client for WaAceh ecosystem",
+            "support": {
+                "issues": "https://github.com/ulyafarhan/wa-gateway-php/issues",
+                "source": "https://github.com/ulyafarhan/wa-gateway-php/tree/v1.0.0"
+            },
+            "time": "2026-07-22T14:19:09+00:00"
         }
     ],
     "packages-dev": [

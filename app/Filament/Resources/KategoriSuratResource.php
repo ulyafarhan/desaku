@@ -72,6 +72,11 @@ class KategoriSuratResource extends Resource
                         ->maxLength(100)
                         ->prefixIcon('heroicon-o-code-bracket')
                         ->placeholder('Nama file template Blade'),
+                    Textarea::make('body_content')
+                        ->label('Isi Tubuh Surat')
+                        ->helperText('Gunakan {nama_gampong}, {kecamatan}, {kabupaten}, {nama_keuchik} sebagai placeholder. Biarkan kosong untuk menggunakan template default.')
+                        ->rows(4)
+                        ->columnSpanFull(),
                     Toggle::make('is_active')
                         ->label('Aktif')
                         ->default(true)

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\InformasiPublik;
+use App\Models\Penduduk;
 use App\Services\WhatsAppService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,9 +30,13 @@ class SendNewsWhatsappNotificationJob implements ShouldQueue
             return;
         }
 
-        $target = config('services.whatsapp.default_target');
-        if (empty($target)) {
-            Log::warning('WhatsApp default target not configured.');
+        $targets = Penduduk::whereNotNull('no_hp')
+            ->where('no_hp', '!=', '')
+            ->pluck('no_hp')
+            ->all();
+
+        if (!$targets) {
+            Log::warning('Tidak ada no_hp penduduk untuk broadcast WhatsApp.');
             return;
         }
 
@@ -47,6 +52,6 @@ class SendNewsWhatsappNotificationJob implements ShouldQueue
         $message .= "\"" . $summary . "\"\n\n";
         $message .= "Baca selengkapnya: " . $articleUrl;
 
-        $whatsapp->sendMessage($target, $message);
+        $whatsapp->broadcast($targets, $message);
     }
 }

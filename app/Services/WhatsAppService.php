@@ -24,16 +24,30 @@ class WhatsAppService
 
     public function sendMessage(string $target, string $message): bool
     {
-        return $this->provider === 'fonnte'
+        $result = $this->provider === 'fonnte'
             ? $this->sendViaFonnte($target, $message)
             : $this->sendViaGateway($target, $message);
+
+        if (!$result && $this->provider === 'wa-gateway' && !empty($this->fonnteToken)) {
+            Log::info('WhatsApp: wa-gateway gagal, fallback ke Fonnte');
+            $result = $this->sendViaFonnte($target, $message);
+        }
+
+        return $result;
     }
 
     public function sendImage(string $target, string $imageUrl, string $caption = ''): bool
     {
-        return $this->provider === 'fonnte'
+        $result = $this->provider === 'fonnte'
             ? $this->sendViaFonnte($target, $caption, $imageUrl)
             : $this->sendImageViaGateway($target, $imageUrl, $caption);
+
+        if (!$result && $this->provider === 'wa-gateway' && !empty($this->fonnteToken)) {
+            Log::info('WhatsApp: wa-gateway gagal, fallback ke Fonnte (image)');
+            $result = $this->sendViaFonnte($target, $caption, $imageUrl);
+        }
+
+        return $result;
     }
 
     public function broadcast(array $targets, string $message): array
@@ -68,10 +82,7 @@ class WhatsAppService
                 return false;
             }
 
-            if (!str_contains($target, '@')) {
-                $target = preg_replace('/[^0-9]/', '', $target);
-                $target = $target . '@c.us';
-            }
+            $target = $this->normalizeTarget($target);
 
             $response = Http::timeout(15)
                 ->connectTimeout(10)
@@ -97,6 +108,8 @@ class WhatsAppService
         try {
             if (!$this->isConfigured()) return false;
 
+            $target = $this->normalizeTarget($target);
+
             $response = Http::timeout(30)
                 ->connectTimeout(10)
                 ->withHeaders(['X-API-Key' => $this->apiKey])
@@ -115,6 +128,12 @@ class WhatsAppService
             Log::error('WhatsApp send image error: ' . $e->getMessage());
             return false;
         }
+    }
+
+    private function normalizeTarget(string $target): string
+    {
+        $target = preg_replace('/[^0-9]/', '', $target);
+        return str_starts_with($target, '0') ? '62' . substr($target, 1) : $target;
     }
 
     // ── Fonnte Provider ─────────────────────────────────────────────────

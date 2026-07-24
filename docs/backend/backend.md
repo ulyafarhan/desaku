@@ -231,16 +231,21 @@ Panel admin Filament menyediakan antarmuka manajemen untuk:
 
 ### 10.2. Jobs & Queue
 
-| Job | Fungsi |
-|-----|--------|
-| `GenerateSuratPdfJob` | Membuat PDF surat dari template Blade |
-| `SendTelegramDocumentJob` | Mengirim PDF surat ke Telegram warga |
-| `SendNewsTelegramNotificationJob` | Mengirim notifikasi berita baru ke Telegram |
+| Job | Trigger | Fungsi |
+|-----|---------|--------|
+| `GenerateSuratPdfJob` | Approve surat | Generate QR hash, nomor surat, notif Telegram |
+| `SendStatusWhatsappJob` | Status surat berubah | Kirim notif WA ke warga (via WA Gateway / Fonnte) |
+| `SendNewsTelegramNotificationJob` | Berita dipublish | Kirim notif berita ke grup Telegram |
+| `SendNewsWhatsappNotificationJob` | Berita dipublish | Broadcast berita ke seluruh warga via WA |
+| `ProcessTelegramMessageJob` | Pesan masuk ke bot | Proses chatbot AI via Gemini/OpenAI |
 
 ### 10.3. Services
 
 | Service | Fungsi |
 |---------|--------|
-| `TelegramService` | Interaksi dengan Telegram Bot API |
+| `WhatsAppService` | Kirim pesan WA — dual provider (wa-gateway + auto-fallback Fonnte) |
+| `TelegramService` | Kirim pesan, foto, notifikasi status surat, broadcast grup |
+| `PdfGeneratorService` | Generate PDF surat dari Blade template (DomPDF) |
 | `StatistikService` | Perhitungan & caching statistik |
-| `FallbackAiService` | Manajemen multi-AI provider dengan failover |
+| `FallbackAiService` | Manajemen multi-AI provider dengan failover otomatis |
+| `OpenAiProvider` / `GeminiProvider` | Implementasi AI provider untuk chatbot |
